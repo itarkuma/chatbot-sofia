@@ -160,14 +160,18 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
-    if ( esperandoDerivacion ) {
+    const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
+
+    if ( esperandoDerivacion || esperandoSeguimiento ) {
       if ( esConfirmacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
+        await state.update( { esperandoSeguimiento: false } );
         await flowDynamic( `🟢 Conectando con Javier Gómez... 👨‍💼 Él continuará con usted en este mismo chat.` );
       }
 
       if ( esNegacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
+        await state.update( { esperandoSeguimiento: false } );
         await flowDynamic( `✅ Entendido. Seguimos por aquí entonces 😉` );
       }
     } else {
@@ -211,6 +215,44 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           await flowDynamic( texto );
           return gotoFlow( registerFaltaConfirmacion );
         }
+        if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 1_11' );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 2_12' );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 3_13' );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 4_14' );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 5_15' );
+          await flowDynamic( texto );
+          return gotoFlow( registerNoFechaDisponible );
+        }
+        if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 6_16' );
+          await flowDynamic( texto );
+          return gotoFlow( registerCaptacionDatosSantiago );
+        }
+        if ( tags.includes( 'escenario_entrenable-post_inscripción' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 7_17' );
+          await flowDynamic( texto );
+          return gotoFlow( registerFaltaConfirmacion );
+        }
+
+
+
 
         if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
           console.log( 'Caso especial 4' );
@@ -227,6 +269,15 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_miami' ) {
           console.log( 'Caso especial 10' );
           await state.update( { esperandoDerivacion: true } );
+        }
+
+        if ( tags.includes( 'escenario_entrenable-espera_contacto' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 8_18' );
+          await state.update( { esperandoSeguimiento: true } );
+        }
+        if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 9_19' );
+          await state.update( { esperandoSeguimiento: true } );
         }
 
         await flowDynamic( texto );
@@ -465,6 +516,35 @@ const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
     console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }` );
   } );
 
+const registerAdmisionesSantiagos = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos. Los agregaremos a la *lista prioritaria* del curso de Bolsa y Trading en *Santiago de Compostela*.
+
+    Le avisaremos personalmente tan pronto abramos una nueva convocatoria para que pueda confirmar su plaza con antelación.` );
+  } );
+
+const registerCaptacionDatosSantiago = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAnswer( `Teléfono`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { telefono: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
+  } );
+
 
 const main = async () => {
 
@@ -483,7 +563,9 @@ const main = async () => {
       registerInscripcion,
       registerNoFechaDisponible,
       registerCaptarDatosMiami,
-      registerFaltaConfirmacion
+      registerFaltaConfirmacion,
+      registerAdmisionesSantiagos,
+      registerCaptacionDatosSantiago
     ] );
 
   const adapterProvider = createProvider( Provider );
