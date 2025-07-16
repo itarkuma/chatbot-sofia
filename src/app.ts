@@ -250,6 +250,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           await flowDynamic( texto );
           return gotoFlow( registerFaltaConfirmacion );
         }
+        if ( tags.includes( 'contacto_humano' ) && origen === 'soporte_general' ) {
+          console.log( 'Caso especial 1_20' );
+          await flowDynamic( texto );
+          return gotoFlow( registerContactoHumanoSoporte );
+        }
 
 
 
@@ -278,6 +283,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_santiago' ) {
           console.log( 'Caso especial 9_19' );
           await state.update( { esperandoSeguimiento: true } );
+        }
+        if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
+          console.log( 'Caso especial 2_21' );
+          console.log( "send enviar mensaje a Javier" );
+
         }
 
         await flowDynamic( texto );
@@ -333,6 +343,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             }
           }
         } else {
+          console.log( 'No detecto la intencion else' );
           const { texto } = await askSofia( consulta, seccion );
           await flowDynamic( texto );
         }
@@ -546,6 +557,18 @@ const registerCaptacionDatosSantiago = addKeyword( EVENTS.ACTION )
   } );
 
 
+const registerContactoHumanoSoporte = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Motivo Principal`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    await flowDynamic( `✅ ¡Gracias! Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.` );
+  } );
+
 const main = async () => {
 
   const adapterFlow = createFlow(
@@ -565,7 +588,8 @@ const main = async () => {
       registerCaptarDatosMiami,
       registerFaltaConfirmacion,
       registerAdmisionesSantiagos,
-      registerCaptacionDatosSantiago
+      registerCaptacionDatosSantiago,
+      registerContactoHumanoSoporte
     ] );
 
   const adapterProvider = createProvider( Provider );
