@@ -1,5 +1,6 @@
 import { join } from 'path';
-import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from '@builderbot/bot';
+import 'dotenv/config';
+import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys';
 
@@ -8,6 +9,8 @@ import { preprocessPregunta } from './scripts/preprocesamiento';
 import { pineconeQuery } from './scripts/pineconeQuery';
 
 import { distance } from 'fastest-levenshtein';
+
+import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
 
 function esConfirmacionDerivacion( texto: string ): boolean {
   const frasesBase = [
@@ -69,24 +72,6 @@ function esNegacionDerivacion( texto: string ): boolean {
   return false;
 }
 
-// const query = "¿El curso por Zoom sirve si vengo de ser autodidacta?";
-// const resultados = await pineconeQuery( query );
-
-// for ( const [ doc, score ] of resultados ) {
-//   console.log( {
-//     archivo: doc.metadata.archivo,
-//     chunk: doc.metadata.chunk,
-//     score: score.toFixed( 4 ),
-//     texto: doc.pageContent.slice( 0, 80 ) + '...',
-//   } );
-// }
-
-// console.log( resultados.map( r => ( {
-//   archivo: r.metadata.archivo,
-//   chunk: r.metadata.chunk_id || r.id,
-//   score: r.score.toFixed( 4 ),
-//   texto: r.metadata.text.slice( 0, 80 ) + '...',
-// } ) ) );
 
 
 const PORT = process.env.PORT ?? 3008;
@@ -130,19 +115,6 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
   return null;
 }
 
-const discordFlow = addKeyword<Provider, Database>( 'doc' ).addAnswer(
-  [ 'You can see the documentation here', '📄 https://builderbot.app/docs \n', 'Do you want to continue? *yes*' ].join(
-    '\n'
-  ),
-  { capture: true },
-  async ( ctx, { gotoFlow, flowDynamic } ) => {
-    if ( ctx.body.toLocaleLowerCase().includes( 'yes' ) ) {
-      return gotoFlow( registerFlow );
-    }
-    await flowDynamic( 'Thanks!' );
-    return;
-  }
-);
 
 const menuFlow = addKeyword( [ 'MENÚ', 'menu' ] )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
@@ -157,7 +129,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     console.log( 'Estado actual2:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
-
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -178,12 +149,14 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
       if ( seccion ) {
+
         console.log( 'Estado actual_query:', seccion );
         const { texto, origen, tags } = await askSofia( consulta, seccion );
+        console.log( { tags } );
+
         if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
           // Acción específica
           console.log( 'Caso especial 1' );
-          //        await state.update( { esperandoSolicitudDatos: true } );
           await flowDynamic( texto );
           return gotoFlow( registerSolicitudDatos );
         }
@@ -250,6 +223,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           await flowDynamic( texto );
           return gotoFlow( registerFaltaConfirmacion );
         }
+        if ( tags.includes( 'contacto_humano' ) ) {
+          console.log( 'Caso especial 1_20' );
+          await flowDynamic( texto );
+          return gotoFlow( registerContactoHumanoSoporte );
+        }
 
 
 
@@ -279,12 +257,22 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'Caso especial 9_19' );
           await state.update( { esperandoSeguimiento: true } );
         }
+        if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
+          console.log( 'Caso especial 2_21' );
+          console.log( "send enviar mensaje a Javier" );
+          const mensaje = `
+          📩 Nueva solicitud de atención humana
+          
+          📱 Teléfono: ${ ctx.from }
+          `;
+          await enviarDerivacionWhatsApp( mensaje );
+
+        }
 
         await flowDynamic( texto );
 
-
-
       } else {
+
 
         const intencion = await detectarIntencion( consulta );
         if ( intencion.seccion ) {
@@ -333,6 +321,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             }
           }
         } else {
+          console.log( 'No detecto la intencion else' );
           const { texto } = await askSofia( consulta, seccion );
           await flowDynamic( texto );
         }
@@ -340,24 +329,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       }
 
     }
-    // if ( esperandoLista ) {
-    //   const datos = extraerDatosListaPrioritaria( consulta );
-
-    //   if ( !datos.nombre || !datos.email || !datos.pais ) {
-    //     await flowDynamic( `❗️Por favor, asegúrese de enviar: *nombre completo*, *correo electrónico* y *país de residencia*.` );
-    //     return;
-    //   }
-
-    //   await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
-
-    // Guardar los datos si hace falta
-    //   console.log( '📌 Datos de lista prioritaria:', datos );
-
-    //   await state.update( { esperandoSolicitudDatos: false } );
-    //   return;
-    // }
-
-
 
 
 
@@ -412,16 +383,6 @@ const soporteGeneralFlow = addKeyword<Provider, Database>( [ 'Consultas generale
     await flowDynamic( texto );
   } );
 
-const registerFlow = addKeyword<Provider, Database>( utils.setEvent( 'REGISTER_FLOW' ) )
-  .addAnswer( `What is your name?`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( 'What is your age?', { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { age: ctx.body } );
-  } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'age' ) }` );
-  } );
 
 
 // casos especiales  
@@ -435,8 +396,22 @@ const registerSolicitudDatos = addKeyword( EVENTS.ACTION )
   .addAnswer( `Pais de residencia`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { pais: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const pais = await state.get( 'pais' ) || 'No indicado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📝 Pais de residencia: ${ pais }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
     await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
   } );
 
@@ -450,10 +425,23 @@ const registerReservaPlaza = addKeyword( EVENTS.ACTION )
   .addAnswer( `Email`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { correo: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    //    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const pais = await state.get( 'pais' ) || 'No indicado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📝 Ciudad o país: ${ pais }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
   } );
 
 const registerInscripcion = addKeyword( EVENTS.ACTION )
@@ -472,10 +460,27 @@ const registerInscripcion = addKeyword( EVENTS.ACTION )
   .addAnswer( `Método de pago preferido`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { metodo: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    console.log( `${ state.get( 'name' ) }, thanks : Your correo: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    //    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const pais = await state.get( 'pais' ) || 'No indicado';
+    const divisa = await state.get( 'divisa' ) || 'No indicado';
+    const metodo = await state.get( 'metodo' ) || 'No indicado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📝 Ciudad o país: ${ pais }
+    📱 Teléfono: ${ telefono }
+    Divisa: ${ divisa }
+    Metodo de pago: ${ metodo }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
   } );
 
 const registerNoFechaDisponible = addKeyword( EVENTS.ACTION )
@@ -488,10 +493,24 @@ const registerNoFechaDisponible = addKeyword( EVENTS.ACTION )
   .addAnswer( `Ciudad de interés`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { ciudad: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'ciudad' ) }` );
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    //    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const pais = await state.get( 'pais' ) || 'No indicado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📝 Ciudad de interés: ${ pais }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
+
   } );
 
 const registerCaptarDatosMiami = addKeyword( EVENTS.ACTION )
@@ -501,8 +520,22 @@ const registerCaptarDatosMiami = addKeyword( EVENTS.ACTION )
   .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { correo: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
+
   } );
 
 const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
@@ -512,8 +545,22 @@ const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
   .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { correo: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }` );
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
+
   } );
 
 const registerAdmisionesSantiagos = addKeyword( EVENTS.ACTION )
@@ -523,8 +570,20 @@ const registerAdmisionesSantiagos = addKeyword( EVENTS.ACTION )
   .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { correo: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
     //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos. Los agregaremos a la *lista prioritaria* del curso de Bolsa y Trading en *Santiago de Compostela*.
 
     Le avisaremos personalmente tan pronto abramos una nueva convocatoria para que pueda confirmar su plaza con antelación.` );
@@ -540,18 +599,59 @@ const registerCaptacionDatosSantiago = addKeyword( EVENTS.ACTION )
   .addAnswer( `Teléfono`, { capture: true }, async ( ctx, { state } ) => {
     await state.update( { telefono: ctx.body } );
   } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = await state.get( 'telefono' ) || 'No proporcionado';
+    const telefono2 = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📱 Teléfono: ${ telefono }
+    📱 Teléfono(envio): ${ telefono2 }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+
     //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
     await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
   } );
 
+
+const registerContactoHumanoSoporte = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Motivo Principal`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const motivo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Motivo: ${ motivo }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+
+    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    await flowDynamic( `✅ ¡Gracias! Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.` );
+  } );
 
 const main = async () => {
 
   const adapterFlow = createFlow(
     [ menuFlow,
       welcomeFlow,
-      registerFlow,
       cursoOnlineGFlow,
       cursoOnlineVFlow,
       formacionMiamiFlow,
@@ -565,7 +665,8 @@ const main = async () => {
       registerCaptarDatosMiami,
       registerFaltaConfirmacion,
       registerAdmisionesSantiagos,
-      registerCaptacionDatosSantiago
+      registerCaptacionDatosSantiago,
+      registerContactoHumanoSoporte
     ] );
 
   const adapterProvider = createProvider( Provider );
