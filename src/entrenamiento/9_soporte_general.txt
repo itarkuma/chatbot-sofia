@@ -1,0 +1,577 @@
+## 📘 Chunking RAG – Consultas Generales
+
+**Producto:** Escuela Tu Plan A – Soporte general  
+**Modalidad:** Aplicable a todos los cursos y servicios  
+**Autor del contenido:** Fran Fialli  
+**Tipo de documento:** Bloque de conocimiento entrenable para IA conversacional (WhatsApp – Tu Plan A)  
+**Versión:** v1.0 – Junio 2025
+
+---
+
+### Chunk 01 – Saludo inicial y bienvenida
+
+#escenario_entrenable #bienvenida #inicio_conversación #saludos #buenas
+
+**Frases disparadoras típicas:**
+- Hola  
+- Buenas  
+- Quiero información  
+- Necesito ayuda  
+- ¿Me puedes ayudar?  
+- ¿Qué cursos ofrecen?
+- No sé nada de trading  
+- Estoy empezando
+- Me gustaría información sobre
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+¡Hola! 👋 Gracias por contactarnos.  
+
+Le damos la bienvenida a _tuplanabolsaytrading.com_, la Escuela Profesional de Trading y Finanzas de Fran Fialli 📊
+  
+Mi nombre es *Sofía*, soy su agente de IA especializada en Bolsa y Trading. Para comenzar, ¿en qué puedo ayudarle hoy?
+
+Si no tiene claro por dónde empezar, puede guiarse por estas opciones 👇  
+
+1️⃣ Curso Online Grabado  
+2️⃣ Curso Online en Vivo  
+3️⃣ Formación en Miami  
+4️⃣ Formación en Santiago  
+5️⃣ Libro de Fran Fialli  
+6️⃣ Ya soy alumno/a  
+7️⃣ Consultas generales  
+8️⃣ Canal de Noticias del Mercado  
+9️⃣ Club Fran Fialli
+
+---
+
+### Chunk 02 – El usuario no sabe por dónde empezar
+
+#consultas_generales #inicio #curso_gratuito #blog_introductorio #lead_novato
+
+**Frases disparadoras típicas:**
+- No sé por dónde empezar  
+- Soy nuevo/a en esto  
+- Quiero aprender pero no tengo base  
+- ¿Tienen algo gratuito?  
+- Me interesa pero estoy perdido 
+- Me interesa pero estoy perdida 
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+Entiendo, comenzar puede ser abrumador, pero aquí le guiamos paso a paso. Le recomiendo estas opciones para empezar sin presión:
+
+🔹 *Blog introductorio*: artículos útiles y gratuitos → https://www.tuplanabolsaytrading.com/blog/ 
+
+🔹 *Curso gratuito*: los fundamentos esenciales en un mini-programa → https://www.tuplanabolsaytrading.com/curso-trading-gratis/
+
+---
+
+### Chunk 03 – Refuerzos de autoridad y confianza
+
+#consultas_generales #autoridad #confianza #validación
+
+**Frases disparadoras típicas:**
+- ¿Quién es Fran Fialli?  
+- ¿Por qué debería confiar en ustedes?  
+- ¿Qué respaldo tienen?  
+- ¿Esto es serio o es otro curso más?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📈 *Fran Fialli* ha formado a más de 2.000 alumnos en 14 países.
+  
+📚 Su libro *Trading y Bolsa* acumula más de *20 ediciones* y ha sido leído por miles de inversores. 
+ 
+🏆 En 2024 recibió el premio a *Mejor Formación en Bolsa y Trading* por su enfoque estructurado y resultados reales.
+
+Nuestra misión es ayudarle a convertir el trading en _Tu Plan A_, con estructura, método y progresos medibles.
+
+---
+
+### Chunk 04 – Preguntas frecuentes típicas
+
+#consultas_generales #preguntas_frecuentes #faq #inicio
+
+**Frases disparadoras típicas:**
+- ¿Qué ofrecen?  
+- ¿Puedo empezar sin saber nada?  
+- ¿Tienen algo gratuito para probar?  
+- ¿Me pueden orientar si soy principiante?
+- ¿Cómo empiezo si no sé nada?  
+- ¿Tienen cursos para novatos?  
+- ¿Qué puedo hacer desde cero?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+Estas son preguntas muy comunes para quienes recién están comenzando, y con gusto te guiamos:
+
+🔹 *¿Puedo empezar sin experiencia?* Sí, tenemos un *Curso de Trading gratuito* para introducirte paso a paso → https://www.tuplanabolsaytrading.com/curso-trading-gratis/
+  
+🔹 *¿Qué ofrecen?* Desde ese curso inicial, podrá avanzar a formaciones completas, tenemos tres modalidades: grabado, en vivo y presencial.
+  
+🔹 ¿Me orientan si soy *principiante*? Claro. Es parte de nuestra metodología: acompañamiento y seguimiento desde el primer día.
+
+🔹 Más preguntas frecuentes en el siguiente link: https://www.tuplanabolsaytrading.com/preguntas-frecuentes/
+
+---
+
+### Chunk 05 – Cierre si el usuario no define interés
+
+#consultas_generales #cierre #sin_interes #espera
+
+**Frases disparadoras típicas:**
+- Solo estoy mirando  
+- No quiero decidir ahora  
+- Gracias, pero no por ahora  
+- Déjame pensarlo  
+- Por ahora estoy viendo opciones  
+- Estoy comparando  
+- Tal vez más adelante  
+- Aún no estoy seguro  
+- No me interesa en este momento  
+- Estoy viendo nada más  
+- No tengo tiempo ahora mismo  
+- Ya veré más adelante  
+- Después lo reviso con calma  
+- Estoy explorando por mi cuenta
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🕓 Estoy aquí para ayudarle cuando lo necesite.
+  
+🔄 Si en algún momento desea retomar esta conversación, solo escriba la palabra *'MENÚ'* y volvemos a explorar opciones juntos.
+
+---
+
+### Chunk 06 – Solicitud de contacto con Javier Gómez (derivación humana)
+
+#derivacion_humana #asesor_personal #javier_gomez #contacto_humano
+
+**Frases disparadoras típicas:**
+- Quiero hablar con alguien  
+- ¿Puedo hablar con Javier?  
+- Necesito ayuda personalizada  
+- ¿Hay alguien ahí?  
+- Quiero atención humana  
+- No quiero seguir con el bot  
+- Necesito un asesor  
+- Prefiero hablar con una persona  
+- Quiero una atención real  
+- ¿Me puedes pasar con alguien del equipo?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+✅ Por supuesto. Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.  
+
+Antes de transferirle, indíqueme lo siguiente: 
+ 
+1️⃣ Su *nombre* completo 
+ 
+2️⃣  Y si lo desea, el *motivo principal* de su consulta (ej: interés en un curso, dudas, apoyo personalizado)
+
+📩 Esto nos ayudará a brindarle una atención más directa, clara y útil desde el primer mensaje.
+
+---
+
+### Chunk 07 – Javier está disponible
+
+#derivacion_humana #disponibilidad #asesor_activo
+
+**Frases disparadoras típicas:**
+- ¿Está Javier disponible ahora?  
+- ¿Me va a responder ya?  
+- ¿Cuánto tarda en atenderme?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🟢 Conectando con Javier Gómez... 👨‍💼 Él continuará con usted en este mismo chat.
+
+---
+
+### Chunk 08 – Recursos complementarios y materiales de apoyo
+
+#recursos #materiales #apoyo #usuarios #aprendizaje_autonomo
+
+**Frases disparadoras típicas:**
+- ¿Tienen recursos gratuitos?  
+- ¿Dónde puedo aprender más por mi cuenta?  
+- ¿Hay algún blog o podcast?  
+- ¿Tienen vídeos o materiales de apoyo?  
+- ¿Cómo puedo entender mejor los conceptos?  
+- ¿Dónde está la comunidad?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📚 Además de los cursos, en _Tu Plan A: Bolsa y Trading_ contamos con *recursos gratuitos* para reforzar su aprendizaje en distintos niveles:
+
+🔹 *Blog* con artículos introductorios y avanzados: https://www.tuplanabolsaytrading.com/blog/
+
+🎧 *Podcast* educativo con entrevistas y consejos reales:  https://www.tuplanabolsaytrading.com/podcast-de-trading/
+
+📘 *Glosario* de términos de Bolsa y Trading: https://www.tuplanabolsaytrading.com/actualidad-bolsa-trading/
+
+🎥 *Vídeos explicativos* y tutoriales prácticos: https://www.tuplanabolsaytrading.com/analisis-tecnico-bolsa-y-mercados/
+
+🤝 *Comunidad privada* de alumnos para networking y soporte: https://www.tuplanabolsaytrading.com/club-fran-fialli/
+
+---
+
+### Chunk 09 – Ver menú completo de opciones
+
+#consultas_generales #menu #ver_opciones
+
+**Frases disparadoras típicas:**
+- ¿Qué opciones hay?  
+- Muéstrame el menú  
+- Quiero ver todo lo que ofrecen  
+- ¿Qué cursos y cosas tienen?
+- MENÚ
+- MENU
+- menu
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📋 Estas son las principales opciones disponibles en *Tu Plan A: Bolsa y Trading* 👇
+
+1️⃣ Curso Online Grabado  
+2️⃣ Curso Online en Vivo  
+3️⃣ Formación Presencial en Miami  
+4️⃣ Formación Presencial en Santiago  
+5️⃣ Curso Gratuito por Email  
+6️⃣ Libro de Fran Fialli  
+7️⃣ Comunidad de Alumnos  
+8️⃣ Canal de Noticias del Mercado  
+9️⃣ Club Fran Fialli  
+
+Solo dígame la opción que le interesa y le explico cada opción con gusto.
+
+---
+
+### Chunk 10 – Legalidad, seriedad y respaldo de la formación
+
+#consultas_generales #legalidad #confianza #seriedad
+
+**Frases disparadoras típicas:**
+- ¿Esto es legal?  
+- ¿Es una estafa?  
+- ¿Están regulados?   
+- ¿Cómo sé que es seguro?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🔐 *Tu Plan A: Bolsa y Trading* es una escuela profesional, seria y con trayectoria pública.
+
+📌 *Fran Fialli* ha formado a más de 2.000 alumnos en 14 países, con reconocimiento institucional y presencia activa en medios.
+
+🏆 En 2024 recibimos el premio a *Mejor Formación en Bolsa y Trading*.
+  
+📚 El libro de Fran acumula *más de 20 ediciones* y se vende en plataformas reconocidas.
+
+Puede ver toda la información oficial en nuestra web: https://www.tuplanabolsaytrading.com
+
+---
+
+### Chunk 11 – Certificados y diplomas
+
+#consultas_generales #certificados #diploma #formacion_formal
+
+**Frases disparadoras típicas:**
+- ¿Dan diploma?  
+- ¿Entregan certificado?  
+- ¿Recibo algo al terminar?
+- ¿Me dan constancia del curso?  
+- ¿Hay algún diploma oficial?  
+- ¿Se puede descargar el certificado? 
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🎓 Todos nuestros cursos principales incluyen *certificado de finalización personalizado*, siempre que se complete el proceso formativo.
+
+📝 Este diploma está firmado digitalmente y puede usarse como respaldo formativo en su perfil profesional o académico.
+
+---
+
+### Chunk 12 – Idioma de la formación
+
+#consultas_generales #idioma #español #traduccion
+
+**Frases disparadoras típicas:**
+- ¿El curso está en español?  
+- ¿Hay subtítulos?  
+- ¿Puedo hacerlo si no hablo inglés?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🗣️ Todos los cursos, clases, materiales y tutorías están en *español*, adaptado a alumnos de España y Latinoamérica.
+
+✅ No es necesario hablar inglés. Todo está diseñado para que pueda aprender sin barreras idiomáticas.
+
+---
+
+### Chunk 13 – Curso gratuito para comenzar
+
+#consultas_generales #curso_gratis #acceso_inicial #formación_sin_compromiso
+
+**Frases disparadoras típicas:**  
+- ¿Puedo empezar gratis?  
+- ¿Tienen algo sin pagar?  
+- ¿Se puede hacer algo gratuito?  
+- ¿Dan acceso sin compromiso?  
+- ¿Tienen curso gratuito?  
+- ¿Cómo empiezo si no tengo presupuesto?  
+- ¿Puedo probar algo sin pagar?  
+- ¿Qué tienen disponible sin costo?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📘 Sí, tenemos un *Curso de Trading gratuito* especialmente diseñado para quienes quieren iniciarse sin compromiso.
+
+✅ Podrá acceder de forma inmediata, conocer nuestro enfoque profesional y avanzar paso a paso desde cero.
+
+👉 Aquí tiene el acceso directo: https://www.tuplanabolsaytrading.com/curso-trading-gratis/
+
+---
+
+### Chunk 14 – Consulta de precios sin especificar curso
+
+#consultas_generales #precio #cuanto_cuesta #informacion_general
+
+**Frases disparadoras típicas:**
+- ¿Cuánto cuesta?  
+- ¿Qué precio tiene?  
+- ¿Qué vale el curso?
+- ¿Cuánto hay que pagar?  
+- ¿Cuál es el valor del programa?  
+- ¿Qué cuesta todo esto?  
+- ¿Tienen algún precio publicado?  
+- ¿Cuánto cobran?  
+- ¿Cuánto sale?  
+- ¿Cuánto me saldría estudiar con ustedes?  
+- ¿Me pasas el precio?  
+- ¿Cuánto cuesta aprender con ustedes?  
+- ¿Qué precio tiene el curso ese que ofrecen?  
+- ¿Cuánto se paga al mes?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+✅ Tenemos diferentes programas de formación según la modalidad y objetivos.
+
+Para orientarle mejor, ¿me indica por favor cuál de estas opciones le interesa?  
+
+1️⃣ Curso Online Grabado  
+2️⃣ Curso Online en Vivo  
+3️⃣ Formación en Miami  
+4️⃣ Formación en Santiago  
+
+Así podré explicarle los detalles y precios de forma precisa.
+
+---
+
+### Chunk 15 – Ubicación física y sede
+
+#consultas_generales #ubicacion #sede #presencial
+
+**Frases disparadoras típicas:**
+- ¿Dónde están?  
+- ¿Desde dónde trabajan?  
+- ¿Tienen oficinas?
+- ¿Dónde se encuentran físicamente?  
+- ¿Tienen alguna sede?  
+- ¿Dónde están ubicados?  
+- ¿Trabajan desde España o Latinoamérica?  
+- ¿Desde qué país operan?  
+- ¿Puedo ir presencialmente a algún lugar?  
+- ¿Tienen algún centro o local?  
+- ¿Dónde hacen los cursos presenciales?  
+- ¿En qué ciudad están?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📍 Operamos desde España y EE.UU., y nuestras formaciones presenciales se imparten en:
+
+🇪🇸 *Santiago de Compostela*  
+🇺🇸 *Miami, Florida*
+
+Puede conocer todos los detalles en nuestra web → https://www.tuplanabolsaytrading.com
+
+---
+
+### Chunk 16 – Solicitud de contacto directo con Fran Fialli
+
+#consultas_generales #fran_fialli #contacto_directo
+
+**Frases disparadoras típicas:**
+- ¿Puedo hablar con Fran?  
+- ¿Me puede atender él?  
+- ¿Fran da asesorías?  
+- ¿Está disponible Fran Fialli?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🙋 *Fran Fialli* participa personalmente en las clases en vivo, mentorías, eventos presenciales y seguimiento de alumnos.
+
+Sin embargo, la atención inicial y el acompañamiento personalizado lo realiza *Javier Gómez*, asesor oficial del equipo. Si desea avanzar, solo tiene que escribir *"hablar con Javier"* y lo pondremos en contacto.
+
+---
+
+### Chunk 17 – ¿Quién puede hacer estos cursos?
+
+#consultas_generales #perfil_alumno #principiantes #avanzados
+
+**Frases disparadoras típicas:**
+- ¿Este curso es para mí?  
+- ¿Puedo hacerlo si no sé nada?  
+- ¿Hace falta tener experiencia?  
+- ¿Es solo para profesionales?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+✅ Nuestros cursos están diseñados para personas que quieren aprender *desde cero* o perfeccionar *lo que ya saben.*
+
+🎯 Si no tiene experiencia, le enseñaremos paso a paso desde lo más básico.  
+
+💼 Si ya ha hecho otros cursos, esta formación le permitirá *estructurar su conocimiento, aplicar un método profesional y avanzar con seguimiento real*.
+
+Formamos tanto a *principiantes* como a traders *intermedios* que no han obtenido resultados antes.
+
+---
+
+### Chunk 18 – ¿Hay límite de edad? ¿Edad recomendada?
+
+#consultas_generales #edad #requisitos #perfiles
+
+**Frases disparadoras típicas:**
+- ¿Puedo hacerlo si tengo más de 50?  
+- ¿Hay una edad mínima?  
+- ¿Esto no es solo para jóvenes?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📌 No hay límite de edad para aprender a invertir con criterio. Nuestros alumnos tienen desde *18 hasta más de 70 años*, y todos aprenden desde su nivel.
+
+🧠 Lo único que necesita es *motivación, constancia y conexión a internet*. El mercado no distingue edades: solo disciplina y método.
+
+---
+
+### Chunk 19 – ¿Qué necesito para empezar?
+
+#consultas_generales #requisitos #inicio #preparacion
+
+**Frases disparadoras típicas:**
+- ¿Qué necesito para empezar?  
+- ¿Hace falta un ordenador potente?  
+- ¿Necesito experiencia previa?  
+- ¿Debo tener dinero invertido?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+✅ Para empezar solo necesita dos cosas:
+
+1️⃣ Una conexión a *internet* estable  
+
+2️⃣ Un *ordenador* básico o tablet (no hace falta equipo avanzado)  
+
+📌 *No necesita conocimientos previos* ni tener capital invertido. Le enseñaremos desde cero a operar de forma estructurada y con gestión del riesgo.
+
+---
+
+### Chunk 20 – ¿Hay sesiones 1 a 1 o mentoría personalizada?
+
+#consultas_generales #mentoria #privado #sesiones
+
+**Frases disparadoras típicas:**
+- ¿Dan mentorías privadas?  
+- ¿Puedo tener sesiones uno a uno?  
+- ¿Me pueden hacer seguimiento?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🎯 Todos nuestros cursos incluyen *seguimiento real y tutorías personalizadas*.
+
+✅ En el curso grabado podrá solicitar *sesiones 1 a 1* para resolver dudas o revisar su progreso. 
+ 
+✅ En el curso en vivo y las formaciones presenciales, el *seguimiento será en sala* con Fran Fialli y el equipo.
+
+💬 Si desea una mentoría personalizada, solo dígamelo y le explico cómo acceder.
+
+---
+
+### Chunk 21 – ¿Puedo comprar desde fuera de España?
+
+#consultas_generales #internacional #paises #compras_latam
+
+**Frases disparadoras típicas:**
+- ¿Puedo pagar desde México / Colombia / Argentina?  
+- ¿Está disponible para otros países?  
+- ¿Aceptan pagos internacionales?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🌎 Puede inscribirse desde cualquier país. Tenemos alumnos en *más de 14 países*.
+
+💳 Aceptamos pagos internacionales con tarjetas de crédito, PayPal, Hotmart y otras pasarelas según su ubicación.
+
+📌 Si desea saber la mejor opción para su país, dígame desde dónde nos contacta y le explico cómo hacerlo sin problemas.
+
+---
+
+### Chunk 22 – ¿Cuánto tiempo tengo acceso? ¿Caduca?
+
+#consultas_generales #acceso_ilimitado #tiempo #plazo
+
+**Frases disparadoras típicas:**
+- ¿Por cuánto tiempo tendré acceso?  
+- ¿Caduca el curso?  
+- ¿Hay que renovarlo?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🔐 Todos nuestros cursos ofrecen *acceso ilimitado a los contenidos*. Una vez se inscribe, el material es suyo para siempre.
+
+Además, durante los *12 primeros meses*, contará con:
+
+✅ *Soporte directo* del equipo
+  
+✅ *Revisión* personalizada  
+
+✅ *Tutorías privadas* si lo necesita
+
+No es una formación con fecha de caducidad. Está diseñada para acompañarlo a su ritmo y según su evolución.
+
+---
+
+### Chunk 23 – ¿Dónde puedo ver testimonios reales?
+
+#consultas_generales #testimonios #opiniones #socialproof
+
+**Frases disparadoras típicas:**
+- ¿Tienen testimonios?  
+- ¿Hay opiniones de otros alumnos?  
+- ¿Dónde puedo ver resultados reales?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📣 Puede ver *testimonios reales de alumnos* aquí: 🔗 https://www.tuplanabolsaytrading.com/
+
+✅ Encontrará experiencias en vídeo, reseñas escritas y casos reales de personas que empezaron como usted y lograron avanzar.
+
+---
+
+### Chunk 24 – ¿Puedo regalar un curso?
+
+#consultas_generales #regalo #bono #tercero
+
+**Frases disparadoras típicas:**
+- ¿Puedo regalar un curso?  
+- ¿Lo puedo comprar para otra persona?  
+- ¿Tienen opción de bono regalo?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🎁 Puede adquirir cualquier curso como *regalo para otra persona*. Le enviaremos un acceso personalizado con mensaje dedicado, y podemos generar un bono digital si lo desea.
+
+📩 Solo necesito saber el nombre, email de la persona y el curso que desea regalar. Le ayudo con todo el proceso.
+
+---
+

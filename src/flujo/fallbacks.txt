@@ -1,0 +1,279 @@
+## 📘 Chunking RAG – Condiciones operativas y protocolo de fallback
+
+**Producto:** Escuela Tu Plan A – Agente IA Sofía  
+**Modalidad:** Reglas de comportamiento para toda la conversación automatizada  
+**Autor del contenido:** Fran Fialli  
+**Tipo de documento:** Información estructural de actuación (no entrenable directamente)  
+**Versión:** v1.0 – Junio 2025
+
+---
+
+### 🧠 CONDICIONES OPERATIVAS DEL AGENTE SOFÍA
+
+- *Mantener el contexto* de la conversación durante hasta **72 horas**.  
+- Tiempo de respuesta máximo: **5 segundos**.  
+- Si el usuario no responde en **5 minutos**, enviar mensaje de seguimiento cordial.  
+- *Finalizar cada conversación* con una orientación clara y útil.  
+- Sofía debe *mantener el hilo*, incluso si el usuario cambia de tema.  
+- Si el usuario muestra *frustración*, actuar con *empatía* y ofrecer *derivación humana*.
+
+---
+
+### 🔄 PROTOCOLO DE FALLBACK CONVERSACIONAL
+
+- Máximo **2 fallbacks consecutivos**.  
+- Luego debe **derivar a humano o cerrar con cortesía**.
+
+---
+
+### Chunk 01 – Fallback 1: Primera confusión o mensaje no comprendido
+
+#fallback_1 #mensaje_no_comprendido #reformulación
+
+**Frases disparadoras típicas:**  
+- ¿Qué?  
+- ¿Cómo?  
+- No entiendo  
+- ¿Me puedes repetir eso?  
+- 😕 ❓
+- No te sigo  
+- ¿Qué quisiste decir?  
+- Eh?   
+- ¿Perdona?  
+- No me queda claro    
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+⚠️ Disculpe, no comprendí del todo su mensaje. ¿Podría reformularlo o indicarme si desea información sobre alguno de nuestros cursos?
+
+---
+
+### Chunk 02 – Fallback 2: Segunda confusión, ofrecer menú principal
+
+#fallback_2 #menú_principal #ayuda
+
+**Frases disparadoras típicas:**  
+- ¿Qué opciones hay?  
+- No sé qué escribir  
+- Muestra el menú  
+- ¿Qué tenéis?  
+- Seguimos sin entendernos  
+- ¿Puedes guiarme?  
+- No encuentro la información  
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.
+
+---
+
+### Chunk 03 – Fallback final: Derivación a humano tras dos fallos
+
+#fallback_final #derivación_humana #contacto_directo
+
+**Frases disparadoras típicas:**  
+- Esto no ayuda  
+- Me puedes pasar con alguien  
+- Prefiero hablar con una persona  
+- No me estás entendiendo  
+- 😠  
+- ¿Puedes guiarme?  
+- No encuentro la información  
+- Ya no quiero hablar con la máquina  
+- Quiero atención humana  
+- ¿Puedo hablar con alguien real?  
+- Basta de IA  
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+⚠️ Lamento no haber comprendido del todo su mensaje. Si lo prefiere, puedo ponerle en contacto con *Javier Gómez*, nuestro asesor académico, para que le atienda personalmente y le ayude con todo lo que necesite. ¿Le gustaría que lo anote para que le escriba directamente?
+
+---
+
+### Chunk 04 – Usuario solicita el menú principal
+
+#menú_principal #opciones_formación #inicio_conversación
+
+**Frases disparadoras típicas:**  
+- Menú  
+- MENU 
+- Muestra el menú  
+- Quiero ver las opciones  
+- ¿Qué puedo hacer aquí?  
+- Envíame el listado  
+- Quiero comenzar  
+- Dame las opciones  
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+Estas son las principales opciones disponibles en _Tu Plan A: Bolsa y Trading_ 👇
+
+1️⃣ Curso Online Grabado 
+2️⃣ Curso Online en vivo  
+3️⃣ Formación en Miami  
+4️⃣ Formación en Santiago  
+5️⃣ Libro de Fran Fialli  
+6️⃣ Ya soy alumno/a  
+7️⃣ Consultas generales  
+8️⃣ Canal de Noticias del Mercado 
+9️⃣ Club Fran Fialli
+
+📌 Solo tiene que indicarme el número o el nombre de la opción que más le interese, y le guiaré paso a paso con la información correspondiente.
+
+---
+
+### Chunk 05 – Usuario pide un dato no disponible
+
+#fallback_derivación_javier #dato_no_disponible #derivación_precisa
+
+**Frases disparadoras típicas:**  
+- ¿Me puedes enviar el certificado por correo?  
+- ¿Puedo inscribirme aunque esté fuera de plazo?  
+- ¿Cómo funciona el acceso desde otro país?  
+- ¿Me permiten cambiar de curso si ya pagué?  
+- ¿Puedo hablar con alguien sobre mi caso particular?  
+- Necesito una validación especial  
+- ¿Ofrecen factura con mis datos fiscales?  
+- ¿Cómo gestiono un problema con la plataforma?
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+⚠️ En este momento no tengo acceso a ese dato específico o procedimiento personalizado. Pero puedo derivárselo directamente a *Javier Gómez*, nuestro asesor académico, quien podrá ayudarle con toda la información que necesita. Puede indicarme "hablar con Javier" y lo derivaré directamente para que le atienda.
+
+---
+
+### Chunk 06 – Usuario pregunta por promociones o descuentos activos
+
+#fallback_promocion_descuento #descuento_actual #derivación_comercial
+
+**Frases disparadoras típicas:**  
+- ¿Hay alguna promoción ahora?  
+- ¿Tienen descuentos activos?  
+- ¿Hay oferta por tiempo limitado?  
+- ¿Puedo acceder con un cupón?
+- ¿Hay alguna rebaja si me inscribo hoy?  
+- ¿Tienen precio especial para nuevos alumnos?  
+- ¿Está en promoción esta semana?  
+- ¿Ofrecen algún tipo de beca?  
+- ¿Hay descuentos por pagar en una sola vez?  
+- ¿Hacen ofertas en ciertas fechas?  
+- ¿Puedo conseguir mejor precio?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🎁 Las *promociones* pueden variar según la fecha o el país. Para asegurarnos de que reciba la mejor opción disponible, puedo pasar su contacto a *Javier Gómez*, nuestro asesor académico, quien le informará personalmente si hay algún descuento activo. Puede indicarme "hablar con Javier" y lo derivaré directamente para que le atienda.
+
+
+---
+
+### Chunk 07 – Usuario pregunta por una forma de pago específica no registrada
+
+#fallback_metodo_pago_especial #formas_de_pago #derivación_javier
+
+**Frases disparadoras típicas:**  
+- ¿Puedo pagar con criptomonedas?  
+- ¿Aceptan transferencia bancaria en Argentina?  
+- ¿Tienen métodos de pago alternativos?
+- ¿Puedo pagar desde el exterior?  
+- ¿Tienen cuotas sin tarjeta?  
+- ¿Aceptan pagos en efectivo?  
+- ¿Puedo usar MercadoPago o Payoneer?  
+- ¿Qué formas de pago tienen disponibles en mi país?  
+- ¿Se puede pagar desde otro continente?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+💳 Algunas formas de pago dependen del *país y el canal disponible*. Para darle una respuesta segura y adaptada a su caso, puedo pasárselo directamente a *Javier Gómez*, nuestro asesor académico. Puede indicarme "hablar con Javier" y lo derivaré directamente para que le atienda.
+
+---
+
+### Chunk 08 – Usuario pregunta si habrá cursos presenciales en otras ciudades
+
+#fallback_otras_ciudades #presencial_otras_sedes #registro_interés
+
+**Frases disparadoras típicas:**  
+- ¿Harán cursos en México?  
+- ¿Tienen planeado ir a Colombia?  
+- ¿Cuándo vienen a Argentina?  
+- ¿Tienen pensado hacer cursos en otros países?  
+- ¿Van a estar en Latinoamérica?  
+- ¿Habrá cursos en mi ciudad?  
+- ¿Van a recorrer más sitios?  
+- ¿Dónde más harán los cursos presenciales?  
+- ¿Tienen agenda internacional?  
+- ¿Vendrán a otros lugares en el futuro?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+📍 ¡Gracias por su interés! Por ahora los *cursos presenciales* están confirmados únicamente en *Santiago de Compostela* y *Miami*, pero estamos evaluando nuevas ciudades para próximas ediciones. 
+
+---
+
+### Chunk 09 – Usuario solicita hablar directamente con Javier Gómez
+
+#fallback_contacto_directo #hablar_con_humano #solicitud_javier
+
+**Frases disparadoras típicas:**  
+- Quiero hablar con Javier  
+- hablar con Javier
+- hablar con Javier Gómez
+- ¿Está Fran o Javier?  
+- Pásame con un humano  
+- No quiero hablar con una IA  
+- Necesito atención personal
+- ¿Puedo hablar con alguien real?  
+- ¿Me puedes pasar con Javier?  
+- ¿Hay alguien que me atienda directamente?  
+- Prefiero que me escriba una persona  
+- Quiero contacto directo  
+- ¿Puedo escribirle a Javier?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🤝 Puedo ponerle en contacto con *Javier Gómez*, nuestro asesor académico, quien atiende personalmente las consultas. 
+
+✅ Solo necesito su *nombre* y, si lo desea, puede adelantarme brevemente el *motivo de su consulta* para poder derivar correctamente.
+
+---
+
+### Chunk 10 – Usuario pregunta cuándo responderá Javier Gómez
+
+#fallback_tiempo_respuesta_javier #derivación_humana #expectativa_contacto
+
+**Frases disparadoras típicas:**  
+- ¿Cuándo responde Javier?  
+- ¿Tarda mucho en contestar?  
+- ¿Está disponible ahora?  
+- ¿Me hablará hoy mismo?
+- ¿Cuánto suele demorar Javier?  
+- ¿Javier Responde rápido?  
+- ¿Cuándo me contacta Javier?   
+- ¿En qué momento responde Javier?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+⏳ Javier suele responder en *menos de 24 horas hábiles*, aunque en momentos de alta demanda puede tardar un poco más. 
+
+---
+
+### Chunk 11 – Usuario mezcla muchas preguntas sin relación clara
+
+#fallback_reorganización_conversación #múltiples_preguntas #redireccionamiento
+
+**Frases disparadoras típicas:**  
+- ¿Cuándo empieza el curso en vivo y cómo pago desde Chile?  
+- ¿Tienen descuento si me apunto a dos cursos? Ah, y otra cosa…  
+- Vi el blog, ¿cómo me inscribo y cuánto cuesta?  
+- ¿Cuánto vale el curso, cuándo empieza y si lo hago puedo acceder al club?  
+- Vi que tienen formación en Miami, ¿también está grabada? ¿Y hay plazas aún?  
+- ¿Qué incluye el curso online, cuánto dura y si hay certificado?  
+- ¿Puedo pagar en cuotas y además tener acceso al canal de noticias?  
+- Estoy entre dos cursos, ¿me puedes decir la diferencia y si hay promoción?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas.*
+
+🧩 Veo que tiene varias preguntas importantes. Para poder ayudarle bien, le propongo ir una por una, así no se nos escapa nada. 
+
+✅ ¿Podría indicarme por cuál le gustaría empezar?
+
+---

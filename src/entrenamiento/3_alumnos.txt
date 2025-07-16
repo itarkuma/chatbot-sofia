@@ -1,0 +1,992 @@
+## 📘 Chunking RAG – Soy Alumno, Soy Alumna (Atención a alumnos actuales)
+
+**Producto:** Soporte para alumnos actuales  
+**Modalidad:** Online Grabado, Presencial Miami, Presencial Santiago  
+**Autor del contenido:** Fran Fialli  
+**Tipo de documento:** Bloque de conocimiento entrenable para IA conversacional (WhatsApp – Tu Plan A)  
+**Versión:** v1.0 – Junio 2025
+
+---
+
+### Chunk 01 – Verificación previa: ¿el usuario ya está identificado como alumno?
+
+#verificación_etiqueta #alumno_actual
+
+👉 *Este chunk no se replica al usuario. La IA debe usar esta lógica previa antes de responder.*
+
+📌 Si el usuario ya está identificado con una de las siguientes etiquetas:
+- `COG` → Curso Online Grabado  
+- `GM1` a `GM10` → Curso Presencial en Miami  
+- `GS1` a `GS10` → Curso Presencial en Santiago  
+
+✅ Entonces proceder directamente con su consulta, sin pedir más datos.
+
+❌ Si **no** está identificado por etiqueta, aplicar el siguiente mensaje de verificación (Chunk 02).
+
+---
+
+### Chunk 02 – Confirmación y verificación del alumno
+
+#soy_alumno #identificación #curso_online_grabado #curso_presencial_miami #curso_presencial_santiago
+
+**Frases disparadoras típicas:**
+- Soy alumno
+- Ya hice el curso
+- Tengo acceso al Aula Virtual
+- Hice la Masterclass
+- Estuve en una edición anterior
+- Soy alumna
+- Estoy inscrito en el curso
+- Fui alumno de Fran Fialli
+- Asistí a su curso de trading
+- Realicé el curso con Fran Fialli
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🎓 *Gracias por su mensaje*. Para poder ayudarle como alumno actual de nuestra escuela, necesito confirmar algunos datos de forma rápida.
+
+Por favor, indíqueme:
+
+1. *Su nombre completo* 
+ 
+2. *El correo electrónico con el que se inscribió*  
+
+3. *La modalidad o ciudad del curso que realizó* (Online Grabado, Miami o Santiago)
+
+📩 Con esta información podré verificar su acceso y brindarle atención personalizada.
+
+---
+
+### Chunk 03 – Acceso al Aula Virtual
+
+#acceso_campus #soy_alumno #soporte_tecnico_básico
+
+**Frases disparadoras típicas:**
+- ¿Cómo entro al Aula Virtual?
+- ¿Dónde accedo al Campus?
+- No recuerdo cómo entrar al curso
+- No me deja acceder al campus
+- ¿Dónde se inicia sesión en la plataforma?
+- ¿Cómo ingreso al Aula Virtual?
+- No encuentro dónde iniciar sesión
+- Necesito acceder al Aula Virtual
+- Entrar al Aula Virtual
+- Acceso Aula Virtual
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🎓 Puede acceder al Aula Virtual desde este enlace: 👉 https://www.tuplanabolsaytrading.com/aula-virtual
+
+🧑‍💻 Si olvidó su contraseña, haga clic en *“¿Has olvidado tu contraseña?”* e ingrese su email para restablecerla.
+
+📩 Si tiene algún inconveniente adicional, indíqueme y le ayudaré.
+
+---
+
+### Chunk 04 – Soporte técnico para el Aula
+
+#problemas_técnicos #campus_virtual #derivación_soporte #soy_alumno
+
+**Frases disparadoras típicas:**
+- No me cargan los módulos
+- No puedo ver los vídeos del curso
+- El contenido no se reproduce
+- Se queda en blanco la página
+- Me da error al intentar entrar a una clase
+- La plataforma no funciona correctamente
+- El Aula Virtual no carga
+- Error en el Aula Virtual
+- No puedo ver las clases
+- La página del curso da error
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🛠️ *Gracias por avisarme.* Vamos a intentar resolverlo paso a paso:
+
+1. Borre la *caché del navegador.*  
+2. Pruebe en otro navegador *Chrome o Firefox.*  
+3. Cambie de *dispositivo* si es posible.
+
+📌 Si el problema persiste, por favor indíqueme: 
+
+- *Su nombre completo*  
+- *Correo con el que se inscribió*
+
+🎯 Con eso podré derivar su caso al equipo de soporte técnico
+
+---
+
+### Chunk 05 – Tutorías grupales
+
+#seguimiento #tutorías_grupales #soy_alumno #aula_virtual
+
+**Frases disparadoras típicas:**
+- ¿Cuándo es la próxima tutoría?
+- ¿Dónde me conecto para la sesión en vivo?
+- ¿Cómo veo el calendario de tutorías?
+- Quiero asistir a la próxima tutoría grupal
+- ¿Dónde encuentro el link de las tutorías?
+- Calendario de tutorías grupales
+- Próxima tutoría grupal fecha
+- Enlace de la tutoría en vivo
+- ¿Cómo unirme a la tutoría grupal?
+- Link de la tutoría
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📅 Puede consultar el *calendario de tutorías grupales* directamente desde el Aula Virtual o ingresando en este enlace:  
+
+👉 https://www.tuplanabolsaytrading.com/fran-fialli/
+
+Las *sesiones en vivo* están organizadas por grupo y son parte del seguimiento incluido en su formación.
+
+---
+
+### Chunk 06 – Tutorías individuales con Fran Fialli
+
+#tutoría_individual #seguimiento_personalizado #derivación_javier #soy_alumno
+
+**Frases disparadoras típicas:**
+- Quiero agendar una sesión privada con Fran
+- Quiero reservar la tutoría
+- ¿Puedo tener una tutoría individual?
+- Necesito ayuda personalizada con mi operativa
+- ¿Cómo puedo hablar directamente con Fran?
+- Me interesa una mentoría uno a uno
+- Agendar tutoría individual con Fran
+- Reserva de tutoría privada
+- Sesión uno a uno con Fran
+- Tutoría individual Fran Fialli
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🧠 Las *tutorías individuales* con Fran Fialli tienen plazas limitadas y se asignan según disponibilidad.
+
+📩 Para poder ayudarle, por favor indíqueme:
+
+1. Su nombre completo  
+2. Correo electrónico  
+3. Grupo o modalidad del curso (si lo recuerda)
+
+Una vez tenga estos datos, puedo derivarlo a *Javier Gómez*, nuestro asesor académico, para revisar agenda y confirmar su solicitud.
+
+---
+
+### Chunk 07 – Comunidad de alumnos
+
+#comunidad #interacción_post_curso #chat_alumnos #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Dónde está el grupo de alumnos?
+- ¿Tienen comunidad para compartir?
+- Quiero hablar con otros alumnos
+- ¿Hay un grupo de Telegram?
+- Me gustaría compartir mis análisis con otros
+- Grupo de alumnos en Telegram
+- Comunidad de alumnos del curso
+- Chat de alumnos
+- ¿Existe un grupo para alumnos?
+- Unirme a la comunidad de alumnos
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🤝 Puede unirse a nuestra *comunidad privada en Telegram*, donde compartimos análisis, resolvemos dudas y seguimos aprendiendo juntos.
+
+Además, encontrará el *Chat de Alumnos* dentro del Aula Virtual, exclusivo para participantes del curso. 
+
+👉 https://www.tuplanabolsaytrading.com/chat-traders/
+
+---
+
+### Chunk 08 – Credenciales para la plataforma de trading
+
+#plataforma_trading #credenciales_acceso #escalado_soporte #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Cómo solicito las credenciales?
+- No me llegaron usuario y contraseña
+- ¿Dónde pido acceso a la plataforma?
+- Me faltan los datos para entrar a la cuenta demo
+- ¿Aún no tengo acceso a la plataforma de trading?
+- Solicitar credenciales de la plataforma
+- Obtener usuario y contraseña de trading
+- No tengo acceso a la plataforma de trading
+- Credenciales para la cuenta demo
+- Pedir claves de la plataforma
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🔐 Puede solicitar sus credenciales escribiendo a: *credenciales@tuplanabolsaytrading.com*
+
+Por favor incluya:  
+
+1. Su nombre completo  
+2. Correo con el que se inscribió  
+
+⏳ Si ya las pidió y no ha recibido respuesta en *24 horas*, puedo escalar su caso internamente. ¿Desea que lo gestione por usted?
+
+---
+
+### Chunk 09 – Alumno identificado del grupo Miami (GM1 a GM10)
+
+#grupo_miami #alumno_miami #derivación_inteligente #soy_alumno
+
+**Frases disparadoras típicas:**
+- Soy del grupo GM1 (o GM2…GM10)
+- Hice el curso en Miami
+- Estuve en la formación presencial de Miami
+- Fui alumno de la edición GM5
+- Participé en el evento de Miami
+- Asistí al curso presencial en Miami
+- Soy alumno de Miami
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🟦 ¡Hola! Veo que forma parte del *grupo de Miami*.  
+
+Estoy aquí para acompañarle en todo lo que necesite tras su formación presencial. ¿En qué puedo ayudarle hoy?
+
+---
+
+### Chunk 10 – Alumno identificado del grupo Santiago (GS1 a GS10)
+
+#grupo_santiago #alumno_santiago #derivación_inteligente #soy_alumno
+
+**Frases disparadoras típicas:**
+- Soy del grupo GS3 (o GS1…GS10)
+- Hice el curso en Santiago
+- Estuve en la formación presencial de Santiago de Compostela
+- Fui alumno de GS6
+- Fui a la edición presencial en Galicia
+- Asistí al curso presencial en Santiago
+- Soy alumno de la edición de Santiago
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🟩 Hola, un gusto saludarle. Como alumno de *Santiago de Compostela*, estoy aquí para brindarle apoyo directo y seguimiento. ¿En qué puedo asistirle hoy?
+
+---
+
+### Chunk 11 – Alumno identificado del Curso Online Grabado (COG)
+
+#curso_online_grabado #alumno_online #derivación_inteligente #soy_alumno
+
+**Frases disparadoras típicas:**
+- Estoy en el curso online grabado
+- Soy del grupo COG
+- Hice el curso a distancia
+- Estoy en la modalidad online
+- Compré el curso en la web
+- Soy alumno del curso online grabado
+- Alumna modalidad online
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🟨 ¡Hola! Me alegra saber que forma parte del *Curso Online Grabado*.
+  
+Si desea apoyo técnico, mentoría o resolver cualquier duda sobre el aula, estaré encantada de ayudarle o derivarle al equipo de *Fran Fialli* si es necesario.
+
+---
+
+### Chunk 12 – Preguntas frecuentes de alumnos
+
+#faq_alumno #duración_acceso #soporte_ampliado #grabaciones
+
+**Frases disparadoras típicas:**
+- ¿Por cuánto tiempo tengo acceso al curso?
+- ¿Sigo teniendo soporte después del curso?
+- ¿Dónde encuentro las grabaciones?
+- ¿Tendré acceso al campus después de terminar?
+- ¿Las clases quedan grabadas?
+- Duración del acceso al curso
+- ¿Cuánto tiempo dura el acceso?
+- Soporte después de terminar el curso
+- ¿Tendré acceso una vez finalizado?
+- Grabaciones del curso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📚 Aquí tiene algunas respuestas clave sobre su formación:
+
+🕓 *Acceso al campus:* ilimitado, de por vida.  
+
+‍🏫 *Soporte directo:* durante *12 meses* desde la inscripción. Después, puede continuar en la comunidad y tutorías grupales.  
+
+📼 *Grabaciones:* disponibles en el Aula Virtual, en las secciones *“Mis Archivos”* o *“Operativas en tiempo real”*.
+
+Si necesita que le guíe hacia algún recurso concreto, estaré encantada de ayudarle.
+
+---
+
+### Chunk 13 – Finalización del curso y próximos pasos
+
+#post_curso #plan_de_continuidad #seguimiento_egresado #soy_alumno
+
+**Frases disparadoras típicas:**
+- Ya terminé el curso
+- ¿Qué hago ahora?
+- ¿Sigo teniendo apoyo después?
+- Ya completé la formación, ¿ahora qué?
+- ¿Hay un plan para después del curso?
+- Terminé el curso, ¿y ahora?
+- Finalicé la formación, ¿qué sigue?
+- Apoyo después de finalizar el curso
+- ¿Qué pasos seguir tras el curso?
+- Plan a seguir después del curso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🎓 *¡Enhorabuena por completar su formación!* Ahora comienza la etapa más importante: consolidar su método y avanzar con criterio profesional.
+
+✅ *Practique con el simulador* hasta lograr consistencia 
+
+✅ *Participe en las tutorías mensuales* para seguir aprendiendo  
+
+✅ *Explore la Ruta del Trader* en nuestra web 
+
+✅ *Manténgase conectado con la comunidad*
+
+📌 Nuestro compromiso es acompañarle más allá del curso, con seguimiento real y recursos de evolución continua.
+
+---
+
+### Chunk 14 – Solicitud de certificado
+
+#certificados #solicitud_diploma #post_curso #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Dónde puedo descargar mi certificado?
+- Necesito el certificado del curso
+- ¿Dan diploma al finalizar?
+- ¿Cómo obtengo mi diploma?
+- Quiero el certificado de participación
+- Descargar el certificado del curso
+- Obtener mi certificado
+- Certificado del curso de trading
+- Certificado de participación del curso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📄 Todos los alumnos reciben un *certificado personalizado* al completar su formación.
+
+✅ *Curso Online Grabado:* puede descargarlo desde el Aula Virtual, en la sección *“Mi Certificado”*.  
+
+✅ *Curso Presencial:* el certificado impreso se entrega al finalizar el evento. Si necesita copia digital, puede solicitarla escribiendo a: informacion@tuplanabolsaytrading.com
+
+---
+
+### Chunk 15 – Dificultad para avanzar con el contenido
+
+#acompañamiento_emocional #bloqueo_avance #apoyo_pedagógico #soy_alumno
+
+**Frases disparadoras típicas:**
+- Me estoy quedando atrás
+- Me cuesta avanzar
+- No entiendo algunos temas
+- Estoy bloqueado con el contenido
+- Siento que no progreso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🧠 *Gracias por compartirlo.* Es completamente normal tener momentos de duda o bloqueos durante el aprendizaje.
+
+Aquí tiene algunas acciones que pueden ayudarle a retomar el ritmo:
+
+✅ Repita las lecciones desde el *Campus Virtual*, sin prisa  
+
+✅ Anote dudas para resolverlas en tutoría grupal o individual  
+
+✅ Puede escribirme en cualquier momento para guiarle en los siguientes pasos
+
+📌 Si lo desea, también puedo derivar su caso al *equipo académico* para una guía más personalizada 🎯
+
+---
+
+### Chunk 16 – Cambio de dispositivo o correo
+
+#actualización_datos #problemas_dispositivo #correo_actualizado #soy_alumno
+
+**Frases disparadoras típicas:**
+- Cambié de correo electrónico
+- Ahora uso otro dispositivo
+- No me funciona en este móvil
+- Perdí acceso con mi antiguo correo
+- Quiero actualizar mis datos de acceso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🔄 Gracias por informarlo. Para *actualizar sus datos* y asegurar que tenga acceso sin inconvenientes, necesito que me indique:
+
+✅ *Su correo anterior*  
+✅ *Su nuevo correo*  
+✅ *Su nombre completo*
+
+Una vez verificado, podré solicitar al equipo técnico que actualice sus credenciales y acceso.
+
+---
+
+### Chunk 17 – Solicitud de feedback personalizado
+
+#feedback_operativas #revisión_personalizada #mentor_trading #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Pueden revisar mis operativas?
+- Quiero saber si estoy operando bien
+- ¿Me pueden dar feedback de mi avance?
+- Necesito una revisión de mis análisis
+- Quiero que evalúen mis operaciones
+- ¿Pueden revisar mis operaciones de trading?
+- Quiero feedback sobre mis trades
+- Comentarios sobre mi operativa
+- Evaluación de mi progreso en el curso
+- Mentoría sobre mis análisis
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📈 *¡Excelente iniciativa!* En Tu Plan A: Bolsa y Trading valoramos mucho a los alumnos que buscan afinar su operativa y mejorar con criterio.
+
+Puede enviar su análisis o captura de operativa al *canal privado de su grupo*, o bien derivarla al equipo de mentoría para una revisión más personalizada.
+
+📩 ¿Desea que le facilite el canal correspondiente o que lo derive a *Fran Fialli* o a uno de nuestros mentores?
+
+---
+
+### Chunk 18 – No recibí correos del curso
+
+#problemas_correo #reenvío_accesos #correo_no_llegado #soy_alumno
+
+**Frases disparadoras típicas:**
+- No me llegan los emails del curso
+- No recibí el acceso por correo
+- Revisé spam y no hay nada
+- Nunca me llegó el correo de bienvenida
+- No tengo el mail con los datos
+- No recibo los correos del curso
+- No me llegó ningún email del curso
+- No encuentro el correo de acceso
+- No tengo el email con la información
+- No me llegó la información al correo
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📬 A veces los correos pueden ser bloqueados por filtros automáticos. Le recomiendo revisar las carpetas de *Spam*, *Promociones* o *Notificaciones*.
+
+📌 Para ayudarle, necesito confirmar su correo electrónico actual.  
+
+¿Podría indicarme su *email*? Así podré verificar si está registrado correctamente y reenviarle los accesos si es necesario.
+
+---
+
+### Chunk 19 – Solicitud para reactivar cuenta
+
+#reactivación_alumno #seguimiento_tardío #retomar_curso #soy_alumno
+
+**Frases disparadoras típicas:**
+- Hace tiempo que no entro al curso
+- Quiero retomar el curso
+- ¿Puedo seguir donde lo dejé?
+- Perdí el ritmo, ¿puedo volver?
+- ¿Mi cuenta sigue activa?
+- Quiero volver a retomar el curso
+- Retomar mi acceso después de tiempo
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🔁 Todos nuestros alumnos conservan su acceso y pueden retomar el curso cuando lo deseen.
+
+Puede ingresar al Aula Virtual desde aquí: 👉 https://www.tuplanabolsaytrading.com/aula-virtual
+
+💡 Si lo desea, puedo revisar si su cuenta está activa y guiarle para retomar desde donde se quedó
+
+---
+
+### Chunk 20 – Consulta por actualización de contenido
+
+#actualizaciones_contenido #curiosidad_alumno #nuevos_módulos #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Han subido nuevas clases?
+- ¿Hay módulos nuevos en el curso?
+- ¿Se actualiza el contenido?
+- ¿Añaden novedades con el tiempo?
+- Quiero ver si hay recursos nuevos
+- ¿Hay nuevos contenidos en el curso?
+- Clases nuevas añadidas al curso
+- Actualizaciones del curso
+- Curso actualizado con novedades
+- ¿El curso tiene actualizaciones de contenido?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📚 El contenido del curso se actualiza regularmente para mantenerse alineado con los cambios del mercado y la evolución de la formación.
+
+Puede revisar la sección *“Actualizaciones”* dentro del Aula Virtual, o consultar el calendario de nuevos recursos aquí: 👉 https://www.tuplanabolsaytrading.com/fran-fialli/
+
+---
+
+### Chunk 21 – Problemas con método de pago posterior al curso
+
+#problemas_pago #facturación #renovación #tarjeta_rechazada #soy_alumno
+
+**Frases disparadoras típicas:**
+- Mi tarjeta fue rechazada
+- Hubo un error en el cobro
+- Me llegó un cargo que no esperaba
+- Tengo problemas con la renovación del pago
+- No pude completar el pago correctamente
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+💳 Gracias por comentarlo. Para poder ayudarle mejor, necesito confirmar algunos datos:
+
+✅ *Su nombre completo*  
+✅ *Correo con el que se registró*  
+✅ *Fecha del pago*
+
+📌 Con esa información puedo revisar su caso, o derivarlo a *Javier Gómez*, nuestro asesor académico, para que lo atienda de forma prioritaria.
+
+---
+
+### Chunk 22 – No encuentro los vídeos o ya no los veo en YouTube
+
+#curso_online #aula_virtual #dificultades_de_acceso #videos_curso
+
+**Frases disparadoras típicas:**
+- Antes veía los vídeos en YouTube y ahora no los encuentro
+- ¿Dónde están los vídeos del curso?
+- No puedo ver los vídeos del curso
+- Los vídeos estaban en otro lado y ya no aparecen
+- ¿Por qué quitaron los vídeos de YouTube?
+- No encuentro los vídeos del curso
+- Los vídeos del curso desaparecieron
+- Vídeos ya no están en YouTube
+- ¿Dónde ver los vídeos del curso?
+- No veo los vídeos en YouTube
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🎥 Gracias por su mensaje. Actualmente, todos los vídeos del curso están organizados en módulos dentro del Aula Virtual privada. 
+ 
+Ya no están disponibles en YouTube, ya que centralizamos todo el contenido para ofrecer una mejor experiencia de aprendizaje.
+
+Puede acceder desde aquí: 👉 https://www.tuplanabolsaytrading.com/aula-virtual  
+
+Si necesita restablecer la contraseña, haga clic en *“¿Has olvidado tu contraseña?”* y siga las instrucciones que recibirá por email.
+
+📌 Si continúa teniendo problemas para ingresar, por favor indíqueme:
+  
+✅ *Su nombre completo*  
+✅ *Correo con el que se inscribió*
+
+Con eso podré verificar su acceso y ayudarle a ingresar correctamente.
+
+---
+
+### Chunk 23 – ¿Puedo pedir ayuda si no entiendo algo del curso?
+
+#duda_contenido #soporte_académico #mentoría #consultas_didácticas
+
+**Frases disparadoras típicas:**
+- No entiendo esta parte del curso
+- Me atasqué en una lección
+- ¿Puedo hacer preguntas si tengo dudas?
+- Necesito que me aclaren un tema del módulo
+- ¿Cómo pido ayuda durante el curso?
+- Tengo dudas sobre una lección
+- No entiendo un tema del curso
+- Preguntar dudas del curso
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🧑‍🏫 Es completamente normal tener dudas durante el proceso.
+
+✅ Puede enviarme su consulta concreta y el *equipo de mentoría* la revisará con gusto.  
+
+✅ También puede esperar a la próxima *tutoría grupal*, donde resolvemos dudas en vivo.  
+
+✅ Si lo desea, puedo derivarle ahora mismo al *equipo académico* para una atención más personalizada.
+
+Estoy aquí para acompañarle en su aprendizaje 📘
+
+---
+
+### Chunk 24 – ¿Dónde puedo ver mis avances o progreso?
+
+#seguimiento_académico #progreso_personal #aula_virtual #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Dónde veo mi progreso?
+- ¿Cuánto llevo del curso?
+- No sé por dónde continuar
+- ¿Qué módulos me faltan?
+- ¿Dónde se ve el avance en el campus?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📊 Puede revisar su progreso accediendo al *Aula Virtual* y entrando al panel principal del curso.  
+
+Allí verá los módulos completados, los que tiene pendientes y el tiempo estimado que le queda para terminar.
+
+📌 Si desea que revisemos juntos su avance o recibir una guía personalizada, puedo derivarlo al *equipo académico* para orientarle paso a paso.
+
+---
+
+### Chunk 25 – ¿Puedo actualizar mis datos o cambiar el correo?
+
+#cambio_datos #actualización_contacto #correo_nuevo #teléfono_actualizado
+
+**Frases disparadoras típicas:**
+- Quiero cambiar el correo
+- He cambiado de email
+- Mi número de teléfono es otro
+- ¿Cómo actualizo mis datos?
+- Tengo un nuevo correo y no sé si está actualizado
+- Cambiar mi email del curso
+- Actualizar mi correo en el sistema
+- Modificar mis datos de contacto
+- Nuevo número de teléfono para contacto
+- Actualizar mi información de contacto
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🔄 Claro. Para actualizar sus datos personales, necesito que me confirme lo siguiente:
+
+✅ Su nombre completo 
+
+✅ El correo actualmente registrado  
+
+✅ El nuevo correo o teléfono que desea modificar
+
+Una vez verificado, lo actualizaré en su ficha de alumno o lo escalaré al equipo si es necesario.
+
+---
+
+### Chunk 26 – ¿Puedo repetir el curso o hacer otra edición?
+
+#repetir_curso #segunda_vez #otra_edición #refuerzo_contenido #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Puedo repetir el curso?
+- Me gustaría hacer otra edición
+- Quiero empezar de nuevo desde cero
+- No pude seguir bien el ritmo, ¿puedo repetirlo?
+- ¿Hay opción de volver a hacerlo completo?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🔁 Gracias por su interés en seguir perfeccionando su formación. *Sí, es posible repetir el curso* en una nueva edición, según disponibilidad de plazas y modalidad.
+
+📌 Por favor, indíqueme:
+
+✅ Su nombre completo  
+
+✅ Correo con el que se inscribió  
+
+✅ Modalidad del curso que desea repetir
+
+Una vez tenga estos datos, puedo derivarlo al equipo académico para revisar su caso y brindarle opciones para una próxima edición 📘
+
+---
+
+## Chunk E01 – Soy alumno y no tengo acceso al Aula Virtual
+
+#acceso_campus_fallido #problema_tecnico #soy_alumno
+
+**Frases disparadoras típicas:**
+- Soy alumno y no tengo acceso
+- No puedo entrar al Aula Virtual
+- No me deja acceder al campus
+- El sistema no reconoce mi correo
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+Gracias por avisarme. Le comparto el enlace directo: 👉 https://www.tuplanabolsaytrading.com/aula-virtual
+
+Si necesita restablecer la contraseña, puede hacerlo desde la misma página.
+
+¿Desea que lo revise por usted? En ese caso, indíqueme su *nombre completo* y *correo*, y lo gestiono con el equipo técnico.
+
+---
+
+## Chunk E02 – Terminé el curso hace tiempo y quiero retomar
+
+#retomar_acceso_exalumno #seguimiento_postcurso #exalumno_reactivado
+
+**Frases disparadoras típicas:**
+- Terminé el curso y quiero retomarlo
+- Hace tiempo que no entro y quiero volver
+- ¿Puedo seguir donde lo dejé?
+- Soy exalumno y me gustaría continuar
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+¡Me alegra mucho volver a saber de usted! 😊
+
+¿Podría confirmarme su *nombre completo* y *correo electrónico* para verificar su acceso actual?
+
+Así podré indicarle si hay *nuevas sesiones, contenidos o herramientas* disponibles para continuar su evolución como trader.
+
+---
+
+## Chunk E03 – Quiero reservar una tutoría individual
+
+#tutoria_individual #mentor_personalizado #derivación_javier #soy_alumno
+
+**Frases disparadoras típicas:**
+- Quiero agendar una tutoría con Fran
+- ¿Puedo tener una sesión individual?
+- Necesito mentoría personalizada
+- ¿Hay forma de reservar una tutoría uno a uno?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+Las *tutorías individuales con Fran Fialli* tienen alta demanda y se gestionan de forma personalizada.
+
+📌 Para organizar su disponibilidad, puedo pasar su solicitud directamente a *Javier Gómez*, nuestro asesor académico.
+
+¿Podría confirmarme su *nombre completo*, *correo electrónico* y *grupo o modalidad del curso*? Así haré la derivación adecuada.
+
+---
+
+## Chunk E04 – No he recibido mis credenciales para la plataforma de trading
+
+#credenciales_plataforma_trading #espera_acceso #soporte_operativo #soy_alumno
+
+**Frases disparadoras típicas:**
+- No tengo las credenciales de la plataforma
+- No me ha llegado el acceso para operar
+- ¿Dónde están mis claves de acceso?
+- Ya terminé y no tengo usuario ni contraseña
+- No recibí las credenciales de la plataforma
+- No tengo usuario para la plataforma de trading
+- Me falta el acceso para operar
+- Sin claves de la plataforma de trading
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+Las *credenciales de acceso* a la plataforma de trading se asignan por nuestro compañero *José Manuel*.
+
+📩 Puede solicitarlas escribiendo a: *credenciales@tuplanabolsaytrading.com*  
+
+Incluya: *nombre completo* y *correo registrado*
+
+📌 ¿Ya escribió y no recibió respuesta en 24h? Si es así, puedo ayudarle a escalar el caso internamente.
+
+---
+
+## Chunk E05 – Soy del grupo de Miami/Santiago pero no encuentro mis grabaciones
+
+#grabaciones_cohorte_presencial #alumno_presencial #mis_archivos #soy_alumno
+
+**Frases disparadoras típicas:**
+- Soy de Miami y no veo las grabaciones
+- No encuentro los vídeos de mi grupo
+- Hice el curso en Santiago y no tengo acceso al material
+- ¿Dónde están las grabaciones del presencial?
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+Gracias por su mensaje. ¿Podría confirmarme su *grupo* (por ejemplo: Miami, Santiago, Online) y su *correo electrónico*?
+
+Con esos datos, le indicaré exactamente dónde encontrar las grabaciones dentro del Aula Virtual (*sección “Mis Archivos”*).
+
+📌 Si alguna grabación no aparece, la solicitaré directamente al equipo académico para que se la habiliten.
+
+---
+
+## Chunk E06 – Usuario impaciente tras ser derivado sin respuesta
+
+#derivacion_silencio #espera_asesor #gestión_humana #paciencia_conversacional
+
+**Frases disparadoras típicas:**
+- ¿Dónde está Javier? Llevo esperando
+- Me dijeron que me contactaría y no tengo respuesta
+- ¿Nadie me va a responder?
+- Estoy esperando hace rato y nada
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+Lamento la espera, entiendo su molestia. 
+
+Javier está finalizando otra consulta, pero ya he *priorizado su mensaje personalmente*.
+
+📌 Si lo desea, puede contarme brevemente su caso para que él lo atienda con el contexto claro en cuanto esté disponible.  
+
+---
+
+## Chunk E07 – No encuentro los vídeos del curso / antes estaban en YouTube
+
+#no_encuentra_videos #confusion_plataforma #videos_aula_virtual #soy_alumno
+
+**Frases disparadoras típicas:**
+- No veo los vídeos del curso
+- ¿Ya no están en YouTube?
+- Antes los vídeos estaban públicos
+- ¿Dónde están los módulos ahora?
+- No sé dónde ver las clases
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📚 Todos los vídeos del curso ahora se encuentran organizados por módulos dentro del *Aula Virtual*.  
+
+Ya no están en YouTube, por motivos de seguridad y para garantizar una formación estructurada.
+
+📌 ¿Desea que le comparta el enlace directo al *aula* y le indique dónde acceder a su curso?
+
+---
+
+## Chunk E08 – No sé si tengo acceso a alguna comunidad o grupo privado
+
+#duda_comunidad #pertenencia_grupal #grupo_alumnos #soy_alumno
+
+**Frases disparadoras típicas:**
+- ¿Hay algún grupo de alumnos?
+- No sé si tengo comunidad
+- ¿Estoy en el grupo de mi cohorte?
+- ¿Dónde comparten análisis los alumnos?
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+📚 *Contamos con grupos privados* para cada cohorte del curso, donde los alumnos comparten análisis, preguntas y recursos.
+
+📌 ¿Podría indicarme su *nombre completo*, *correo electrónico* y *ciudad o modalidad*? 
+
+Con eso puedo verificar a qué grupo pertenece y solicitar su inclusión.
+
+---
+
+## Chunk E09 – No puedo asistir a las sesiones en vivo / me lo pierdo por horario
+
+#problemas_horario #grabar_clases #disponibilidad #tutorias_en_vivo
+
+**Frases disparadoras típicas:**
+- Trabajo justo a esa hora
+- No puedo asistir en vivo
+- ¿Qué pasa si no entro a la tutoría?
+- Me pierdo las sesiones por el horario
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+🎥 Entiendo su situación. No se preocupe, todas las sesiones en vivo se *graban y se suben al Aula Virtual* para que pueda verlas cuando desee.
+
+📌 Si lo prefiere, puede enviarnos su pregunta antes de la sesión y Fran la responderá en directo para que la vea al revisar la grabación.
+
+---
+
+## Chunk E10 – No sé por dónde empezar / me siento perdido en el aula
+
+#navegacion_aula #desorientado #primeros_pasos #soy_alumno
+
+**Frases disparadoras típicas:**
+- Acabo de entrar y no sé por dónde empezar
+- Estoy un poco perdido en el campus
+- ¿Dónde empiezo el curso?
+- No entiendo cómo avanzar en el Aula Virtual
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+🧭 ¡Estoy para ayudarle! El mejor punto de partida es el *Módulo 1* dentro del Aula Virtual, donde encontrará la introducción y primeros pasos.
+
+¿Desea que le comparta un resumen visual o una pequeña guía de navegación para avanzar con claridad?
+
+---
+
+## Chunk E11 – Quiero cambiar mi correo / mis datos de acceso
+
+#modificacion_datos #cambio_correo #actualizacion_contacto #soy_alumno
+
+**Frases disparadoras típicas:**
+- He cambiado de correo, ¿puedo actualizarlo?
+- Quiero modificar mis datos de acceso
+- ¿Pueden actualizar mi email en el sistema?
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+📬 Claro, puedo ayudarle con eso.
+
+¿Podría confirmarme su *correo actual de acceso* y el *nuevo correo* que desea registrar? 
+
+Lo derivo al equipo académico para que actualicen sus datos en el sistema.
+
+📌 Le avisaré tan pronto esté listo.
+
+---
+
+## Chunk E12 – No tengo tiempo para seguir el curso completo ahora
+
+#desmotivacion #tiempo_limitado #ritmo_flexible #seguimiento_personalizado
+
+**Frases disparadoras típicas:**
+- No me está dando el tiempo para seguir el curso
+- Estoy muy ocupado últimamente
+- No puedo avanzar con el contenido ahora
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+⏳ Lo entiendo perfectamente, la falta de tiempo es un reto común.
+
+Por eso el curso está diseñado para avanzar a su ritmo, con acceso disponible durante *12 meses completos*.
+
+¿Desea que le comparta una rutina ligera para mantenerse en marcha? O si lo prefiere, puedo derivarle a *Javier Gómez* para que le asesore y lo ayude a reorganizar su planificación.
+
+---
+
+## Chunk E13 – Me equivoqué de curso / Quiero cambiar de modalidad
+
+#cambio_curso #error_inscripcion #derivación_javier #soy_alumno
+
+**Frases disparadoras típicas:**
+- Me inscribí en el curso equivocado
+- ¿Puedo cambiar de modalidad?
+- Me confundí al registrarme
+- Este no era el curso que quería
+
+👉 *Responder utilizando la siguiente información como base, sin inventar ni modificar el sentido original. La IA debe responder de forma clara y precisa, inspirándose en el contenido siguiente.*
+
+🔄 Gracias por decírmelo. Vamos a solucionarlo de inmediato.
+
+¿Podría confirmarme su *nombre completo*, *correo electrónico* y el *curso en el que se inscribió* por error?  
+
+También indíqueme a cuál desea cambiarse, así puedo derivar el caso a *Javier Gómez* para que lo gestione directamente con usted.
+
+---
+
+## Chunk E14 – No recibí el certificado del curso
+
+#certificado_pendiente #diploma_no_llegó #verificación_certificado #soy_alumno
+
+**Frases disparadoras típicas:**
+- Hice el curso pero nunca me llegó el diploma
+- ¿Cuándo envían el certificado?
+- No encuentro mi certificado
+- No me llegó el certificado al terminar
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+📄 Lamento el inconveniente. Si finalizó el curso, su certificado debería haberse generado automáticamente.
+
+📌 ¿Podría confirmarme su *nombre completo*, *correo electrónico* y *grupo o modalidad*?  
+
+Con esos datos derivaré el caso al equipo correspondiente para verificarlo y gestionar el envío de su diploma.
+
+---
+
+## Chunk E15 – No puedo avanzar porque la plataforma no carga / da error
+
+#fallo_tecnico_aula #bloqueo_progreso #error_plataforma #soy_alumno
+
+**Frases disparadoras típicas:**
+- El aula no me carga bien
+- No puedo pasar al siguiente módulo
+- Me da error al avanzar
+- No me abre la siguiente clase
+
+👉 *Responder exactamente con el siguiente bloque de texto, sin realizar cambios. La IA debe copiar y pegar este contenido tal como está, respetando formato, espacios, emojis y uso de negritas:*
+
+⚙️ Gracias por avisarme. ¿Podría decirme si el error ocurre en su ordenador o en el móvil?
+
+✅ Le recomiendo probar con otro navegador como *Chrome o Firefox*, o borrar la caché del navegador actual.
+
+📌 Si el problema persiste, dígame qué mensaje de error aparece y lo derivo al equipo de soporte técnico para que lo asistan directamente.
+
+---
