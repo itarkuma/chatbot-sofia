@@ -69,24 +69,6 @@ function esNegacionDerivacion( texto: string ): boolean {
   return false;
 }
 
-// const query = "¿El curso por Zoom sirve si vengo de ser autodidacta?";
-// const resultados = await pineconeQuery( query );
-
-// for ( const [ doc, score ] of resultados ) {
-//   console.log( {
-//     archivo: doc.metadata.archivo,
-//     chunk: doc.metadata.chunk,
-//     score: score.toFixed( 4 ),
-//     texto: doc.pageContent.slice( 0, 80 ) + '...',
-//   } );
-// }
-
-// console.log( resultados.map( r => ( {
-//   archivo: r.metadata.archivo,
-//   chunk: r.metadata.chunk_id || r.id,
-//   score: r.score.toFixed( 4 ),
-//   texto: r.metadata.text.slice( 0, 80 ) + '...',
-// } ) ) );
 
 
 const PORT = process.env.PORT ?? 3008;
@@ -130,19 +112,6 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
   return null;
 }
 
-const discordFlow = addKeyword<Provider, Database>( 'doc' ).addAnswer(
-  [ 'You can see the documentation here', '📄 https://builderbot.app/docs \n', 'Do you want to continue? *yes*' ].join(
-    '\n'
-  ),
-  { capture: true },
-  async ( ctx, { gotoFlow, flowDynamic } ) => {
-    if ( ctx.body.toLocaleLowerCase().includes( 'yes' ) ) {
-      return gotoFlow( registerFlow );
-    }
-    await flowDynamic( 'Thanks!' );
-    return;
-  }
-);
 
 const menuFlow = addKeyword( [ 'MENÚ', 'menu' ] )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
@@ -351,24 +320,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       }
 
     }
-    // if ( esperandoLista ) {
-    //   const datos = extraerDatosListaPrioritaria( consulta );
-
-    //   if ( !datos.nombre || !datos.email || !datos.pais ) {
-    //     await flowDynamic( `❗️Por favor, asegúrese de enviar: *nombre completo*, *correo electrónico* y *país de residencia*.` );
-    //     return;
-    //   }
-
-    //   await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
-
-    // Guardar los datos si hace falta
-    //   console.log( '📌 Datos de lista prioritaria:', datos );
-
-    //   await state.update( { esperandoSolicitudDatos: false } );
-    //   return;
-    // }
-
-
 
 
 
@@ -423,16 +374,6 @@ const soporteGeneralFlow = addKeyword<Provider, Database>( [ 'Consultas generale
     await flowDynamic( texto );
   } );
 
-const registerFlow = addKeyword<Provider, Database>( utils.setEvent( 'REGISTER_FLOW' ) )
-  .addAnswer( `What is your name?`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( 'What is your age?', { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { age: ctx.body } );
-  } )
-  .addAction( async ( _, { flowDynamic, state } ) => {
-    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'age' ) }` );
-  } );
 
 
 // casos especiales  
@@ -574,7 +515,6 @@ const main = async () => {
   const adapterFlow = createFlow(
     [ menuFlow,
       welcomeFlow,
-      registerFlow,
       cursoOnlineGFlow,
       cursoOnlineVFlow,
       formacionMiamiFlow,
