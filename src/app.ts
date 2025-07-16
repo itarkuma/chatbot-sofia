@@ -196,6 +196,21 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           return gotoFlow( registerInscripcion );
         }
 
+        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 7' );
+          await flowDynamic( texto );
+          return gotoFlow( registerNoFechaDisponible );
+        }
+        if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 8' );
+          await flowDynamic( texto );
+          return gotoFlow( registerCaptarDatosMiami );
+        }
+        if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 9' );
+          await flowDynamic( texto );
+          return gotoFlow( registerFaltaConfirmacion );
+        }
 
         if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
           console.log( 'Caso especial 4' );
@@ -209,7 +224,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'Caso especial 6' );
           await state.update( { esperandoDerivacion: true } );
         }
-
+        if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 10' );
+          await state.update( { esperandoDerivacion: true } );
+        }
 
         await flowDynamic( texto );
 
@@ -409,6 +427,44 @@ const registerInscripcion = addKeyword( EVENTS.ACTION )
     //    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
   } );
 
+const registerNoFechaDisponible = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAnswer( `Ciudad de interés`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { ciudad: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'ciudad' ) }` );
+    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
+    //    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
+  } );
+
+const registerCaptarDatosMiami = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }` );
+  } );
+
+const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( _, { flowDynamic, state } ) => {
+    console.log( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }` );
+  } );
+
 
 const main = async () => {
 
@@ -424,7 +480,10 @@ const main = async () => {
       soporteGeneralFlow,
       registerSolicitudDatos,
       registerReservaPlaza,
-      registerInscripcion
+      registerInscripcion,
+      registerNoFechaDisponible,
+      registerCaptarDatosMiami,
+      registerFaltaConfirmacion
     ] );
 
   const adapterProvider = createProvider( Provider );
