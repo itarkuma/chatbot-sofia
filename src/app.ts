@@ -12,6 +12,36 @@ import { distance } from 'fastest-levenshtein';
 
 import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
 
+function esDerivacionHumana( texto: string ): boolean {
+  const frasesBase = [
+    'hablar con alguien',
+    'asesor',
+    'quiero ayuda humana',
+    'con Javier',
+    'Javier Gómez',
+    'esto no me sirve',
+    'agente',
+    'esto es complicado',
+    'necesito soporte'
+  ];
+
+  const textoLimpio = texto.trim().toLowerCase();
+  for ( const frase of frasesBase ) {
+    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const maxLen = Math.max( textoLimpio.length, frase.length );
+    const similitud = dist / maxLen;
+
+    if ( similitud < 0.35 ) {
+      console.log( `✅ Confirmación Derivar Humana detectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
+      return true;
+    }
+  }
+
+  console.log( '❌ No se detectó Derivar Humano confirmación de derivación' );
+  return false;
+
+}
+
 function esConfirmacionDerivacion( texto: string ): boolean {
   const frasesBase = [
     'sí',
@@ -275,6 +305,14 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
         const intencion = await detectarIntencion( consulta );
+
+        const derivar = esDerivacionHumana( consulta );
+
+        if ( derivar ) {
+          console.log( 'Derivación Humana' );
+          return gotoFlow( derivacionHumana );
+        }
+
         if ( intencion.seccion ) {
           switch ( intencion.seccion ) {
             case 'curso_online_vivo': {
@@ -647,6 +685,31 @@ const registerContactoHumanoSoporte = addKeyword( EVENTS.ACTION )
     await flowDynamic( `✅ ¡Gracias! Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.` );
   } );
 
+const derivacionHumana = addKeyword( EVENTS.ACTION )
+  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { name: ctx.body } );
+  } )
+  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
+    await state.update( { correo: ctx.body } );
+  } )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+
+    const nombre = await state.get( 'name' ) || 'No especificado';
+    const correo = await state.get( 'correo' ) || 'No proporcionado';
+    const telefono = ctx.from || 'Desconocido';
+
+    const mensaje = `
+    📩 Nueva solicitud de atención humana
+    
+    👤 Nombre: ${ nombre }
+    📧 Correo: ${ correo }
+    📱 Teléfono: ${ telefono }
+    `;
+    await enviarDerivacionWhatsApp( mensaje );
+    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
+
+  } );
+
 const main = async () => {
 
   const adapterFlow = createFlow(
@@ -666,7 +729,8 @@ const main = async () => {
       registerFaltaConfirmacion,
       registerAdmisionesSantiagos,
       registerCaptacionDatosSantiago,
-      registerContactoHumanoSoporte
+      registerContactoHumanoSoporte,
+      derivacionHumana
     ] );
 
   const adapterProvider = createProvider( Provider );
