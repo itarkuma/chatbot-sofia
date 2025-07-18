@@ -59,7 +59,7 @@ export const askSofiaFallback = async ( question: string, esAlumno: boolean = fa
   const query = preprocessPregunta( question );
 
   const model = new ChatOpenAI( {
-    modelName: "gpt-4", // o "gpt-3.5-turbo"
+    modelName: process.env.MODELO_SOFIA || "gpt-3.5-turbo", // o "gpt-3.5-turbo"
     temperature: 0.3,   // ajusta si lo deseas
     openAIApiKey: process.env.OPENAI_API_KEY!,
   } );
