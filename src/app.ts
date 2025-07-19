@@ -517,7 +517,7 @@ const cursoOnlineGFlow = addKeyword<Provider, Database>( [
     await state.update( { seccionActual: 'curso_online_grabado' } );
     console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( '¿Qué es el curso online grabado de Fran Fialli?', seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 
@@ -539,7 +539,7 @@ const cursoOnlineVFlow = addKeyword<Provider, Database>(
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'curso_online_vivo' } );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( '¿Qué es el curso online en vivo?', seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 
@@ -563,7 +563,7 @@ const formacionMiamiFlow = addKeyword<Provider, Database>(
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( '¿Tienen un curso de trading en Miami?', seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 
@@ -585,7 +585,7 @@ const formacionSantiagoFlow = addKeyword<Provider, Database>( [
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'formacion_santiago' } );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( '¿Tienen un curso de trading en Santiago de Compostela?', seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 
@@ -593,7 +593,7 @@ const yasoyAlumnoFlow = addKeyword<Provider, Database>( [ 'Ya soy alumno/a', '6'
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'soy_alumno' } );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( ctx.body.toLocaleLowerCase(), seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 
@@ -601,7 +601,7 @@ const soporteGeneralFlow = addKeyword<Provider, Database>( [ 'Consultas generale
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( ctx.body.toLocaleLowerCase(), seccion );
+    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
     await flowDynamic( texto );
   } );
 

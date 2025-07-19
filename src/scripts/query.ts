@@ -121,11 +121,35 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
     matchDisparador( doc, query )
   );
 
+  const resultadosResult = await vectorStore.similaritySearchWithScore( query, 20 );
+  const retrievedDocsResult = resultadosResult.map( ( [ doc ] ) => doc );
+
+  // Clasificamos los documentos según tipo y match
+  const coincidenciasFijasReturn = retrievedDocsResult.filter( doc =>
+    doc.metadata?.tipo === 'respuesta_fija' &&
+    doc.metadata?.es_fallback === false &&
+    matchDisparador( doc, query )
+  );
+
+  const coincidenciasFallbackReturn = retrievedDocsResult.filter( doc =>
+    doc.metadata?.tipo === 'respuesta_fija' &&
+    doc.metadata?.es_fallback === true &&
+    matchDisparador( doc, query )
+  );
+
+  const coincidenciasLibresReturn = retrievedDocsResult.filter( doc =>
+    doc.metadata?.tipo === 'respuesta_libre' &&
+    matchDisparador( doc, query )
+  );
+
   // Determinamos la mejor respuesta disponible según prioridad
   let respuestaFija =
     coincidenciasFijas[ 0 ] ||
     coincidenciasFallback[ 0 ] ||
-    coincidenciasLibres[ 0 ];
+    coincidenciasLibres[ 0 ] ||
+    coincidenciasFijasReturn[ 0 ] ||
+    coincidenciasFallbackReturn[ 0 ] ||
+    coincidenciasLibresReturn[ 0 ];
 
 
   // Si no hay match pero el top 1 es respuesta_fija, devolvemos esa como fallback de último recurso
