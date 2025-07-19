@@ -310,6 +310,10 @@ function detectarFaltaTiempoOMiedo( texto ) {
   return patronesFaltaTiempoOMiedo.some( pat => pat.test( textoLower ) );
 }
 
+function delay( ms ) {
+  return new Promise( resolve => setTimeout( resolve, ms ) );
+}
+
 export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectada | null> {
   const query = preprocessPregunta( mensaje );
   const resultados = await pineconeQuery( query );
@@ -343,6 +347,7 @@ const menuFlow = addKeyword( [ 'MENÚ', 'menu' ] )
     await state.clear(); // Limpiar la sección previa
     console.log( 'Estado actual1:', await state.get( 'seccionActual' ) );
     const { texto } = await askSofia( ctx.body.toLocaleLowerCase(), '' );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -359,12 +364,14 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       if ( esConfirmacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
         await state.update( { esperandoSeguimiento: false } );
+        await delay( 2000 );
         await flowDynamic( `🟢 Conectando con Javier Gómez... 👨‍💼 Él continuará con usted en este mismo chat.` );
       }
 
       if ( esNegacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
         await state.update( { esperandoSeguimiento: false } );
+        await delay( 2000 );
         await flowDynamic( `✅ Entendido. Seguimos por aquí entonces 😉` );
       }
     } else {
@@ -374,10 +381,12 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       if ( detectarConfusion( consulta ) || detectarFaltaTiempoOMiedo( consulta ) ) {
 
         if ( detectarConfusion( consulta ) ) {
+          await delay( 2000 );
           await flowDynamic( "¿Te refieres al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos son cursos online, pero tienen características distintas. Puedo ayudarte mejor si me confirmás a cuál te referís. 😊" );
         }
 
         if ( detectarFaltaTiempoOMiedo( consulta ) ) {
+          await delay( 2000 );
           await flowDynamic( "¡Entiendo totalmente!\nEn el *Curso en vivo con Fran*, todas las sesiones *quedan grabadas en el Campus* para que puedas verlas en el momento que mejor te funcione.\nAdemás, el grupo es *reducido y personalizado*, así que vas a poder avanzar a tu ritmo, con seguimiento directo de Fran y sin sentirte perdido." );
         }
 
@@ -392,74 +401,88 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
             // Acción específica
             console.log( 'Caso especial 1' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerSolicitudDatos );
           }
           if ( tags.includes( 'reserva_plaza' ) && origen === 'curso_online_vivo' ) {
             // Acción específica
             console.log( 'Caso especial 2' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerReservaPlaza );
           }
           if ( tags.includes( 'inscripción' ) && origen === 'curso_online_grabado' ) {
             // Acción específica
             console.log( 'Caso especial 3' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerInscripcion );
           }
 
           if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
             console.log( 'Caso especial 7' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerNoFechaDisponible );
           }
           if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
             console.log( 'Caso especial 8' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerCaptarDatosMiami );
           }
           if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
             console.log( 'Caso especial 9' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerFaltaConfirmacion );
           }
           if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 1_11' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerAdmisionesSantiagos );
           }
           if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 2_12' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerAdmisionesSantiagos );
           }
           if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 3_13' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerAdmisionesSantiagos );
           }
           if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 4_14' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerAdmisionesSantiagos );
           }
           if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 5_15' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerNoFechaDisponible );
           }
           if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 6_16' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerCaptacionDatosSantiago );
           }
           if ( tags.includes( 'escenario_entrenable-post_inscripción' ) && origen === 'formacion_santiago' ) {
             console.log( 'Caso especial 7_17' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerFaltaConfirmacion );
           }
           if ( tags.includes( 'contacto_humano' ) ) {
             console.log( 'Caso especial 1_20' );
+            await delay( 2000 );
             await flowDynamic( texto );
             return gotoFlow( registerContactoHumanoSoporte );
           }
@@ -503,7 +526,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             await enviarDerivacionWhatsApp( mensaje );
 
           }
-
+          await delay( 2000 );
           await flowDynamic( texto );
 
         } else {
@@ -541,6 +564,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             if ( intencion.is_fallback ) {
               console.log( 'Detecto Fallback intencion else' );
               const { texto } = await askSofiaFallback( consulta );
+              await delay( 2000 );
               await flowDynamic( texto );
             } else {
 
@@ -557,6 +581,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
                   default: {
                     console.log( 'No detecto la intencion' );
                     const { texto } = await askSofia( consulta, seccion );
+                    await delay( 2000 );
                     await flowDynamic( texto );
                     break;
                   }
@@ -564,6 +589,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
               } else {
                 console.log( 'No detecto la intencion else' );
                 const { texto } = await askSofia( consulta, seccion );
+                await delay( 2000 );
                 await flowDynamic( texto );
               }
             }
@@ -596,6 +622,7 @@ const cursoOnlineGFlow = addKeyword<Provider, Database>( [
     console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -618,6 +645,7 @@ const cursoOnlineVFlow = addKeyword<Provider, Database>(
     await state.update( { seccionActual: 'curso_online_vivo' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -642,6 +670,7 @@ const formacionMiamiFlow = addKeyword<Provider, Database>(
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -664,6 +693,7 @@ const formacionSantiagoFlow = addKeyword<Provider, Database>( [
     await state.update( { seccionActual: 'formacion_santiago' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -672,6 +702,7 @@ const yasoyAlumnoFlow = addKeyword<Provider, Database>( [ 'Ya soy alumno/a', '6'
     await state.update( { seccionActual: 'soy_alumno' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -680,6 +711,7 @@ const soporteGeneralFlow = addKeyword<Provider, Database>( [ 'Consultas generale
     await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
     await flowDynamic( texto );
   } );
 
@@ -712,6 +744,7 @@ const registerSolicitudDatos = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
   } );
 
@@ -741,6 +774,7 @@ const registerReservaPlaza = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
   } );
 
@@ -780,6 +814,7 @@ const registerInscripcion = addKeyword( EVENTS.ACTION )
     Metodo de pago: ${ metodo }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
   } );
 
@@ -809,6 +844,7 @@ const registerNoFechaDisponible = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
 
   } );
@@ -834,6 +870,7 @@ const registerCaptarDatosMiami = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
 
   } );
@@ -859,6 +896,7 @@ const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
 
   } );
@@ -884,6 +922,7 @@ const registerAdmisionesSantiagos = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos. Los agregaremos a la *lista prioritaria* del curso de Bolsa y Trading en *Santiago de Compostela*.
 
     Le avisaremos personalmente tan pronto abramos una nueva convocatoria para que pueda confirmar su plaza con antelación.` );
@@ -915,7 +954,7 @@ const registerCaptacionDatosSantiago = addKeyword( EVENTS.ACTION )
     📱 Teléfono(envio): ${ telefono2 }
     `;
     await enviarDerivacionWhatsApp( mensaje );
-
+    await delay( 2000 );
     //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
     await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
   } );
@@ -942,7 +981,7 @@ const registerContactoHumanoSoporte = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
-
+    await delay( 2000 );
     //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
     await flowDynamic( `✅ ¡Gracias! Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.` );
   } );
@@ -968,6 +1007,7 @@ const derivacionHumana = addKeyword( EVENTS.ACTION )
     📱 Teléfono: ${ telefono }
     `;
     await enviarDerivacionWhatsApp( mensaje );
+    await delay( 2000 );
     await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
 
   } );
