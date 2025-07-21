@@ -765,6 +765,61 @@ const formacionSantiagoFlow = addKeyword<Provider, Database>( [
     await flowDynamic( texto );
   } );
 
+const opcion_cinco_Flow = addKeyword<Provider, Database>( [
+  'Curso Gratuito por Email',
+  '5'
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( 'Curso Gratuito por Email' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
+const opcion_seis_Flow = addKeyword<Provider, Database>( [
+  'Libro de Fran Fialli',
+  '6'
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( 'Libro de Fran Fialli' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
+const opcion_siete_Flow = addKeyword<Provider, Database>( [
+  'Comunidad de Alumnos',
+  '7'
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( 'Comunidad de Alumnos' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
+const opcion_ocho_Flow = addKeyword<Provider, Database>( [
+  'Canal de Noticias del Mercado',
+  '8'
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( 'Canal de Noticias del Mercado' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
+const opcion_nueve_Flow = addKeyword<Provider, Database>( [
+  'Club Fran Fialli',
+  '9'
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( 'Club Fran Fialli' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
 const yasoyAlumnoFlow = addKeyword<Provider, Database>( [ 'Ya soy alumno/a', '6' ] )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'soy_alumno' } );
@@ -1102,7 +1157,12 @@ const main = async () => {
       registerAdmisionesSantiagos,
       registerCaptacionDatosSantiago,
       registerContactoHumanoSoporte,
-      derivacionHumana
+      derivacionHumana,
+      opcion_cinco_Flow,
+      opcion_seis_Flow,
+      opcion_siete_Flow,
+      opcion_ocho_Flow,
+      opcion_nueve_Flow
     ] );
 
   const adapterProvider = createProvider( Provider );
