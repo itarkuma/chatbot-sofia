@@ -29,9 +29,9 @@ function es_curso_online_vivo( texto: string ): boolean {
     '¿En qué se diferencia el curso online en vivo del grabado?'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -55,9 +55,9 @@ function es_curso_online_grabado( texto: string ): boolean {
     '¿Cómo es el curso de trading online grabado que ofrecen?'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -88,9 +88,9 @@ function es_formacion_miami( texto: string ): boolean {
     '¿Tienes cursos de trading en Miami?'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -120,9 +120,9 @@ function es_formacion_santiago( texto: string ): boolean {
     'curso presencial fran fialli santiago compostela'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -149,9 +149,9 @@ function esDerivacionHumana( texto: string ): boolean {
     'necesito soporte'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -182,9 +182,9 @@ function esConfirmacionDerivacion( texto: string ): boolean {
     'prefiero que me ayude javier'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -211,9 +211,9 @@ function esNegacionDerivacion( texto: string ): boolean {
     'no hace falta'
   ];
 
-  const textoLimpio = texto.trim().toLowerCase();
+  const textoLimpio = preprocessPregunta( texto );
   for ( const frase of negaciones ) {
-    const dist = distance( textoLimpio, frase.toLowerCase() );
+    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
     const maxLen = Math.max( textoLimpio.length, frase.length );
     const similitud = dist / maxLen;
 
@@ -314,6 +314,20 @@ function delay( ms ) {
   return new Promise( resolve => setTimeout( resolve, ms ) );
 }
 
+function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
+  const lower = preprocessPregunta( texto );
+
+  if ( /\b(grabado|asincr[oó]nico|a tu ritmo|cuando quiera)\b/.test( lower ) ) {
+    return 'grabado';
+  }
+
+  if ( /\b(en vivo|directo|con fran|en tiempo real|grupo reducido|sesiones)\b/.test( lower ) ) {
+    return 'vivo';
+  }
+
+  return null;
+}
+
 export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectada | null> {
   const query = preprocessPregunta( mensaje );
   const resultados = await pineconeQuery( query );
@@ -323,7 +337,7 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
   if ( resultados.length > 0 ) {
     const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
 
-    console.log( 'resultados:', doc.metadata );
+    //    console.log( 'resultados:', doc.metadata );
 
 
     const archivo = doc.metadata.archivo || '';
@@ -359,6 +373,23 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
+    const esperandoConfusion = await state.get( 'estaconfundido_answer' );
+
+
+    if ( esperandoConfusion ) {
+
+      const resp_curso_confundido = detectarTipoCurso( consulta );
+      console.log( 'resp_curso_confundido', resp_curso_confundido );
+
+      if ( resp_curso_confundido == 'grabado' ) {
+        return gotoFlow( cursoOnlineGFlow_2 );
+      }
+      if ( resp_curso_confundido == 'vivo' ) {
+
+        return gotoFlow( cursoOnlineVFlow_2 );
+      }
+
+    }
 
     if ( esperandoDerivacion || esperandoSeguimiento ) {
       if ( esConfirmacionDerivacion( consulta ) ) {
@@ -382,7 +413,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         if ( detectarConfusion( consulta ) ) {
           await delay( 2000 );
-          await flowDynamic( "¿Te refieres al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos son cursos online, pero tienen características distintas. Puedo ayudarte mejor si me confirmás a cuál te referís. 😊" );
+          //          await flowDynamic( "¿Te refieres al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos son cursos online, pero tienen características distintas. Puedo ayudarte mejor si me confirmás a cuál te referís. 😊" );
+          await flowDynamic(
+            "¿Podrías confirmarme si te referís al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos se realizan online, pero tienen características distintas. Así podré darte una respuesta más precisa. 😊"
+          );
+          await state.update( { estaconfundido_answer: true } );
         }
 
         if ( detectarFaltaTiempoOMiedo( consulta ) ) {
@@ -393,10 +428,18 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       } else {
 
         if ( seccion ) {
+          console.log( 'Si tiene seccion' );
 
           console.log( 'Estado actual_query:', seccion );
           const { texto, origen, tags } = await askSofia( consulta, seccion );
-          console.log( { tags } );
+
+          if ( origen == 'curso_online_vivo' ||
+            origen == 'curso_online_grabado' ||
+            origen == 'formacion_miami' ||
+            origen == 'formacion_santiago'
+          ) {
+            await state.update( { seccionActual: origen } );
+          }
 
           if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
             // Acción específica
@@ -608,6 +651,18 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
   } );
 
+const cursoOnlineGFlow_2 = addKeyword<Provider, Database>( [
+  'Curso Online Grabado redirijido',
+] )
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    await state.update( { seccionActual: 'curso_online_grabado' } );
+    console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online grabado de Fran Fialli?' ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
 const cursoOnlineGFlow = addKeyword<Provider, Database>( [
   'Curso Online Grabado',
   '1',
@@ -622,6 +677,19 @@ const cursoOnlineGFlow = addKeyword<Provider, Database>( [
     console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+    await delay( 2000 );
+    await flowDynamic( texto );
+  } );
+
+const cursoOnlineVFlow_2 = addKeyword<Provider, Database>(
+  [
+    'Curso Online en vivo redirijido',
+  ]
+)
+  .addAction( async ( ctx, { flowDynamic, state } ) => {
+    await state.update( { seccionActual: 'curso_online_vivo' } );
+    const seccion = await state.get( 'seccionActual' );
+    const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online en vivo?' ), seccion );
     await delay( 2000 );
     await flowDynamic( texto );
   } );
@@ -1018,7 +1086,9 @@ const main = async () => {
     [ menuFlow,
       welcomeFlow,
       cursoOnlineGFlow,
+      cursoOnlineGFlow_2,
       cursoOnlineVFlow,
+      cursoOnlineVFlow_2,
       formacionMiamiFlow,
       formacionSantiagoFlow,
       yasoyAlumnoFlow,

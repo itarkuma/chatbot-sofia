@@ -62,15 +62,15 @@ export async function pineconeQuery( pregunta: string, seccionActual?: string ) 
   const sectionResults = await vectorStore.similaritySearchWithScore( query, 3, filter );
   const sectionTop = sectionResults[ 0 ];
 
-  console.log( '\n🔎*****pinecone Resultados sección (no fallback):' );
-  sectionResults.forEach( ( [ doc, score ], i ) => {
-    console.log( `#${ i + 1 }` );
-    console.log( `Archivo: ${ doc.metadata.archivo }` );
-    console.log( `Chunk: ${ doc.metadata.chunk }` );
-    console.log( `Score: ${ score.toFixed( 4 ) }` );
-    console.log( `Texto: ${ doc.metadata.text?.substring( 0, 100 ) }...` );
-    console.log( '---' );
-  } );
+  // console.log( '\n🔎*****pinecone Resultados sección (no fallback):' );
+  // sectionResults.forEach( ( [ doc, score ], i ) => {
+  //   console.log( `#${ i + 1 }` );
+  //   console.log( `Archivo: ${ doc.metadata.archivo }` );
+  //   console.log( `Chunk: ${ doc.metadata.chunk }` );
+  //   console.log( `Score: ${ score.toFixed( 4 ) }` );
+  //   console.log( `Texto: ${ doc.metadata.text?.substring( 0, 100 ) }...` );
+  //   console.log( '---' );
+  // } );
 
   // 3. Comparar resultados
   if ( !sectionTop && !fallbackTop ) {
