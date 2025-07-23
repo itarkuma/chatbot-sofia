@@ -6,12 +6,23 @@ import { BaileysProvider as Provider } from '@builderbot/provider-baileys';
 
 import { askSofia } from './scripts/query';
 import { askSofiaFallback } from './scripts/queryFallback';
-import { preprocessPregunta } from './scripts/preprocesamiento';
+import { preprocessPregunta } from './lib/utils/preprocessinText';
 import { pineconeQuery } from './scripts/pineconeQuery';
 
 import { distance } from 'fastest-levenshtein';
 
 import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
+
+import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
+import { detectflowLibroFran, flowLibroFran } from './flows/libroFran.flow';
+import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
+import { detectflowNoticiasMercado, flowNoticiasMercado } from './flows/noticiasMercado.flow';
+import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
+import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
+import { detectflowMenu, flowMenu } from './flows/menu.flow';
+import { detectflowsoyAlumno, flowSoyAlumno } from './flows/soyAlumno.flow';
+
+import { registerAlumno } from './flows/registerAlumno.flow';
 
 function es_curso_online_vivo( texto: string ): boolean {
   const frasesBase = [
@@ -354,22 +365,31 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
 
 
 
-const menuFlow = addKeyword( [ 'MENÚ', 'menu' ] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.clear(); // Limpiar la sección previa
-    console.log( 'Estado actual1:', await state.get( 'seccionActual' ) );
-    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), '' );
-    console.log( { origen, chunkId } );
 
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
 
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado actual2:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
+
+    const isCommandMenu = detectflowMenu( consulta, seccion );
+    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
+    const isMenuOption6 = detectflowLibroFran( consulta, seccion );
+    const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
+    const isMenuOption8 = detectflowNoticiasMercado( consulta, seccion );
+    const isMenuOption9 = detectflowClubFran( consulta, seccion );
+    const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
+    const isAlumno = detectflowsoyAlumno( consulta, seccion );
+
+    if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
+    if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
+    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
+    if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
+    if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
+    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
+    if ( isAlumno ) { await state.update( { seccionActual: 'soy_alumno' } ); return gotoFlow( flowSoyAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -623,7 +643,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
                   case 'soporte_general': {
 
                     console.log( 'Intención detectada:', intencion.seccion );
-                    return gotoFlow( soporteGeneralFlow );
+                    return gotoFlow( flowConsultasGenerales );
                   }
 
 
@@ -776,78 +796,6 @@ const formacionSantiagoFlow = addKeyword<Provider, Database>( [
     await flowDynamic( texto );
   } );
 
-const opcion_cinco_Flow = addKeyword<Provider, Database>( [
-  'Curso Gratuito por Email',
-  '5'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( 'Curso Gratuito por Email' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const opcion_seis_Flow = addKeyword<Provider, Database>( [
-  'Libro de Fran Fialli',
-  '6'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( 'Libro de Fran Fialli' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const opcion_siete_Flow = addKeyword<Provider, Database>( [
-  'Comunidad de Alumnos',
-  '7'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( 'Comunidad de Alumnos' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const opcion_ocho_Flow = addKeyword<Provider, Database>( [
-  'Canal de Noticias del Mercado',
-  '8'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( 'Canal de Noticias del Mercado' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const opcion_nueve_Flow = addKeyword<Provider, Database>( [
-  'Club Fran Fialli',
-  '9'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( 'Club Fran Fialli' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const yasoyAlumnoFlow = addKeyword<Provider, Database>( [ 'Ya soy alumno/a', '6' ] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'soy_alumno' } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const soporteGeneralFlow = addKeyword<Provider, Database>( [ 'Consultas generales', '7' ] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'soporte_general' } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
 
 
 
@@ -1149,7 +1097,7 @@ const derivacionHumana = addKeyword( EVENTS.ACTION )
 const main = async () => {
 
   const adapterFlow = createFlow(
-    [ menuFlow,
+    [ flowMenu,
       welcomeFlow,
       cursoOnlineGFlow,
       cursoOnlineGFlow_2,
@@ -1157,8 +1105,6 @@ const main = async () => {
       cursoOnlineVFlow_2,
       formacionMiamiFlow,
       formacionSantiagoFlow,
-      yasoyAlumnoFlow,
-      soporteGeneralFlow,
       registerSolicitudDatos,
       registerReservaPlaza,
       registerInscripcion,
@@ -1169,11 +1115,14 @@ const main = async () => {
       registerCaptacionDatosSantiago,
       registerContactoHumanoSoporte,
       derivacionHumana,
-      opcion_cinco_Flow,
-      opcion_seis_Flow,
-      opcion_siete_Flow,
-      opcion_ocho_Flow,
-      opcion_nueve_Flow
+      flowCursoGratis,
+      flowLibroFran,
+      flowComunidadAlumno,
+      flowNoticiasMercado,
+      flowClubFran,
+      flowConsultasGenerales,
+      flowSoyAlumno,
+      registerAlumno
     ] );
 
   const adapterProvider = createProvider( Provider );

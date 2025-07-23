@@ -4,7 +4,7 @@ import { PineconeStore } from '@langchain/pinecone';
 import { pinecone } from '../lib/pinecone/connect';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { Document } from "langchain/document";
-import { preprocessPregunta } from './preprocesamiento';
+import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
 import { distance } from 'fastest-levenshtein';
 
@@ -115,20 +115,214 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 }
 
 
-export const askSofia = async ( question: string, seccion: string, esAlumno: boolean = false ) => {
-  const query = preprocessPregunta( question );
-  const palabrasQuery = query.split( /\s+/ );
-
-  const model = new ChatOpenAI( {
-    modelName: process.env.MODELO_SOFIA || "gpt-3.5-turbo",
-    temperature: 0.3,
-    openAIApiKey: process.env.OPENAI_API_KEY!,
-  } );
+export const askSofia = async ( question: string, seccion: string, ask_menu: string = '', esAlumno: boolean = false ) => {
   const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
   const vectorStore = await PineconeStore.fromExistingIndex( new OpenAIEmbeddings(), {
     pineconeIndex: index,
     textKey: 'text',
   } );
+
+  const query = preprocessPregunta( question );
+  const palabrasQuery = query.split( /\s+/ );
+
+  if ( ask_menu === 'menu' ) {
+
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'soy_alumno' ) {
+
+    const archivoActual = '3_alumnos.txt';
+    const filters = {
+      archivo: '3_alumnos.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'soy_alumno_miami' ) {
+
+    const archivoActual = '3_alumnos.txt';
+    const filters = {
+      archivo: '3_alumnos.txt',
+      chunk: 'chunk_09'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'soy_alumno_santiago' ) {
+
+    const archivoActual = '3_alumnos.txt';
+    const filters = {
+      archivo: '3_alumnos.txt',
+      chunk: 'chunk_10'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'soy_alumno_grabado' ) {
+
+    const archivoActual = '3_alumnos.txt';
+    const filters = {
+      archivo: '3_alumnos.txt',
+      chunk: 'chunk_11'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'curso_gratis' ) {
+
+    const archivoActual = '8_flujos_recursos_web.txt';
+    const filters = {
+      archivo: '8_flujos_recursos_web.txt',
+      chunk: 'chunk_12'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'libro_fran' ) {
+
+    const archivoActual = '8_flujos_recursos_web.txt';
+    const filters = {
+      archivo: '8_flujos_recursos_web.txt',
+      chunk: 'chunk_10'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'comunidad_alumnos' ) {
+
+    const archivoActual = '3_alumnos.txt';
+    const filters = {
+      archivo: '3_alumnos.txt',
+      chunk: 'chunk_07'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+  if ( ask_menu === 'noticias_mercado' ) {
+
+    const archivoActual = '8_flujos_recursos_web.txt';
+    const filters = {
+      archivo: '8_flujos_recursos_web.txt',
+      chunk: 'chunk_3'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'club_fran' ) {
+
+    const archivoActual = '8_flujos_recursos_web.txt';
+    const filters = {
+      archivo: '8_flujos_recursos_web.txt',
+      chunk: 'chunk_2'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
 
   // Detectar cambio de flujo si se menciona otro curso o sección
   const detectarCambioDeFlujo = ( query: string, seccionActual: string ): string | null => {
@@ -170,13 +364,7 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
   const archivoActual = mapSeccionToArchivo( seccion );
   const filtersActual: any = { archivo: archivoActual };
 
-  let resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
-  if ( resultadosActuales.length === 0 ) {
-    // Si no hay nada relevante, intento con 80 como fallback
-    resultadosActuales = await vectorStore.similaritySearchWithScore( query, 80, filters ) as [ SofiaDocument, number ][];
-  }
-
-
+  const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
 
   const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
     const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
@@ -295,7 +483,8 @@ Respuesta:
   } );
 
   const finalPrompt = await prompt.format( { context, query } );
-  const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3 } ).invoke( finalPrompt );
+  const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
+
 
   return {
     texto: typeof response === "string" ? response : ( response.text || "" ),
@@ -304,4 +493,70 @@ Respuesta:
     chunkId: null
   };
 };
+
+
+const responderConResultadosFijo = async (
+  resultados: [ SofiaDocument, number ][],
+  query: string,
+  archivoContexto: string
+) => {
+  let i = 0;
+  for ( const [ doc, number ] of resultados ) {
+    console.log( '📥 Documentos recuperados por Pinecone:' );
+    console.log( `\n#${ i + 1 }` );
+    console.log( 'Archivo:', doc.metadata?.archivo );
+    console.log( 'Chunk:', doc.metadata?.chunk );
+    console.log( 'Tipo:', doc.metadata?.tipo );
+    console.log( 'Score:', number.toFixed( 4 ) );
+    i++;
+  }
+
+  const mejor = resultados[ 0 ]?.[ 0 ];
+
+  if ( mejor ) {
+    const match = mejor.pageContent.match( /👉[^\n]*\n+([\s\S]*)/ );
+    const onlyAnswer = match?.[ 1 ]?.trim() || mejor.pageContent;
+
+    return {
+      texto: onlyAnswer,
+      origen: mapArchivoToSeccion( mejor.metadata.archivo ),
+      tags: mejor.metadata.tags || [],
+      chunkId: mejor.metadata.chunk || null
+    };
+  }
+
+  // Si no hay nada, usar modelo generativo con contexto
+  const context = resultados.map( ( [ doc ] ) => doc.pageContent ).join( "\n\n" );
+
+  const prompt = new PromptTemplate( {
+    inputVariables: [ "context", "query" ],
+    template: `
+Eres Sofía, una asistente de soporte entrenada con información específica de los cursos de Fran Fialli.
+
+⚠️ Si alguno de los fragmentos incluye instrucciones como "Responder exactamente con el siguiente bloque de texto",
+debes copiar y pegar dicho contenido literalmente. No lo modifiques ni lo resumas. Respeta emojis, negritas, formato y espacios.
+
+Usa exclusivamente el siguiente contexto para responder la pregunta:
+
+---------------------
+{context}
+---------------------
+
+Pregunta: {query}
+Respuesta:
+    `
+  } );
+
+  const finalPrompt = await prompt.format( { context, query } );
+  const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
+
+
+  return {
+    texto: typeof response === "string" ? response : ( response.text || "" ),
+    origen: mapArchivoToSeccion( archivoContexto ),
+    tags: [],
+    chunkId: null
+  };
+};
+
 

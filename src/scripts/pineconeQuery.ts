@@ -3,8 +3,7 @@ import { pinecone } from '../lib/pinecone/connect';
 
 import { PineconeStore } from '@langchain/pinecone';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { preprocessPregunta } from './preprocesamiento'; // si usas la función que vimos antes
-
+import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
 const embeddings = new OpenAIEmbeddings( { apiKey: process.env.OPENAI_API_KEY } );
 

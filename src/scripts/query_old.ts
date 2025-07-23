@@ -4,8 +4,7 @@ import { PineconeStore } from '@langchain/pinecone';
 import { pinecone } from '../lib/pinecone/connect';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { Document } from "langchain/document";
-import { preprocessPregunta } from './preprocesamiento';
-
+import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { distance } from 'fastest-levenshtein';
 
 interface SofiaMetadata {
