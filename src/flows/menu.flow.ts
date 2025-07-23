@@ -29,7 +29,8 @@ const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
 
 const flowMenu = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
-    await state.clear(); // Limpiar la sección previa
+    //    await state.clear(); // Limpiar la sección previa
+    await state.update( { seccionActual: '' } );
     const seccion = await state.get( 'seccionActual' );
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'menu' );

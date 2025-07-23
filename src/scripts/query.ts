@@ -145,6 +145,86 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  if ( ask_menu === 'curso_online_grabado' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'curso_online_vivo' ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'formacion_miami' ) {
+
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ask_menu === 'formacion_santiago' ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'soy_alumno' ) {
 
     const archivoActual = '3_alumnos.txt';

@@ -21,129 +21,13 @@ import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
 import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
 import { detectflowMenu, flowMenu } from './flows/menu.flow';
 import { detectflowsoyAlumno, flowSoyAlumno } from './flows/soyAlumno.flow';
+import { detectflowCursoOonlineGrabado, flowCursoOnlineGrabado } from './flows/cursoOnlineGrabado.flow';
+import { detectflowCursoOonlineVivo, flowCursoOnlineVivo } from './flows/cursoOnlineVivo.flow';
+import { detectflowCursoMiami, flowCursoMiami } from './flows/cursoMiami.flow';
+import { detectflowCursoSantiago, flowCursoSantiago } from './flows/cursoSantiago.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
-function es_curso_online_vivo( texto: string ): boolean {
-  const frasesBase = [
-    'Curso Online en vivo',
-    '¿Qué es el curso online en vivo?',
-    '¿Qué es el curso online en directo?',
-    '¿Cómo funciona el curso de trading en directo?',
-    '¿Qué diferencia tiene con el curso grabado?',
-    '¿Las clases son en tiempo real?',
-    '¿Fran Fialli da las clases?',
-    '¿Esta formación es con clases por Zoom?',
-    '¿Fran Fialli enseña en vivo o es grabado?',
-    '¿En qué se diferencia el curso online en vivo del grabado?'
-  ];
-
-  const textoLimpio = preprocessPregunta( texto );
-  for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
-    const maxLen = Math.max( textoLimpio.length, frase.length );
-    const similitud = dist / maxLen;
-
-    if ( similitud < 0.5 ) {
-      console.log( `✅ si es curso online vivodetectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
-      return true;
-    }
-  }
-
-  console.log( '❌ No es curso online vivo' );
-  return false;
-}
-
-function es_curso_online_grabado( texto: string ): boolean {
-  const frasesBase = [
-    'Curso Online Grabado',
-    '¿Qué es el curso online grabado de Fran Fialli?',
-    '¿En qué consiste el curso de trading con módulos grabados?',
-    '¿Podrías explicarme de qué trata el curso grabado de Fran Fialli?',
-    '¿Tienen un curso de trading online en formato grabado, no en vivo?',
-    '¿Cómo es el curso de trading online grabado que ofrecen?'
-  ];
-
-  const textoLimpio = preprocessPregunta( texto );
-  for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
-    const maxLen = Math.max( textoLimpio.length, frase.length );
-    const similitud = dist / maxLen;
-
-    if ( similitud < 0.5 ) {
-      console.log( `✅ si es curso online grabado detectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
-      return true;
-    }
-  }
-
-  console.log( '❌ No es curso online grabado' );
-  return false;
-}
-
-function es_formacion_miami( texto: string ): boolean {
-  const frasesBase = [
-    'Formación en Miami',
-    '¿Tienen un curso de trading en Miami?',
-    '¿Podrías explicarme el entrenamiento de Miami con Fran Fialli?',
-    '¿Puedo hacer un curso presencial de bolsa en Estados Unidos?',
-    '¿Es una masterclass de trading en Miami o un curso completo?',
-    '¿Cómo es el entrenamiento presencial de trading en Miami?',
-    '¿Ofrecen formación en Miami?',
-    '¿Tienen curso de trading en Miami?',
-    'curso trading Miami presencial',
-    'información curso Miami Fran Fialli',
-    '¿Cómo es el curso de trading en Miami?',
-    '¿Tiene Fran Fialli algún curso presencial en Miami?',
-    '¿Tienes cursos de trading en Miami?'
-  ];
-
-  const textoLimpio = preprocessPregunta( texto );
-  for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
-    const maxLen = Math.max( textoLimpio.length, frase.length );
-    const similitud = dist / maxLen;
-
-    if ( similitud < 0.5 ) {
-      console.log( `✅ si es curso formacion miami detectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
-      return true;
-    }
-  }
-
-  console.log( '❌ No es curso formacion miami' );
-  return false;
-}
-
-function es_formacion_santiago( texto: string ): boolean {
-  const frasesBase = [
-    'Formación en Santiago',
-    '¿Tienen un curso de trading en Santiago de Compostela?',
-    '¿Podrías explicarme el entrenamiento de Santiago de Compostela con Fran Fialli?',
-    '¿Podrías explicarme el entrenamiento de Santiago de Compostela con Fran Fialli?',
-    '¿Puedo hacer un curso presencial de bolsa en España?',
-    '¿Es una masterclass de trading en Santiago de Compostela o un curso completo?',
-    '¿Cómo es el entrenamiento presencial de trading en Santiago de Compostela?',
-    '¿Ofrecen formación en Santiago de Compostela?',
-    '¿Tienen curso de trading en Santiago de Compostela?',
-    'Quisiera saber qué es el curso presencial de Fran Fialli en Santiago de Compostela.',
-    'tienen un curso de trading en santiago de compostela?',
-    'curso presencial fran fialli santiago compostela'
-  ];
-
-  const textoLimpio = preprocessPregunta( texto );
-  for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
-    const maxLen = Math.max( textoLimpio.length, frase.length );
-    const similitud = dist / maxLen;
-
-    if ( similitud < 0.5 ) {
-      console.log( `✅ si es curso formacion santiago detectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
-      return true;
-    }
-  }
-
-  console.log( '❌ No es curso formacion santiago' );
-  return false;
-}
 
 function esDerivacionHumana( texto: string ): boolean {
   const frasesBase = [
@@ -341,13 +225,10 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
   const query = preprocessPregunta( mensaje );
   const resultados = await pineconeQuery( query );
 
-
-
   if ( resultados.length > 0 ) {
     const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
 
     //    console.log( 'resultados:', doc.metadata );
-
 
     const archivo = doc.metadata.archivo || '';
     const seccion = mapArchivoToSeccion( archivo );
@@ -364,12 +245,9 @@ export async function detectarIntencion( mensaje: string ): Promise<IntencionDet
 
 
 
-
-
-
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
-    console.log( 'Estado actual2:', await state.get( 'seccionActual' ) );
+    console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
 
@@ -381,15 +259,23 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isMenuOption9 = detectflowClubFran( consulta, seccion );
     const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
     const isAlumno = detectflowsoyAlumno( consulta, seccion );
+    const isOnlineGrabado = detectflowCursoOonlineGrabado( consulta, seccion );
+    const isOnlineVivo = detectflowCursoOonlineVivo( consulta, seccion );
+    const isCursoMiami = detectflowCursoMiami( consulta, seccion );
+    const isCursoSantiago = detectflowCursoSantiago( consulta, seccion );
 
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+    if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
+    if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
+    if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
+    if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
     if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
     if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
     if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
-    if ( isAlumno ) { await state.update( { seccionActual: 'soy_alumno' } ); return gotoFlow( flowSoyAlumno ); }
+    if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -402,11 +288,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       console.log( 'resp_curso_confundido', resp_curso_confundido );
 
       if ( resp_curso_confundido == 'grabado' ) {
-        return gotoFlow( cursoOnlineGFlow_2 );
+        return gotoFlow( flowCursoOnlineGrabado );
       }
       if ( resp_curso_confundido == 'vivo' ) {
-
-        return gotoFlow( cursoOnlineVFlow_2 );
+        return gotoFlow( flowCursoOnlineVivo );
       }
 
     }
@@ -554,9 +439,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             return gotoFlow( registerContactoHumanoSoporte );
           }
 
-
-
-
           if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
             console.log( 'Caso especial 4' );
             await state.update( { esperandoDerivacion: true } );
@@ -602,27 +484,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           const intencion = await detectarIntencion( consulta );
 
           const derivar = esDerivacionHumana( consulta );
-
-          const cursoOnlineVivo = es_curso_online_vivo( consulta );
-
-          const cursoOnlineGrabado = es_curso_online_grabado( consulta );
-
-          const formacionMiami = es_formacion_miami( consulta );
-
-          const formacionSantiago = es_formacion_santiago( consulta );
-
-          if ( cursoOnlineVivo ) {
-            return gotoFlow( cursoOnlineVFlow );
-          }
-          if ( cursoOnlineGrabado ) {
-            return gotoFlow( cursoOnlineGFlow );
-          }
-          if ( formacionMiami ) {
-            return gotoFlow( formacionMiamiFlow );
-          }
-          if ( formacionSantiago ) {
-            return gotoFlow( formacionSantiagoFlow );
-          }
 
           if ( derivar ) {
             console.log( 'Derivación Humana' );
@@ -679,123 +540,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
   } );
-
-const cursoOnlineGFlow_2 = addKeyword<Provider, Database>( [
-  'Curso Online Grabado redirijido',
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'curso_online_grabado' } );
-    await state.update( { estaconfundido_answer: false } );
-    console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online grabado de Fran Fialli?' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const cursoOnlineGFlow = addKeyword<Provider, Database>( [
-  'Curso Online Grabado',
-  '1',
-  '¿Qué es el curso online grabado de Fran Fialli?',
-  '¿En qué consiste el curso de trading con módulos grabados?',
-  '¿Podrías explicarme de qué trata el curso grabado de Fran Fialli?',
-  '¿Tienen un curso de trading online en formato grabado, no en vivo?',
-  '¿Cómo es el curso de trading online grabado que ofrecen?'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'curso_online_grabado' } );
-    console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const cursoOnlineVFlow_2 = addKeyword<Provider, Database>(
-  [
-    'Curso Online en vivo redirijido',
-  ]
-)
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'curso_online_vivo' } );
-    await state.update( { estaconfundido_answer: false } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online en vivo?' ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const cursoOnlineVFlow = addKeyword<Provider, Database>(
-  [
-    'Curso Online en vivo',
-    '2',
-    '¿Qué es el curso online en vivo?',
-    '¿Qué es el curso online en directo?',
-    '¿Cómo funciona el curso de trading en directo?',
-    '¿Qué diferencia tiene con el curso grabado?',
-    '¿Las clases son en tiempo real?',
-    '¿Fran Fialli da las clases?',
-    '¿Esta formación es con clases por Zoom?',
-    '¿Fran Fialli enseña en vivo o es grabado?',
-    '¿En qué se diferencia el curso online en vivo del grabado?'
-  ]
-)
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'curso_online_vivo' } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const formacionMiamiFlow = addKeyword<Provider, Database>(
-  [ 'Formación en Miami',
-    '3',
-    '¿Tienen un curso de trading en Miami?',
-    '¿Podrías explicarme el entrenamiento de Miami con Fran Fialli?',
-    '¿Puedo hacer un curso presencial de bolsa en Estados Unidos?',
-    '¿Es una masterclass de trading en Miami o un curso completo?',
-    '¿Cómo es el entrenamiento presencial de trading en Miami?',
-    '¿Ofrecen formación en Miami?',
-    '¿Tienen curso de trading en Miami?',
-    'curso trading Miami presencial',
-    'información curso Miami Fran Fialli',
-    '¿Cómo es el curso de trading en Miami?',
-    '¿Tiene Fran Fialli algún curso presencial en Miami?',
-    '¿Tienes cursos de trading en Miami?'
-  ]
-)
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'formacion_miami' } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
-const formacionSantiagoFlow = addKeyword<Provider, Database>( [
-  'Formación en Santiago',
-  '4',
-  '¿Tienen un curso de trading en Santiago de Compostela?',
-  '¿Podrías explicarme el entrenamiento de Santiago de Compostela con Fran Fialli?',
-  '¿Podrías explicarme el entrenamiento de Santiago de Compostela con Fran Fialli?',
-  '¿Puedo hacer un curso presencial de bolsa en España?',
-  '¿Es una masterclass de trading en Santiago de Compostela o un curso completo?',
-  '¿Cómo es el entrenamiento presencial de trading en Santiago de Compostela?',
-  '¿Ofrecen formación en Santiago de Compostela?',
-  '¿Tienen curso de trading en Santiago de Compostela?',
-  'Quisiera saber qué es el curso presencial de Fran Fialli en Santiago de Compostela.',
-  'tienen un curso de trading en santiago de compostela?',
-  'curso presencial fran fialli santiago compostela'
-] )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    await state.update( { seccionActual: 'formacion_santiago' } );
-    const seccion = await state.get( 'seccionActual' );
-    const { texto } = await askSofia( preprocessPregunta( ctx.body ), seccion );
-    await delay( 2000 );
-    await flowDynamic( texto );
-  } );
-
 
 
 
@@ -1099,12 +843,6 @@ const main = async () => {
   const adapterFlow = createFlow(
     [ flowMenu,
       welcomeFlow,
-      cursoOnlineGFlow,
-      cursoOnlineGFlow_2,
-      cursoOnlineVFlow,
-      cursoOnlineVFlow_2,
-      formacionMiamiFlow,
-      formacionSantiagoFlow,
       registerSolicitudDatos,
       registerReservaPlaza,
       registerInscripcion,
@@ -1122,7 +860,11 @@ const main = async () => {
       flowClubFran,
       flowConsultasGenerales,
       flowSoyAlumno,
-      registerAlumno
+      registerAlumno,
+      flowCursoOnlineGrabado,
+      flowCursoOnlineVivo,
+      flowCursoMiami,
+      flowCursoSantiago
     ] );
 
   const adapterProvider = createProvider( Provider );
