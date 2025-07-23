@@ -12,6 +12,7 @@
     "reset-pine": "tsx  ./src/scripts/clearIndex.ts",
     "load-contexto": "tsx  ./src/scripts/loadContexto.ts",
     "load-flow": "tsx  ./src/scripts/chunk_flow.ts",
+    "load-info": "tsx  ./src/scripts/chunk_masinfo.ts",
     "load-pine": "tsx  ./src/scripts/load.ts"
   },
   "keywords": [],

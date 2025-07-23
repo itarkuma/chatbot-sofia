@@ -117,7 +117,6 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 
 export const askSofia = async ( question: string, seccion: string, esAlumno: boolean = false ) => {
   const query = preprocessPregunta( question );
-  const palabrasQuery = query.split( /\s+/ );
 
   const model = new ChatOpenAI( {
     modelName: process.env.MODELO_SOFIA || "gpt-3.5-turbo",
@@ -150,6 +149,7 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
     return null;
   };
 
+
   const cambio = detectarCambioDeFlujo( query, seccion );
   if ( cambio ) {
     console.log( `⚠️ Cambio de flujo detectado: ${ seccion } -> ${ cambio }` );
@@ -170,32 +170,19 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
   const archivoActual = mapSeccionToArchivo( seccion );
   const filtersActual: any = { archivo: archivoActual };
 
-  let resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
-  if ( resultadosActuales.length === 0 ) {
-    // Si no hay nada relevante, intento con 80 como fallback
-    resultadosActuales = await vectorStore.similaritySearchWithScore( query, 80, filters ) as [ SofiaDocument, number ][];
-  }
+  //  const resultadosActuales: [ SofiaDocument, number ][] = await vectorStore.similaritySearchWithScore( query, 10, filtersActual );
+  const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
 
+  const relevantesActuales = resultadosActuales.filter( ( [ doc ] ) => matchDisparador( doc, query ) );
 
-
-  const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
-    const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-    const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-    let bonificacion = 0;
-    if ( interseccion.length > 0 ) {
-      bonificacion += 0.03;
-      console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-    }
-    return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-  } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
-
-  const nuevoContextoDetectado = detectarCambioDeContexto( query );
+  const nuevoContextoDetectado = detectarCambioDeContexto( query ); // string | null
   console.log( { nuevoContextoDetectado } );
 
   if ( relevantesActuales.length > 0 ) {
     return await responderConResultados( relevantesActuales, query, archivoActual );
   }
 
+  // Buscar en otras secciones
   const filtrosGlobales = {
     archivo: {
       $in: [
@@ -207,22 +194,12 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
       ]
     }
   };
-
+  //  const resultadosOtros: [ SofiaDocument, number ][] = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales );
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
 
-  const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
-    const archivo = doc.metadata.archivo;
-    const esFallback = doc.metadata.es_fallback;
-    const coincideContexto = archivo === nuevoContextoDetectado;
-    const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-    const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-    let bonificacion = 0;
-    if ( interseccion.length > 0 ) {
-      bonificacion += 0.03;
-      console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-    }
-    return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-  } ).filter( ( [ doc ] ) => {
+
+
+  const relevantesPermitidos = resultadosOtros.filter( ( [ doc ] ) => {
     const archivo = doc.metadata.archivo;
     const esFallback = doc.metadata.es_fallback;
     const coincideContexto = archivo === nuevoContextoDetectado;
@@ -231,7 +208,6 @@ export const askSofia = async ( question: string, seccion: string, esAlumno: boo
 
   return await responderConResultados( relevantesPermitidos, query, nuevoContextoDetectado || archivoActual );
 };
-
 
 const responderConResultados = async (
   resultados: [ SofiaDocument, number ][],

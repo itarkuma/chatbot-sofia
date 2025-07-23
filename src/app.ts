@@ -8,8 +8,6 @@ import { askSofia } from './scripts/query';
 import { askSofiaFallback } from './scripts/queryFallback';
 import { preprocessPregunta } from './scripts/preprocesamiento';
 import { pineconeQuery } from './scripts/pineconeQuery';
-import { clasificarChunk14 } from './scripts/clasificarChunk14';
-
 
 import { distance } from 'fastest-levenshtein';
 
@@ -360,7 +358,9 @@ const menuFlow = addKeyword( [ 'MENÚ', 'menu' ] )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.clear(); // Limpiar la sección previa
     console.log( 'Estado actual1:', await state.get( 'seccionActual' ) );
-    const { texto } = await askSofia( ctx.body.toLocaleLowerCase(), '' );
+    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), '' );
+    console.log( { origen, chunkId } );
+
     await delay( 2000 );
     await flowDynamic( texto );
   } );
@@ -395,6 +395,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       if ( esConfirmacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
         await state.update( { esperandoSeguimiento: false } );
+        await state.update( { estaconfundido_answer: false } );
         await delay( 2000 );
         await flowDynamic( `🟢 Conectando con Javier Gómez... 👨‍💼 Él continuará con usted en este mismo chat.` );
       }
@@ -402,6 +403,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       if ( esNegacionDerivacion( consulta ) ) {
         await state.update( { esperandoDerivacion: false } );
         await state.update( { esperandoSeguimiento: false } );
+        await state.update( { estaconfundido_answer: false } );
         await delay( 2000 );
         await flowDynamic( `✅ Entendido. Seguimos por aquí entonces 😉` );
       }
@@ -415,7 +417,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           await delay( 2000 );
           //          await flowDynamic( "¿Te refieres al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos son cursos online, pero tienen características distintas. Puedo ayudarte mejor si me confirmás a cuál te referís. 😊" );
           await flowDynamic(
-            "¿Podrías confirmarme si te referís al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos se realizan online, pero tienen características distintas. Así podré darte una respuesta más precisa. 😊"
+            "¿Podrías confirmarme si te refieres al Curso Grabado o al Curso en vivo con Fran?\nAmbos se realizan en modalidad online, pero tienen características diferentes. Así podré darte una respuesta más precisa. 😊"
           );
           await state.update( { estaconfundido_answer: true } );
         }
@@ -430,8 +432,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         if ( seccion ) {
           console.log( 'Si tiene seccion' );
 
-          console.log( 'Estado actual_query:', seccion );
-          const { texto, origen, tags } = await askSofia( consulta, seccion );
+          console.log( 'Nombre Seccion:', seccion );
+          const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
+          console.log( { origen, chunkId } );
+
 
           if ( origen == 'curso_online_vivo' ||
             origen == 'curso_online_grabado' ||
@@ -607,6 +611,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             if ( intencion.is_fallback ) {
               console.log( 'Detecto Fallback intencion else' );
               const { texto } = await askSofiaFallback( consulta );
+              console.log( 'retorno un fallback' );
+
               await delay( 2000 );
               await flowDynamic( texto );
             } else {
@@ -623,7 +629,9 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
                   default: {
                     console.log( 'No detecto la intencion' );
-                    const { texto } = await askSofia( consulta, seccion );
+                    const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+                    console.log( { origen, chunkId } );
+
                     await delay( 2000 );
                     await flowDynamic( texto );
                     break;
@@ -631,7 +639,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
                 }
               } else {
                 console.log( 'No detecto la intencion else' );
-                const { texto } = await askSofia( consulta, seccion );
+                const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+                console.log( { origen, chunkId } );
                 await delay( 2000 );
                 await flowDynamic( texto );
               }
@@ -656,6 +665,7 @@ const cursoOnlineGFlow_2 = addKeyword<Provider, Database>( [
 ] )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'curso_online_grabado' } );
+    await state.update( { estaconfundido_answer: false } );
     console.log( 'Estado actual:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online grabado de Fran Fialli?' ), seccion );
@@ -688,6 +698,7 @@ const cursoOnlineVFlow_2 = addKeyword<Provider, Database>(
 )
   .addAction( async ( ctx, { flowDynamic, state } ) => {
     await state.update( { seccionActual: 'curso_online_vivo' } );
+    await state.update( { estaconfundido_answer: false } );
     const seccion = await state.get( 'seccionActual' );
     const { texto } = await askSofia( preprocessPregunta( '¿Qué es el curso online en vivo?' ), seccion );
     await delay( 2000 );
