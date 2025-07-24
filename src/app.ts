@@ -25,6 +25,9 @@ import { detectflowCursoOonlineGrabado, flowCursoOnlineGrabado } from './flows/c
 import { detectflowCursoOonlineVivo, flowCursoOnlineVivo } from './flows/cursoOnlineVivo.flow';
 import { detectflowCursoMiami, flowCursoMiami } from './flows/cursoMiami.flow';
 import { detectflowCursoSantiago, flowCursoSantiago } from './flows/cursoSantiago.flow';
+import { flowComparacion } from './flows/comparacion.flow';
+import { esComparacionGrabadoVsVivo } from './lib/utils/esComparacionGrabadoVsVivo';
+import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
@@ -145,36 +148,6 @@ function mapArchivoToSeccion( archivo: string ): string | null {
   return null;
 }
 
-function detectarConfusion( texto ) {
-  const textoLower = texto.toLowerCase();
-
-  // Patrones para activar CONFUSION (solo "curso online" y variantes cercanas)
-  const patronesConfusion = [
-    /\bcurso online\b/,
-    /\bonline\b.*\bcurso\b/,
-    /\bcurso\s+en línea\b/, // otra variante común
-  ];
-
-  // Patrones para NO activar CONFUSION (ignorar estos)
-  const patronesIgnorar = [
-    /\bcurso grabado\b/,
-    /\bcurso en vivo\b/,
-    /\bcurso presencial\b/,
-    /\bcurso streaming\b/,
-  ];
-
-  // Si alguna palabra de ignorar está en el texto, no hay CONFUSION
-  if ( patronesIgnorar.some( pat => pat.test( textoLower ) ) ) {
-    return false;
-  }
-
-  // Si algún patrón CONFUSION coincide, activamos CONFUSION
-  if ( patronesConfusion.some( pat => pat.test( textoLower ) ) ) {
-    return true;
-  }
-
-  return false;
-}
 
 function detectarFaltaTiempoOMiedo( texto ) {
   const textoLower = texto.toLowerCase();
@@ -263,7 +236,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isOnlineVivo = detectflowCursoOonlineVivo( consulta, seccion );
     const isCursoMiami = detectflowCursoMiami( consulta, seccion );
     const isCursoSantiago = detectflowCursoSantiago( consulta, seccion );
+    const isComparacion = esComparacionGrabadoVsVivo( consulta );
+    const isConfusion = detectflowConfusion( consulta, seccion );
 
+    if ( isConfusion ) { return gotoFlow( flowConfusion ); }
+    if ( isComparacion ) { return gotoFlow( flowComparacion ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
     if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
@@ -316,223 +293,212 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
       //      const aclasificarChunk14 = await clasificarChunk14( consulta );
 
-      if ( detectarConfusion( consulta ) || detectarFaltaTiempoOMiedo( consulta ) ) {
+      if ( seccion ) {
+        console.log( 'Si tiene seccion' );
 
-        if ( detectarConfusion( consulta ) ) {
-          await delay( 2000 );
-          //          await flowDynamic( "¿Te refieres al *Curso Grabado* o al *Curso en vivo con Fran*?\nAmbos son cursos online, pero tienen características distintas. Puedo ayudarte mejor si me confirmás a cuál te referís. 😊" );
-          await flowDynamic(
-            "¿Podrías confirmarme si te refieres al Curso Grabado o al Curso en vivo con Fran?\nAmbos se realizan en modalidad online, pero tienen características diferentes. Así podré darte una respuesta más precisa. 😊"
-          );
-          await state.update( { estaconfundido_answer: true } );
+        console.log( 'Nombre Seccion:', seccion );
+        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
+        console.log( { origen, chunkId } );
+
+
+        if ( origen == 'curso_online_vivo' ||
+          origen == 'curso_online_grabado' ||
+          origen == 'formacion_miami' ||
+          origen == 'formacion_santiago'
+        ) {
+          await state.update( { seccionActual: origen } );
         }
 
-        if ( detectarFaltaTiempoOMiedo( consulta ) ) {
+        if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
+          // Acción específica
+          console.log( 'Caso especial 1' );
           await delay( 2000 );
-          await flowDynamic( "¡Entiendo totalmente!\nEn el *Curso en vivo con Fran*, todas las sesiones *quedan grabadas en el Campus* para que puedas verlas en el momento que mejor te funcione.\nAdemás, el grupo es *reducido y personalizado*, así que vas a poder avanzar a tu ritmo, con seguimiento directo de Fran y sin sentirte perdido." );
+          await flowDynamic( texto );
+          return gotoFlow( registerSolicitudDatos );
+        }
+        if ( tags.includes( 'reserva_plaza' ) && origen === 'curso_online_vivo' ) {
+          // Acción específica
+          console.log( 'Caso especial 2' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerReservaPlaza );
+        }
+        if ( tags.includes( 'inscripción' ) && origen === 'curso_online_grabado' ) {
+          // Acción específica
+          console.log( 'Caso especial 3' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerInscripcion );
         }
 
-      } else {
+        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 7' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerNoFechaDisponible );
+        }
+        if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 8' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerCaptarDatosMiami );
+        }
+        if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 9' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerFaltaConfirmacion );
+        }
+        if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 1_11' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 2_12' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 3_13' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 4_14' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerAdmisionesSantiagos );
+        }
+        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 5_15' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerNoFechaDisponible );
+        }
+        if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 6_16' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerCaptacionDatosSantiago );
+        }
+        if ( tags.includes( 'escenario_entrenable-post_inscripción' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 7_17' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerFaltaConfirmacion );
+        }
+        if ( tags.includes( 'contacto_humano' ) ) {
+          console.log( 'Caso especial 1_20' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( registerContactoHumanoSoporte );
+        }
 
-        if ( seccion ) {
-          console.log( 'Si tiene seccion' );
+        if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
+          console.log( 'Caso especial 4' );
+          await state.update( { esperandoDerivacion: true } );
+        }
+        if ( tags.includes( 'escenario_entrenable-fallback-promoción-descuento-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
+          console.log( 'Caso especial 5' );
+          await state.update( { esperandoDerivacion: true } );
+        }
+        if ( tags.includes( 'escenario_entrenable-fallback-formas_de_pago-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
+          console.log( 'Caso especial 6' );
+          await state.update( { esperandoDerivacion: true } );
+        }
+        if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 10' );
+          await state.update( { esperandoDerivacion: true } );
+        }
 
-          console.log( 'Nombre Seccion:', seccion );
-          const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
-          console.log( { origen, chunkId } );
-
-
-          if ( origen == 'curso_online_vivo' ||
-            origen == 'curso_online_grabado' ||
-            origen == 'formacion_miami' ||
-            origen == 'formacion_santiago'
-          ) {
-            await state.update( { seccionActual: origen } );
-          }
-
-          if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
-            // Acción específica
-            console.log( 'Caso especial 1' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerSolicitudDatos );
-          }
-          if ( tags.includes( 'reserva_plaza' ) && origen === 'curso_online_vivo' ) {
-            // Acción específica
-            console.log( 'Caso especial 2' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerReservaPlaza );
-          }
-          if ( tags.includes( 'inscripción' ) && origen === 'curso_online_grabado' ) {
-            // Acción específica
-            console.log( 'Caso especial 3' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerInscripcion );
-          }
-
-          if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
-            console.log( 'Caso especial 7' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerNoFechaDisponible );
-          }
-          if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
-            console.log( 'Caso especial 8' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerCaptarDatosMiami );
-          }
-          if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
-            console.log( 'Caso especial 9' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerFaltaConfirmacion );
-          }
-          if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 1_11' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerAdmisionesSantiagos );
-          }
-          if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 2_12' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerAdmisionesSantiagos );
-          }
-          if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 3_13' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerAdmisionesSantiagos );
-          }
-          if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 4_14' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerAdmisionesSantiagos );
-          }
-          if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 5_15' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerNoFechaDisponible );
-          }
-          if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 6_16' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerCaptacionDatosSantiago );
-          }
-          if ( tags.includes( 'escenario_entrenable-post_inscripción' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 7_17' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerFaltaConfirmacion );
-          }
-          if ( tags.includes( 'contacto_humano' ) ) {
-            console.log( 'Caso especial 1_20' );
-            await delay( 2000 );
-            await flowDynamic( texto );
-            return gotoFlow( registerContactoHumanoSoporte );
-          }
-
-          if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
-            console.log( 'Caso especial 4' );
-            await state.update( { esperandoDerivacion: true } );
-          }
-          if ( tags.includes( 'escenario_entrenable-fallback-promoción-descuento-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
-            console.log( 'Caso especial 5' );
-            await state.update( { esperandoDerivacion: true } );
-          }
-          if ( tags.includes( 'escenario_entrenable-fallback-formas_de_pago-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
-            console.log( 'Caso especial 6' );
-            await state.update( { esperandoDerivacion: true } );
-          }
-          if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_miami' ) {
-            console.log( 'Caso especial 10' );
-            await state.update( { esperandoDerivacion: true } );
-          }
-
-          if ( tags.includes( 'escenario_entrenable-espera_contacto' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 8_18' );
-            await state.update( { esperandoSeguimiento: true } );
-          }
-          if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_santiago' ) {
-            console.log( 'Caso especial 9_19' );
-            await state.update( { esperandoSeguimiento: true } );
-          }
-          if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
-            console.log( 'Caso especial 2_21' );
-            console.log( "send enviar mensaje a Javier" );
-            const mensaje = `
+        if ( tags.includes( 'escenario_entrenable-espera_contacto' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 8_18' );
+          await state.update( { esperandoSeguimiento: true } );
+        }
+        if ( tags.includes( 'escenario_entrenable-presencial_miami-asistencia_parcial-duda_evento_completo' ) && origen === 'formacion_santiago' ) {
+          console.log( 'Caso especial 9_19' );
+          await state.update( { esperandoSeguimiento: true } );
+        }
+        if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
+          console.log( 'Caso especial 2_21' );
+          console.log( "send enviar mensaje a Javier" );
+          const mensaje = `
           📩 Nueva solicitud de atención humana
           
           📱 Teléfono: ${ ctx.from }
           `;
-            await enviarDerivacionWhatsApp( mensaje );
-
-          }
-          await delay( 2000 );
-          await flowDynamic( texto );
-
-        } else {
-          console.log( 'No se eligio seccion' );
-
-          const intencion = await detectarIntencion( consulta );
-
-          const derivar = esDerivacionHumana( consulta );
-
-          if ( derivar ) {
-            console.log( 'Derivación Humana' );
-            return gotoFlow( derivacionHumana );
-          } else {
-            if ( intencion.is_fallback ) {
-              console.log( 'Detecto Fallback intencion else' );
-              const { texto } = await askSofiaFallback( consulta );
-              console.log( 'retorno un fallback' );
-
-              await delay( 2000 );
-              await flowDynamic( texto );
-            } else {
-
-              if ( intencion.seccion ) {
-                switch ( intencion.seccion ) {
-
-                  case 'soporte_general': {
-
-                    console.log( 'Intención detectada:', intencion.seccion );
-                    return gotoFlow( flowConsultasGenerales );
-                  }
-
-
-                  default: {
-                    console.log( 'No detecto la intencion' );
-                    const { texto, origen, chunkId } = await askSofia( consulta, seccion );
-                    console.log( { origen, chunkId } );
-
-                    await delay( 2000 );
-                    await flowDynamic( texto );
-                    break;
-                  }
-                }
-              } else {
-                console.log( 'No detecto la intencion else' );
-                const { texto, origen, chunkId } = await askSofia( consulta, seccion );
-                console.log( { origen, chunkId } );
-                await delay( 2000 );
-                await flowDynamic( texto );
-              }
-            }
-          }
-
-
+          await enviarDerivacionWhatsApp( mensaje );
 
         }
-      }
+        await delay( 2000 );
+        await flowDynamic( texto );
 
+      } else {
+        console.log( 'No se eligio seccion' );
+
+        if ( detectarFaltaTiempoOMiedo( consulta ) ) {
+
+          if ( detectarFaltaTiempoOMiedo( consulta ) ) {
+            await delay( 2000 );
+            await flowDynamic( "¡Entiendo totalmente!\nEn el *Curso en vivo con Fran*, todas las sesiones *quedan grabadas en el Campus* para que puedas verlas en el momento que mejor te funcione.\nAdemás, el grupo es *reducido y personalizado*, así que vas a poder avanzar a tu ritmo, con seguimiento directo de Fran y sin sentirte perdido." );
+          }
+          return;
+        }
+
+        const intencion = await detectarIntencion( consulta );
+
+        const derivar = esDerivacionHumana( consulta );
+
+        if ( derivar ) {
+          console.log( 'Derivación Humana' );
+          return gotoFlow( derivacionHumana );
+        } else {
+          if ( intencion.is_fallback ) {
+            console.log( 'Detecto Fallback intencion else' );
+            const { texto } = await askSofiaFallback( consulta );
+            console.log( 'retorno un fallback' );
+
+            await delay( 2000 );
+            await flowDynamic( texto );
+          } else {
+
+            if ( intencion.seccion ) {
+              switch ( intencion.seccion ) {
+
+                case 'soporte_general': {
+
+                  console.log( 'Intención detectada:', intencion.seccion );
+                  return gotoFlow( flowConsultasGenerales );
+                }
+
+
+                default: {
+                  console.log( 'No detecto la intencion' );
+                  const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+                  console.log( { origen, chunkId } );
+
+                  await delay( 2000 );
+                  await flowDynamic( texto );
+                  break;
+                }
+              }
+            } else {
+              console.log( 'No detecto la intencion else' );
+              const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+              console.log( { origen, chunkId } );
+              await delay( 2000 );
+              await flowDynamic( texto );
+            }
+          }
+        }
+
+
+
+      }
 
 
     }
@@ -864,7 +830,9 @@ const main = async () => {
       flowCursoOnlineGrabado,
       flowCursoOnlineVivo,
       flowCursoMiami,
-      flowCursoSantiago
+      flowCursoSantiago,
+      flowComparacion,
+      flowConfusion
     ] );
 
   const adapterProvider = createProvider( Provider );

@@ -6,6 +6,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { Document } from "langchain/document";
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
+import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
 import { distance } from 'fastest-levenshtein';
 
 interface SofiaMetadata {
@@ -364,6 +365,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+
   if ( ask_menu === 'noticias_mercado' ) {
 
     const archivoActual = '8_flujos_recursos_web.txt';
@@ -404,8 +406,33 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  if ( ask_menu === 'comparacion' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_20'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   // Detectar cambio de flujo si se menciona otro curso o sección
   const detectarCambioDeFlujo = ( query: string, seccionActual: string ): string | null => {
+
+    const normalizada = preprocessPregunta( query );
+
+    if ( esComparacionGrabadoVsVivo( normalizada ) ) { return null; }
+
     const mapeo: Record<string, string[]> = {
       'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
       'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
@@ -414,7 +441,6 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
       'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
     };
 
-    const normalizada = preprocessPregunta( query ).toLowerCase().normalize( 'NFD' ).replace( /[̀-ͯ]/g, '' );
 
     for ( const [ seccionKey, keywords ] of Object.entries( mapeo ) ) {
       if ( seccionKey !== seccionActual && keywords.some( k => normalizada.includes( k ) ) ) {

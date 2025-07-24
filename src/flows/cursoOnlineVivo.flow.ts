@@ -2,12 +2,12 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
-
+import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
 
 const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boolean => {
 
   const texto = preprocessPregunta( query );
-
+  if ( esComparacionGrabadoVsVivo( texto ) ) return false;
   const frasesClaves = [
     "curso online en vivo",
     "¿que es el curso online en vivo?",
@@ -29,16 +29,17 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
     /^2$/,
   ];
 
-  const coincideFrase = frasesClaves.some( f => texto === preprocessPregunta( f ) );
-  const coincideRegex = regexes.some( r => r.test( texto ) );
+  const coincideFrase = frasesClaves.some(
+    ( f ) => texto === preprocessPregunta( f )
+  );
+  const coincideRegex = regexes.some( ( r ) => r.test( texto ) );
 
   return coincideFrase || coincideRegex;
-
 };
 
 const flowCursoOnlineVivo = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
-
+    console.log( 'flow vivo' );
     await state.update( { seccionActual: 'curso_online_vivo' } );
     await state.update( { estaconfundido_answer: false } );
     const seccion = await state.get( 'seccionActual' );

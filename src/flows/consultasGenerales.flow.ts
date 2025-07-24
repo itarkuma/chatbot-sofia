@@ -29,6 +29,7 @@ const detectflowConsultasGenerales = ( query: string, seccionActual: string ): b
 
 const flowConsultasGenerales = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'flow consultas generales' );
     await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
 
