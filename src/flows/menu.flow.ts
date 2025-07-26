@@ -4,26 +4,42 @@ import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 
 const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
-  const menuTriggers = [
-    "menu",
-    /muestra.*menu/,
-    /ver.*opciones/,
-    /que.*puedo.*hacer.*aqui/,
-    /env[ií]ame.*listado/,
-    /quiero.*comenzar/,
-    /dame.*opciones/
-  ];
   const texto = preprocessPregunta( query );
 
-  return menuTriggers.some( trigger => {
-    if ( typeof trigger === "string" ) {
-      return texto === trigger; // coincidencia exacta
-    }
-    if ( trigger instanceof RegExp ) {
-      return trigger.test( texto ); // coincidencia por patrón
-    }
-    return false;
-  } );
+  // Frases disparadoras simples
+  const frasesDisparadoras = [
+    "menu",
+    "quiero comenzar",
+    "dame opciones",
+    "quiero información",
+    "necesito ayuda",
+    "me puedes ayudar",
+    "qué cursos ofrecen",
+    "más información",
+    "información",
+    "hola",
+    "buenas",
+    "saludos",
+    "ola",
+    "buenos días",
+    "buenas tardes"
+  ];
+
+  // Patrones para detectar frases comunes más flexibles
+  const patronesDisparadores = [
+    /muestra.*menu/,
+    /ver.*opciones/,
+    /que.*puedo.*hacer.*aqu[ií]/,
+    /env[ií]ame.*listado/,
+    /hola.*(informaci[oó]n|ayuda|opciones|más.*informaci[oó]n)/,
+    /buenas.*(informaci[oó]n|opciones)/,
+    /(quiero|quisiera|necesito|me.*gustar[ií]a).*informaci[oó]n/,
+    /puedes.*ayudarme/,
+    /m[aá]s.*informaci[oó]n/,
+  ];
+
+  return frasesDisparadoras.some( f => texto.includes( f ) ) ||
+    patronesDisparadores.some( p => p.test( texto ) );
 
 };
 
