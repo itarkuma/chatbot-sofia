@@ -25,24 +25,24 @@ function matchDisparador( doc: any, question: string ): boolean {
   const queryLower = preprocessPregunta( question );
   const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
 
-  const disparadoras = doc.metadata?.disparadoras || [];
-  const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-
+  const disparadoras: string[] = doc.metadata?.disparadoras || [];
+  const tags: string[] = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
   const chunkId = doc.metadata?.chunk || 'unknown';
 
-  // ✅ Match directo por inclusión exacta en tags
+  // ✅ [1] Match exacto con tag
   if ( tags.includes( queryLower ) ) {
     console.log( `✅ [TAG-EXACT] Match exacto con tag "${ queryLower }" en chunk ${ chunkId }` );
     return true;
   }
 
-  // ✅ Match si alguna palabra de la query coincide con un tag (genérico)
+  // ✅ [2] Coincidencia palabra a palabra con tags
   for ( const palabra of palabrasQuery ) {
     if ( tags.includes( palabra ) ) {
       console.log( `✅ [TAG-WORD] Palabra "${ palabra }" coincide con tag en chunk ${ chunkId }` );
       return true;
     }
 
+    // ✅ [3] Fuzzy match palabra con tags
     for ( const tag of tags ) {
       const dist = distance( palabra, tag );
       const maxLen = Math.max( palabra.length, tag.length );
@@ -55,21 +55,32 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
   }
 
-  // ✅ Fallback: disparadoras existentes
+  // ✅ [4] Coincidencia con frases disparadoras
   for ( const frase of disparadoras ) {
-    const fraseLimpia = preprocessPregunta( frase );
+    const fraseLimpia = preprocessPregunta( frase ).toLowerCase();
 
+    // a) Inclusión mutua
     if ( fraseLimpia.includes( queryLower ) || queryLower.includes( fraseLimpia ) ) {
       console.log( `✅ [DISPARADORA-INCLUYE] "${ queryLower }" ≈ "${ fraseLimpia }" en chunk ${ chunkId }` );
       return true;
     }
 
+    // b) Fuzzy completo
     const dist = distance( queryLower, fraseLimpia );
     const maxLen = Math.max( queryLower.length, fraseLimpia.length );
     const porcentaje = dist / maxLen;
 
     if ( porcentaje < 0.45 ) {
       console.log( `✅ [DISPARADORA-LEV] "${ fraseLimpia }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
+      return true;
+    }
+
+    // c) Coincidencia por palabras clave
+    const palabrasFrase = fraseLimpia.split( /\s+/ );
+    const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
+
+    if ( comunes.length >= 3 ) {
+      console.log( `✅ [DISPARADORA-PALABRAS] Palabras comunes: ${ comunes.join( ', ' ) } en chunk ${ chunkId }` );
       return true;
     }
   }
@@ -126,6 +137,9 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   const query = preprocessPregunta( question );
   const palabrasQuery = query.split( /\s+/ );
 
+
+
+
   if ( ask_menu === 'menu' ) {
 
     const archivoActual = 'fallbacks.txt';
@@ -152,6 +166,46 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const filters = {
       archivo: '2_curso_trading_online_grabado.txt',
       chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && query === 'resumen' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && query === 'temario completo' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_08'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
