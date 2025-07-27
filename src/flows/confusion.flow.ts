@@ -8,24 +8,39 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
 
   const texto = preprocessPregunta( query );
 
+  if ( /grabado|en vivo|miami|santiago/.test( texto ) ) {
+    return false; // ya es específico
+  }
+
   const frasesExactas = [
     "curso online",
+    "el curso online",
+    "info curso online",
+    "informacion curso online",
+    "información sobre el curso online",
+    "información del curso online",
+    "info sobre el curso online",
     "tienen curso online",
     "tenéis curso online",
     "tenes curso online",
     "tiene curso online",
-    "el curso online",
     "hay curso online",
     "ofrecen curso online"
   ];
 
-  if ( frasesExactas.includes( texto ) ) {
-    return true;
-  }
+  const patrones = [
+    /(informaci[oó]n|info).*curso online/,
+    /curso online.*(informaci[oó]n|info)/,
+    /(tienen|tiene|hay|dan|ofrecen).*curso online/,
+    /me.*interesa.*curso online/,
+    /quisiera.*curso online/,
+    /quiero.*curso online/,
+    /saber.*curso online/,
+    /sobre.*curso online/,
+    /^curso online\??$/
+  ];
 
-  // Regex para detectar frases muy cortas que solo pregunten si existe
-  const patronCorto = /^(ten[eé]is|ten[eé]s|tienen|hay|ofrec[eé]n|tiene)?\s*(el\s+)?curso\s+online\??$/;
-  return patronCorto.test( texto );
+  return frasesExactas.includes( texto ) || patrones.some( p => p.test( texto ) );
 
 };
 
