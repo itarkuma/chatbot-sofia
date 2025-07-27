@@ -4,9 +4,9 @@ import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 
 const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean => {
+  const texto = preprocessPregunta( query ).toLowerCase();
 
-  const texto = preprocessPregunta( query );
-
+  // Frases comunes completas (exactas después de normalizar)
   const frasesExactas = [
     "¿tienen un curso de trading en miami?",
     "¿podrias explicarme el entrenamiento de miami con fran fialli?",
@@ -21,23 +21,29 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "¿tiene fran fialli algun curso presencial en miami?",
     "¿tienes cursos de trading en miami?",
     "formacion en miami",
-  ];
-
-  const regexes = [
-    /\bcurso(s)?\s+(de\s+)?trading\s+en\s+miami\b/,
-    /\bentrenamiento\s+(de\s+)?trading\s+en\s+miami\b/,
-    /\bcurso\s+presencial\s+(en\s+)?miami\b/,
-    /\bmiami\b.*\b(trading|curso|entrenamiento|fran fialli)\b/,
-    /\bformacion\s+(en\s+)?miami\b/,
-    /\bmasterclass\s+(de\s+)?trading\s+(en\s+)?miami\b/,
-    /^3$/,
+    "curso en miami",
+    "curso miami",
+    "trading miami",
   ];
 
   const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
+
+  // Expresiones más flexibles
+  const regexes = [
+    /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?miami\b/,
+    /\bentrenamiento\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
+    /\b(masterclass|formaci[oó]n|clase(s)?|programa)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
+    /\bcursos?\s+(en|de)\s+miami\b/,
+    /\bmiami\b.*\b(trading|curso|entrenamiento|fran fialli)\b/,
+    /\b(trading|curso)\b.*\bmiami\b/,
+    /\binfo\b.*\bmiami\b/,
+    /\bquiero.*(info|informaci[oó]n).*(curso|trading).*miami\b/,
+    /^3$/, // opción por menú numérico
+  ];
+
   const coincideRegex = regexes.some( r => r.test( texto ) );
 
   return coincideFrase || coincideRegex;
-
 };
 
 const flowCursoMiami = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {

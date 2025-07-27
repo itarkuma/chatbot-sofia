@@ -19,18 +19,25 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "tienen un curso de trading en santiago de compostela?",
     "curso presencial fran fialli santiago compostela",
     "formacion en santiago",
-  ];
-
-  const regexes = [
-    /\bcurso(s)?\s+(de\s+)?trading\s+en\s+santiago(\s+de\s+compostela)?\b/,
-    /\b(entrenamiento|formacion|masterclass)\s+(de\s+)?trading\s+en\s+santiago(\s+de\s+compostela)?\b/,
-    /\bsantiago(\s+de\s+compostela)?\b.*\bcurso(s)?\b/,
-    /\bcurso\s+presencial\s+(en\s+)?santiago(\s+de\s+compostela)?\b/,
-    /\bfran fialli\b.*\bsantiago(\s+de\s+compostela)?\b/,
-    /^4$/,
+    "curso en santiago",
+    "curso santiago",
+    "trading santiago"
   ];
 
   const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
+
+  // Regex más flexible
+  const regexes = [
+    /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?santiago(\s+de\s+compostela)?\b/,
+    /\b(entrenamiento|formaci[oó]n|masterclass|clase(s)?)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?santiago(\s+de\s+compostela)?\b/,
+    /\bsantiago(\s+de\s+compostela)?\b.*\b(trading|curso|entrenamiento|fran fialli)\b/,
+    /\b(francisco|fran)\s+fialli\b.*\bsantiago\b/,
+    /\b(info|informaci[oó]n)\b.*\bcurso\b.*\bsantiago\b/,
+    /\bquiero.*(info|informaci[oó]n).*(curso|trading).*santiago\b/,
+    /^4$/, // menú numérico
+  ];
+
+
   const coincideRegex = regexes.some( r => r.test( texto ) );
 
   return coincideFrase || coincideRegex;
