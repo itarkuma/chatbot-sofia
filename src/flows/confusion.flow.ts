@@ -50,7 +50,7 @@ const flowConfusion = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { stat
     await state.update( { estaconfundido_answer: true } );
     const seccion = await state.get( 'seccionActual' );
 
-    const texto = "¿Podrías confirmarme si te refieres al Curso Grabado o al Curso en vivo con Fran?\nAmbos se realizan en modalidad online, pero tienen características diferentes. Así podré darte una respuesta más precisa. 😊";
+    const texto = "¿Podrías confirmarme si te refieres al *Curso Grabado* o al *Curso en vivo* con Fran?\nAmbos se realizan en modalidad online, pero tienen características diferentes. Así podré darte una respuesta más precisa. 😊";
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( 'texto ingresado fijo' );

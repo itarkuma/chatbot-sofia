@@ -7,6 +7,9 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
 
   const texto = preprocessPregunta( query );
 
+  //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
+  //  if ( !seccionEsGeneral ) return false;
+
   const frasesExactas = [
     "¿tienen un curso de trading en santiago de compostela?",
     "¿podrias explicarme el entrenamiento de santiago de compostela con fran fialli?",
@@ -26,15 +29,13 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
 
   const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
 
-  // Regex más flexible
   const regexes = [
     /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?santiago(\s+de\s+compostela)?\b/,
     /\b(entrenamiento|formaci[oó]n|masterclass|clase(s)?)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?santiago(\s+de\s+compostela)?\b/,
-    /\bsantiago(\s+de\s+compostela)?\b.*\b(trading|curso|entrenamiento|fran fialli)\b/,
-    /\b(francisco|fran)\s+fialli\b.*\bsantiago\b/,
-    /\b(info|informaci[oó]n)\b.*\bcurso\b.*\bsantiago\b/,
-    /\bquiero.*(info|informaci[oó]n).*(curso|trading).*santiago\b/,
-    /^4$/, // menú numérico
+    /\b(francisco|fran)\s+fialli\b.*\bsantiago(\s+de\s+compostela)?\b/,
+    /\binfo(?:rmaci[oó]n)?\b.*\bcurso\b.*\bsantiago(\s+de\s+compostela)?\b/,
+    /\bquiero\b.*(info|informaci[oó]n).*santiago\b/,
+    /^4$/, // opción por número
   ];
 
 

@@ -490,8 +490,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const mapeo: Record<string, string[]> = {
       'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
       'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
-      'curso_miami': [ 'curso en miami', 'en miami' ],
-      'curso_santiago': [ 'curso en santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
+      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami' ],
+      'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
       'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
     };
 

@@ -6,6 +6,9 @@ import { askSofia } from '../scripts/query';
 const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean => {
   const texto = preprocessPregunta( query ).toLowerCase();
 
+  //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
+  //  if ( !seccionEsGeneral ) return false;
+
   // Frases comunes completas (exactas después de normalizar)
   const frasesExactas = [
     "¿tienen un curso de trading en miami?",
@@ -28,17 +31,13 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
 
   const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
 
-  // Expresiones más flexibles
   const regexes = [
     /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?miami\b/,
-    /\bentrenamiento\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
-    /\b(masterclass|formaci[oó]n|clase(s)?|programa)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
-    /\bcursos?\s+(en|de)\s+miami\b/,
-    /\bmiami\b.*\b(trading|curso|entrenamiento|fran fialli)\b/,
-    /\b(trading|curso)\b.*\bmiami\b/,
-    /\binfo\b.*\bmiami\b/,
-    /\bquiero.*(info|informaci[oó]n).*(curso|trading).*miami\b/,
-    /^3$/, // opción por menú numérico
+    /\b(entrenamiento|formaci[oó]n|masterclass|clase(s)?)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
+    /\b(francisco|fran)\s+fialli\b.*\bmiami\b/,
+    /\binfo(?:rmaci[oó]n)?\b.*\bcurso\b.*\bmiami\b/,
+    /\bquiero\b.*(info|informaci[oó]n).*miami\b/,
+    /^3$/, // opción por número
   ];
 
   const coincideRegex = regexes.some( r => r.test( texto ) );
