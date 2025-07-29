@@ -22,8 +22,23 @@ interface SofiaMetadata {
 type SofiaDocument = Document<SofiaMetadata>;
 
 function matchDisparador( doc: any, question: string ): boolean {
+
+  const STOPWORDS = new Set( [
+    'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las',
+    'por', 'un', 'para', 'con', 'no', 'una', 'su', 'al', 'lo', 'como',
+    'más', 'pero', 'sus', 'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta',
+    'entre', 'cuando', 'muy', 'sin', 'sobre', 'también', 'me', 'hasta',
+    'hay', 'donde', 'quien', 'desde', 'todo', 'nos', 'durante', 'todos',
+    'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante', 'ellos',
+    'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro',
+    'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
+    'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas',
+    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas'
+  ] );
+
   const queryLower = preprocessPregunta( question );
-  const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
+  //const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
+  const palabrasQuery = queryLower.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
 
   const disparadoras: string[] = doc.metadata?.disparadoras || [];
   const tags: string[] = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
@@ -76,7 +91,8 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
 
     // c) Coincidencia por palabras clave
-    const palabrasFrase = fraseLimpia.split( /\s+/ );
+    //const palabrasFrase = fraseLimpia.split( /\s+/ );
+    const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
     const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
 
     if ( comunes.length >= 2 ) {
