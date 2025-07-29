@@ -79,7 +79,7 @@ function matchDisparador( doc: any, question: string ): boolean {
     const palabrasFrase = fraseLimpia.split( /\s+/ );
     const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
 
-    if ( comunes.length >= 3 ) {
+    if ( comunes.length >= 2 ) {
       console.log( `✅ [DISPARADORA-PALABRAS] Palabras comunes: ${ comunes.join( ', ' ) } en chunk ${ chunkId }` );
       return true;
     }
@@ -490,7 +490,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const mapeo: Record<string, string[]> = {
       'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
       'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
-      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami' ],
+      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
       'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
       'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
     };
@@ -543,6 +543,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   if ( relevantesActuales.length > 0 ) {
     return await responderConResultados( relevantesActuales, query, archivoActual );
   }
+  console.log( 'buscar en global' );
 
   const filtrosGlobales = {
     archivo: {
@@ -557,6 +558,17 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
+
+  let i = 0;
+  for ( const [ doc, number ] of resultadosOtros ) {
+    console.log( '📥 Documentos recuperados por Global:' );
+    console.log( `\n#${ i + 1 }` );
+    console.log( 'Archivo:', doc.metadata?.archivo );
+    console.log( 'Chunk:', doc.metadata?.chunk );
+    console.log( 'Tipo:', doc.metadata?.tipo );
+    console.log( 'Score:', number.toFixed( 4 ) );
+    i++;
+  }
 
   const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
     const archivo = doc.metadata.archivo;
@@ -574,7 +586,10 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const archivo = doc.metadata.archivo;
     const esFallback = doc.metadata.es_fallback;
     const coincideContexto = archivo === nuevoContextoDetectado;
-    return esFallback || coincideContexto;
+
+    //    console.log( `⛔ Filtro 1 - archivo: ${ archivo }, esFallback: ${ esFallback }, coincideContexto: ${ coincideContexto }` );
+    //    return esFallback || coincideContexto || archivo === '9_soporte_general.txt';
+    return true;
   } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
 
   return await responderConResultados( relevantesPermitidos, query, nuevoContextoDetectado || archivoActual );
@@ -645,6 +660,7 @@ Respuesta:
   const finalPrompt = await prompt.format( { context, query } );
   const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
 
+  console.log( "gemini responde" );
 
   return {
     texto: typeof response === "string" ? response : ( response.text || "" ),
@@ -710,6 +726,7 @@ Respuesta:
   const finalPrompt = await prompt.format( { context, query } );
   const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
 
+  console.log( "gemini responde" );
 
   return {
     texto: typeof response === "string" ? response : ( response.text || "" ),
