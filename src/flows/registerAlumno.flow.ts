@@ -37,6 +37,7 @@ const detectarCursoGrabado = ( query: string, seccionActual: string ): boolean =
     /\bcurso\s+(online\s+)?grabado\b/,
     /\bonline\s+grabado\b/,
     /\bgrabado\b/,
+    /\bonline\b/,
     /\bonlline\s+grabado\b/, // error común de tipeo
     /\bcurso\s+grabado\b/
   ];
