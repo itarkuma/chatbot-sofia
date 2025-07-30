@@ -40,6 +40,7 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
 const flowCursoOnlineVivo = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
     console.log( 'flow vivo' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'curso_online_vivo' } );
     await state.update( { estaconfundido_answer: false } );
     const seccion = await state.get( 'seccionActual' );

@@ -48,6 +48,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
 const flowCursoMiami = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
     console.log( 'flow miami' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_miami' );

@@ -48,6 +48,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
 const flowCursoSantiago = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
     console.log( 'flow santiago' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_santiago' );

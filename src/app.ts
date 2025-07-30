@@ -31,6 +31,16 @@ import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
+import { detectConfusionUser, fallbackConfusionUser } from './fallback/confusionUser.flow';
+import { detectDatoNodisponibleUser, fallbackDatoNodisponibleUser } from './fallback/datoNodisponibleUser.flow';
+import { detectPromocionesUser, fallbackPromocionesUser } from './fallback/promocionesUser.flow';
+import { detectFormasdepagoUser, fallbackFormasdepagoUser } from './fallback/formapagonoUser.flow';
+import { detectOtrasCiudadesUser, fallbackOtrasCiudadesUser } from './fallback/otrasCiudadesUser.flow';
+import { detectderivarJavierUser, fallbackderiverJavierUser } from './fallback/derivarJavierUser.flow';
+import { fallbackconfirmarderivacionUser } from './fallback/confirmarDerivacionUser.flow';
+import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fallback/javiernorespondeUser.flow';
+import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
+
 
 function esDerivacionHumana( texto: string ): boolean {
   const frasesBase = [
@@ -239,20 +249,39 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isComparacion = esComparacionGrabadoVsVivo( consulta );
     const isConfusion = detectflowConfusion( consulta, seccion );
 
+    const isConfusoUser = detectConfusionUser( consulta );
+    const isDataNodisponibleUser = detectDatoNodisponibleUser( consulta );
+    const isPromocionesUser = detectPromocionesUser( consulta );
+    const isFormasDePagoUser = detectFormasdepagoUser( consulta );
+    const isOtrasCiudadesUser = detectOtrasCiudadesUser( consulta );
+    const isDerivarJavierUser = detectderivarJavierUser( consulta );
+    const isNorespondeJavierUser = detectJavierNoRespondeUser( consulta );
+    const isMultiplesPreguntas = detectarMensajeMultiplesPreguntas( consulta );
+    if ( isMultiplesPreguntas ) { return gotoFlow( fallbackMensajeMultiplesUser ); }
+    if ( isNorespondeJavierUser ) { return gotoFlow( fallbackJavierNoRespondeUser ); }
+    if ( isDerivarJavierUser ) { return gotoFlow( fallbackderiverJavierUser ); }
+    if ( isOtrasCiudadesUser ) { return gotoFlow( fallbackOtrasCiudadesUser ); }
+    if ( isFormasDePagoUser ) { return gotoFlow( fallbackFormasdepagoUser ); }
+    if ( isPromocionesUser ) { return gotoFlow( fallbackPromocionesUser ); }
+    if ( isDataNodisponibleUser ) { return gotoFlow( fallbackDatoNodisponibleUser ); }
+    if ( isConfusoUser ) { return gotoFlow( fallbackConfusionUser ); }
+
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
     if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
     if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
     if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
-    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
-    if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
-    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
-    if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
-    if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
-    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
+
+    if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
+    if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
+    if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
+    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
+    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
+    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -832,7 +861,16 @@ const main = async () => {
       flowCursoMiami,
       flowCursoSantiago,
       flowComparacion,
-      flowConfusion
+      flowConfusion,
+      fallbackConfusionUser,
+      fallbackDatoNodisponibleUser,
+      fallbackPromocionesUser,
+      fallbackFormasdepagoUser,
+      fallbackOtrasCiudadesUser,
+      fallbackderiverJavierUser,
+      fallbackconfirmarderivacionUser,
+      fallbackJavierNoRespondeUser,
+      fallbackMensajeMultiplesUser
     ] );
 
   const adapterProvider = createProvider( Provider );

@@ -153,8 +153,167 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   const query = preprocessPregunta( question );
   const palabrasQuery = query.split( /\s+/ );
 
+  if ( ask_menu === 'user_question_multiples' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_11'
+    };
 
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
 
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_javiernoresponde' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_10'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_derivarjavier' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_09'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_otrasciudades' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_08'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_formasdepago' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_07'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_promocion' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_06'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_dato_nodisponible' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_05'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'esta_confuso_1' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'esta_confuso_2' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
 
   if ( ask_menu === 'menu' ) {
 
