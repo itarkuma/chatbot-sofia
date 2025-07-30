@@ -2,6 +2,7 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { askSofia } from '../scripts/query';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
+import { enviarDerivacionWhatsApp } from '../lib/utils/sendMessagewa';
 
 const detectCiudadMiami = ( query: string, seccionActual: string ): boolean => {
   const patronesMiami = [
@@ -74,6 +75,8 @@ const registerAlumno = addKeyword( EVENTS.ACTION )
       📱 Teléfono: ${ telefono }
       `;
 
+      await enviarDerivacionWhatsApp( mensaje );
+
       const seccion = await state.get( 'seccionActual' );
 
       if ( detectCiudadMiami( preprocessPregunta( ciudad ), seccion ) ) {
@@ -96,6 +99,15 @@ const registerAlumno = addKeyword( EVENTS.ACTION )
             await state.update( { isAlumnoRegistrado: true } );
             await state.update( { isAlumnoRegistradoGrabado: true } );
             console.log( { origen, chunkId } );
+          } else {
+
+            const texto_success = `ℹ️ Gracias *${ nombre }* .Hemos detectado que no introdujo el modulo correco. Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.`;
+
+            await state.update( { isAlumnoRegistrado: false } );
+            await state.update( { isAlumnoRegistradoMiami: false } );
+            await state.update( { isAlumnoRegistradoSantiago: false } );
+            await state.update( { isAlumnoRegistradoGrabado: false } );
+            await flowDynamic( [ { body: texto_success, delay: generateTimer( 150, 250 ) } ] );
           }
         }
       }
