@@ -40,11 +40,19 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
 const flowCursoOnlineVivo = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
     console.log( 'flow vivo' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'curso_online_vivo' } );
     await state.update( { estaconfundido_answer: false } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'curso_online_vivo' );
-
+    if ( origen === 'curso_online_vivo' ||
+      origen === 'curso_online_grabado' ||
+      origen === 'formacion_miami' ||
+      origen === 'formacion_santiago'
+    ) {
+      await state.update( { seccionActual: origen } );
+      console.log( 'update seccion ->:', origen );
+    }
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 

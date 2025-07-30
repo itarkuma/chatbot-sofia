@@ -31,36 +31,15 @@ import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
-
-function esDerivacionHumana( texto: string ): boolean {
-  const frasesBase = [
-    'hablar con alguien',
-    'asesor',
-    'quiero ayuda humana',
-    'con Javier',
-    'Javier Gómez',
-    'esto no me sirve',
-    'agente',
-    'esto es complicado',
-    'necesito soporte'
-  ];
-
-  const textoLimpio = preprocessPregunta( texto );
-  for ( const frase of frasesBase ) {
-    const dist = distance( textoLimpio, preprocessPregunta( frase ) );
-    const maxLen = Math.max( textoLimpio.length, frase.length );
-    const similitud = dist / maxLen;
-
-    if ( similitud < 0.45 ) {
-      console.log( `✅ Confirmación Derivar Humana detectada con: "${ frase }" (dist: ${ dist }, %: ${ similitud.toFixed( 2 ) })` );
-      return true;
-    }
-  }
-
-  console.log( '❌ No se detectó Derivar Humano confirmación de derivación' );
-  return false;
-
-}
+import { detectConfusionUser, fallbackConfusionUser } from './fallback/confusionUser.flow';
+import { detectDatoNodisponibleUser, fallbackDatoNodisponibleUser } from './fallback/datoNodisponibleUser.flow';
+import { detectPromocionesUser, fallbackPromocionesUser } from './fallback/promocionesUser.flow';
+import { detectFormasdepagoUser, fallbackFormasdepagoUser } from './fallback/formapagonoUser.flow';
+import { detectOtrasCiudadesUser, fallbackOtrasCiudadesUser } from './fallback/otrasCiudadesUser.flow';
+import { detectderivarJavierUser, fallbackderiverJavierUser } from './fallback/derivarJavierUser.flow';
+import { fallbackconfirmarderivacionUser } from './fallback/confirmarDerivacionUser.flow';
+import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fallback/javiernorespondeUser.flow';
+import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
 
 function esConfirmacionDerivacion( texto: string ): boolean {
   const frasesBase = [
@@ -239,20 +218,39 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isComparacion = esComparacionGrabadoVsVivo( consulta );
     const isConfusion = detectflowConfusion( consulta, seccion );
 
+    const isConfusoUser = detectConfusionUser( consulta );
+    const isDataNodisponibleUser = detectDatoNodisponibleUser( consulta );
+    const isPromocionesUser = detectPromocionesUser( consulta );
+    const isFormasDePagoUser = detectFormasdepagoUser( consulta );
+    const isOtrasCiudadesUser = detectOtrasCiudadesUser( consulta );
+    const isDerivarJavierUser = detectderivarJavierUser( consulta );
+    const isNorespondeJavierUser = detectJavierNoRespondeUser( consulta );
+    const isMultiplesPreguntas = detectarMensajeMultiplesPreguntas( consulta );
+    if ( isMultiplesPreguntas ) { return gotoFlow( fallbackMensajeMultiplesUser ); }
+    if ( isNorespondeJavierUser ) { return gotoFlow( fallbackJavierNoRespondeUser ); }
+    if ( isDerivarJavierUser ) { return gotoFlow( fallbackderiverJavierUser ); }
+    if ( isOtrasCiudadesUser ) { return gotoFlow( fallbackOtrasCiudadesUser ); }
+    if ( isFormasDePagoUser ) { return gotoFlow( fallbackFormasdepagoUser ); }
+    if ( isPromocionesUser ) { return gotoFlow( fallbackPromocionesUser ); }
+    if ( isDataNodisponibleUser ) { return gotoFlow( fallbackDatoNodisponibleUser ); }
+    if ( isConfusoUser ) { return gotoFlow( fallbackConfusionUser ); }
+
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
     if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
     if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
     if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
-    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
-    if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
-    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
-    if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
-    if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
-    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
+
+    if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
+    if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
+    if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
+    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
+    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
+    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -298,104 +296,132 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         console.log( 'Nombre Seccion:', seccion );
         const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
-        console.log( { origen, chunkId } );
 
-
-        if ( origen == 'curso_online_vivo' ||
-          origen == 'curso_online_grabado' ||
-          origen == 'formacion_miami' ||
-          origen == 'formacion_santiago'
+        if ( origen === 'curso_online_vivo' ||
+          origen === 'curso_online_grabado' ||
+          origen === 'formacion_miami' ||
+          origen === 'formacion_santiago'
         ) {
           await state.update( { seccionActual: origen } );
+          console.log( 'update seccion ->:', origen );
         }
+
 
         if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
           // Acción específica
           console.log( 'Caso especial 1' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerSolicitudDatos );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'reserva_plaza' ) && origen === 'curso_online_vivo' ) {
           // Acción específica
           console.log( 'Caso especial 2' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerReservaPlaza );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'inscripción' ) && origen === 'curso_online_grabado' ) {
           // Acción específica
           console.log( 'Caso especial 3' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerInscripcion );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
 
         if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
           console.log( 'Caso especial 7' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerNoFechaDisponible );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
           console.log( 'Caso especial 8' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerCaptarDatosMiami );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
+        if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
+          console.log( 'Caso especial 9' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
           console.log( 'Caso especial 9' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerFaltaConfirmacion );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
+
+        if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_miami' ) {
+          // Acción específica
+          console.log( 'Caso especial 1' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
+        if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_miami' ) {
+          // Acción específica
+          console.log( 'Caso especial 1' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
+        if ( tags.includes( 'precio_curso_Miami' ) && origen === 'formacion_miami' ) {
+          // Acción específica
+          console.log( 'Caso especial 1' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
           console.log( 'Caso especial 1_11' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerAdmisionesSantiagos );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
           console.log( 'Caso especial 2_12' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerAdmisionesSantiagos );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
           console.log( 'Caso especial 3_13' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerAdmisionesSantiagos );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
           console.log( 'Caso especial 4_14' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerAdmisionesSantiagos );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
-        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_santiago' ) {
+        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) ) {
           console.log( 'Caso especial 5_15' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerNoFechaDisponible );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
-        if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) && origen === 'formacion_santiago' ) {
+        if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) ) {
           console.log( 'Caso especial 6_16' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerCaptacionDatosSantiago );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
-        if ( tags.includes( 'escenario_entrenable-post_inscripción' ) && origen === 'formacion_santiago' ) {
+        if ( tags.includes( 'escenario_entrenable-post_inscripción' ) ) {
           console.log( 'Caso especial 7_17' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerFaltaConfirmacion );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
         if ( tags.includes( 'contacto_humano' ) ) {
           console.log( 'Caso especial 1_20' );
           await delay( 2000 );
           await flowDynamic( texto );
-          return gotoFlow( registerContactoHumanoSoporte );
+          return gotoFlow( fallbackconfirmarderivacionUser );
         }
 
         if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
@@ -426,12 +452,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
           console.log( 'Caso especial 2_21' );
           console.log( "send enviar mensaje a Javier" );
-          const mensaje = `
-          📩 Nueva solicitud de atención humana
-          
-          📱 Teléfono: ${ ctx.from }
-          `;
-          await enviarDerivacionWhatsApp( mensaje );
+
+          return gotoFlow( fallbackconfirmarderivacionUser );
 
         }
         await delay( 2000 );
@@ -451,50 +473,62 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         const intencion = await detectarIntencion( consulta );
 
-        const derivar = esDerivacionHumana( consulta );
+        if ( intencion.is_fallback ) {
+          console.log( 'Detecto Fallback intencion else' );
+          const { texto } = await askSofiaFallback( consulta );
+          console.log( 'retorno un fallback' );
 
-        if ( derivar ) {
-          console.log( 'Derivación Humana' );
-          return gotoFlow( derivacionHumana );
+          await delay( 2000 );
+          await flowDynamic( texto );
         } else {
-          if ( intencion.is_fallback ) {
-            console.log( 'Detecto Fallback intencion else' );
-            const { texto } = await askSofiaFallback( consulta );
-            console.log( 'retorno un fallback' );
 
+          if ( intencion.seccion ) {
+            switch ( intencion.seccion ) {
+
+              case 'soporte_general': {
+
+                console.log( 'Intención detectada:', intencion.seccion );
+                return gotoFlow( flowConsultasGenerales );
+              }
+
+
+              default: {
+                console.log( 'No detecto la intencion' );
+                const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+                console.log( { origen, chunkId } );
+
+                if ( origen == 'curso_online_vivo' ||
+                  origen == 'curso_online_grabado' ||
+                  origen == 'formacion_miami' ||
+                  origen == 'formacion_santiago'
+                ) {
+                  await state.update( { seccionActual: origen } );
+                  console.log( 'update seccion ->:', origen );
+                }
+
+                await delay( 2000 );
+                await flowDynamic( texto );
+                break;
+              }
+            }
+          } else {
+            console.log( 'No detecto la intencion else' );
+            const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+            console.log( { origen, chunkId } );
+            if ( origen == 'curso_online_vivo' ||
+              origen == 'curso_online_grabado' ||
+              origen == 'formacion_miami' ||
+              origen == 'formacion_santiago'
+            ) {
+              await state.update( { seccionActual: origen } );
+              console.log( 'update seccion ->:', origen );
+            }
             await delay( 2000 );
             await flowDynamic( texto );
-          } else {
-
-            if ( intencion.seccion ) {
-              switch ( intencion.seccion ) {
-
-                case 'soporte_general': {
-
-                  console.log( 'Intención detectada:', intencion.seccion );
-                  return gotoFlow( flowConsultasGenerales );
-                }
-
-
-                default: {
-                  console.log( 'No detecto la intencion' );
-                  const { texto, origen, chunkId } = await askSofia( consulta, seccion );
-                  console.log( { origen, chunkId } );
-
-                  await delay( 2000 );
-                  await flowDynamic( texto );
-                  break;
-                }
-              }
-            } else {
-              console.log( 'No detecto la intencion else' );
-              const { texto, origen, chunkId } = await askSofia( consulta, seccion );
-              console.log( { origen, chunkId } );
-              await delay( 2000 );
-              await flowDynamic( texto );
-            }
           }
         }
+
+
 
 
 
@@ -509,316 +543,14 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
 
-// casos especiales  
-const registerSolicitudDatos = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAnswer( `Pais de residencia`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { pais: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const pais = await state.get( 'pais' ) || 'No indicado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📝 Pais de residencia: ${ pais }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
-  } );
-
-const registerReservaPlaza = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Ciudad o país`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { pais: ctx.body } );
-  } )
-  .addAnswer( `Email`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const pais = await state.get( 'pais' ) || 'No indicado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📝 Ciudad o país: ${ pais }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-  } );
-
-const registerInscripcion = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAnswer( `País de residencia`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { pais: ctx.body } );
-  } )
-  .addAnswer( `Divisa de pago preferida`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { divisa: ctx.body } );
-  } )
-  .addAnswer( `Método de pago preferido`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { metodo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const pais = await state.get( 'pais' ) || 'No indicado';
-    const divisa = await state.get( 'divisa' ) || 'No indicado';
-    const metodo = await state.get( 'metodo' ) || 'No indicado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📝 Ciudad o país: ${ pais }
-    📱 Teléfono: ${ telefono }
-    Divisa: ${ divisa }
-    Metodo de pago: ${ metodo }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-  } );
-
-const registerNoFechaDisponible = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAnswer( `Ciudad de interés`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { ciudad: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const pais = await state.get( 'pais' ) || 'No indicado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📝 Ciudad de interés: ${ pais }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-
-  } );
-
-const registerCaptarDatosMiami = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-
-  } );
-
-const registerFaltaConfirmacion = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-
-  } );
-
-const registerAdmisionesSantiagos = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos. Los agregaremos a la *lista prioritaria* del curso de Bolsa y Trading en *Santiago de Compostela*.
-
-    Le avisaremos personalmente tan pronto abramos una nueva convocatoria para que pueda confirmar su plaza con antelación.` );
-  } );
-
-const registerCaptacionDatosSantiago = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo Electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAnswer( `Teléfono`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { telefono: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = await state.get( 'telefono' ) || 'No proporcionado';
-    const telefono2 = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📱 Teléfono: ${ telefono }
-    📱 Teléfono(envio): ${ telefono2 }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    await flowDynamic( `✅ ¡Gracias! Ya lo anoté en la lista prioritaria. Le avisaremos cuando se abra la próxima convocatoria.` );
-  } );
 
 
-const registerContactoHumanoSoporte = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Motivo Principal`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const motivo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Motivo: ${ motivo }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    //    await flowDynamic( `${ state.get( 'name' ) }, thanks for your information!: Your age: ${ state.get( 'correo' ) }, and your country: ${ state.get( 'pais' ) }` );
-    await flowDynamic( `✅ ¡Gracias! Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli.` );
-  } );
-
-const derivacionHumana = addKeyword( EVENTS.ACTION )
-  .addAnswer( `Nombre Completo`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { name: ctx.body } );
-  } )
-  .addAnswer( `Correo electrónico`, { capture: true }, async ( ctx, { state } ) => {
-    await state.update( { correo: ctx.body } );
-  } )
-  .addAction( async ( ctx, { flowDynamic, state } ) => {
-
-    const nombre = await state.get( 'name' ) || 'No especificado';
-    const correo = await state.get( 'correo' ) || 'No proporcionado';
-    const telefono = ctx.from || 'Desconocido';
-
-    const mensaje = `
-    📩 Nueva solicitud de atención humana
-    
-    👤 Nombre: ${ nombre }
-    📧 Correo: ${ correo }
-    📱 Teléfono: ${ telefono }
-    `;
-    await enviarDerivacionWhatsApp( mensaje );
-    await delay( 2000 );
-    await flowDynamic( `✅ Gracias. Hemos recibido correctamente sus datos.` );
-
-  } );
 
 const main = async () => {
 
   const adapterFlow = createFlow(
     [ flowMenu,
       welcomeFlow,
-      registerSolicitudDatos,
-      registerReservaPlaza,
-      registerInscripcion,
-      registerNoFechaDisponible,
-      registerCaptarDatosMiami,
-      registerFaltaConfirmacion,
-      registerAdmisionesSantiagos,
-      registerCaptacionDatosSantiago,
-      registerContactoHumanoSoporte,
-      derivacionHumana,
       flowCursoGratis,
       flowLibroFran,
       flowComunidadAlumno,
@@ -832,7 +564,16 @@ const main = async () => {
       flowCursoMiami,
       flowCursoSantiago,
       flowComparacion,
-      flowConfusion
+      flowConfusion,
+      fallbackConfusionUser,
+      fallbackDatoNodisponibleUser,
+      fallbackPromocionesUser,
+      fallbackFormasdepagoUser,
+      fallbackOtrasCiudadesUser,
+      fallbackderiverJavierUser,
+      fallbackconfirmarderivacionUser,
+      fallbackJavierNoRespondeUser,
+      fallbackMensajeMultiplesUser
     ] );
 
   const adapterProvider = createProvider( Provider );

@@ -7,6 +7,9 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
 
   const texto = preprocessPregunta( query );
 
+  //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
+  //  if ( !seccionEsGeneral ) return false;
+
   const frasesExactas = [
     "¿tienen un curso de trading en santiago de compostela?",
     "¿podrias explicarme el entrenamiento de santiago de compostela con fran fialli?",
@@ -19,18 +22,23 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "tienen un curso de trading en santiago de compostela?",
     "curso presencial fran fialli santiago compostela",
     "formacion en santiago",
-  ];
-
-  const regexes = [
-    /\bcurso(s)?\s+(de\s+)?trading\s+en\s+santiago(\s+de\s+compostela)?\b/,
-    /\b(entrenamiento|formacion|masterclass)\s+(de\s+)?trading\s+en\s+santiago(\s+de\s+compostela)?\b/,
-    /\bsantiago(\s+de\s+compostela)?\b.*\bcurso(s)?\b/,
-    /\bcurso\s+presencial\s+(en\s+)?santiago(\s+de\s+compostela)?\b/,
-    /\bfran fialli\b.*\bsantiago(\s+de\s+compostela)?\b/,
-    /^4$/,
+    "curso en santiago",
+    "curso santiago",
+    "trading santiago"
   ];
 
   const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
+
+  const regexes = [
+    /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?santiago(\s+de\s+compostela)?\b/,
+    /\b(entrenamiento|formaci[oó]n|masterclass|clase(s)?)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?santiago(\s+de\s+compostela)?\b/,
+    /\b(francisco|fran)\s+fialli\b.*\bsantiago(\s+de\s+compostela)?\b/,
+    /\binfo(?:rmaci[oó]n)?\b.*\bcurso\b.*\bsantiago(\s+de\s+compostela)?\b/,
+    /\bquiero\b.*(info|informaci[oó]n).*santiago\b/,
+    /^4$/, // opción por número
+  ];
+
+
   const coincideRegex = regexes.some( r => r.test( texto ) );
 
   return coincideFrase || coincideRegex;
@@ -40,10 +48,18 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
 const flowCursoSantiago = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
     console.log( 'flow santiago' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_santiago' );
-
+    if ( origen === 'curso_online_vivo' ||
+      origen === 'curso_online_grabado' ||
+      origen === 'formacion_miami' ||
+      origen === 'formacion_santiago'
+    ) {
+      await state.update( { seccionActual: origen } );
+      console.log( 'update seccion ->:', origen );
+    }
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 

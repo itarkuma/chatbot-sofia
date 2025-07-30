@@ -35,6 +35,7 @@ const detectflowsoyAlumno = ( query: string, seccionActual: string ): boolean =>
 const flowSoyAlumno = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, gotoFlow, flowDynamic, extensions } ) => {
   try {
     console.log( 'flow soy alumno' );
+    await state.update( { estado_confucion: '0' } );
     await state.update( { seccionActual: 'soy_alumno' } );
     const seccion = await state.get( 'seccionActual' );
     const isAlumno = await state.get( 'isAlumnoRegistrado' );

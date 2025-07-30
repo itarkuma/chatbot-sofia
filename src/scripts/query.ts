@@ -22,27 +22,42 @@ interface SofiaMetadata {
 type SofiaDocument = Document<SofiaMetadata>;
 
 function matchDisparador( doc: any, question: string ): boolean {
+
+  const STOPWORDS = new Set( [
+    'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las',
+    'por', 'un', 'para', 'con', 'no', 'una', 'su', 'al', 'lo', 'como',
+    'más', 'pero', 'sus', 'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta',
+    'entre', 'cuando', 'muy', 'sin', 'sobre', 'también', 'me', 'hasta',
+    'hay', 'donde', 'quien', 'desde', 'todo', 'nos', 'durante', 'todos',
+    'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante', 'ellos',
+    'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro',
+    'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
+    'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas',
+    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas'
+  ] );
+
   const queryLower = preprocessPregunta( question );
-  const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
+  //const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
+  const palabrasQuery = queryLower.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
 
-  const disparadoras = doc.metadata?.disparadoras || [];
-  const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-
+  const disparadoras: string[] = doc.metadata?.disparadoras || [];
+  const tags: string[] = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
   const chunkId = doc.metadata?.chunk || 'unknown';
 
-  // ✅ Match directo por inclusión exacta en tags
+  // ✅ [1] Match exacto con tag
   if ( tags.includes( queryLower ) ) {
     console.log( `✅ [TAG-EXACT] Match exacto con tag "${ queryLower }" en chunk ${ chunkId }` );
     return true;
   }
 
-  // ✅ Match si alguna palabra de la query coincide con un tag (genérico)
+  // ✅ [2] Coincidencia palabra a palabra con tags
   for ( const palabra of palabrasQuery ) {
     if ( tags.includes( palabra ) ) {
       console.log( `✅ [TAG-WORD] Palabra "${ palabra }" coincide con tag en chunk ${ chunkId }` );
       return true;
     }
 
+    // ✅ [3] Fuzzy match palabra con tags
     for ( const tag of tags ) {
       const dist = distance( palabra, tag );
       const maxLen = Math.max( palabra.length, tag.length );
@@ -55,21 +70,33 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
   }
 
-  // ✅ Fallback: disparadoras existentes
+  // ✅ [4] Coincidencia con frases disparadoras
   for ( const frase of disparadoras ) {
-    const fraseLimpia = preprocessPregunta( frase );
+    const fraseLimpia = preprocessPregunta( frase ).toLowerCase();
 
+    // a) Inclusión mutua
     if ( fraseLimpia.includes( queryLower ) || queryLower.includes( fraseLimpia ) ) {
       console.log( `✅ [DISPARADORA-INCLUYE] "${ queryLower }" ≈ "${ fraseLimpia }" en chunk ${ chunkId }` );
       return true;
     }
 
+    // b) Fuzzy completo
     const dist = distance( queryLower, fraseLimpia );
     const maxLen = Math.max( queryLower.length, fraseLimpia.length );
     const porcentaje = dist / maxLen;
 
     if ( porcentaje < 0.45 ) {
       console.log( `✅ [DISPARADORA-LEV] "${ fraseLimpia }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
+      return true;
+    }
+
+    // c) Coincidencia por palabras clave
+    //const palabrasFrase = fraseLimpia.split( /\s+/ );
+    const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
+    const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
+
+    if ( comunes.length >= 2 ) {
+      console.log( `✅ [DISPARADORA-PALABRAS] Palabras comunes: ${ comunes.join( ', ' ) } en chunk ${ chunkId }` );
       return true;
     }
   }
@@ -126,6 +153,168 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   const query = preprocessPregunta( question );
   const palabrasQuery = query.split( /\s+/ );
 
+  if ( ask_menu === 'user_question_multiples' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_11'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_javiernoresponde' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_10'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_derivarjavier' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_09'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_otrasciudades' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_08'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_formasdepago' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_07'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_promocion' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_06'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'user_dato_nodisponible' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_05'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'esta_confuso_1' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ask_menu === 'esta_confuso_2' ) {
+    const archivoActual = 'fallbacks.txt';
+    const filters = {
+      archivo: 'fallbacks.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
   if ( ask_menu === 'menu' ) {
 
     const archivoActual = 'fallbacks.txt';
@@ -152,6 +341,46 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const filters = {
       archivo: '2_curso_trading_online_grabado.txt',
       chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && query === 'resumen' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && query === 'temario completo' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_08'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -436,8 +665,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const mapeo: Record<string, string[]> = {
       'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
       'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
-      'curso_miami': [ 'curso en miami', 'en miami' ],
-      'curso_santiago': [ 'curso en santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
+      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
+      'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
       'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
     };
 
@@ -461,6 +690,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     filters.archivo = mapSeccionToArchivo( seccion );
   }
 
+
   if ( esAlumno ) {
     filters.archivo = filters.archivo
       ? { $and: [ filters.archivo, { $ne: '3_alumnos.txt' } ] }
@@ -468,7 +698,6 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   }
 
   const archivoActual = mapSeccionToArchivo( seccion );
-  const filtersActual: any = { archivo: archivoActual };
 
   const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
 
@@ -489,20 +718,24 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   if ( relevantesActuales.length > 0 ) {
     return await responderConResultados( relevantesActuales, query, archivoActual );
   }
+  console.log( 'buscar en global' );
 
   const filtrosGlobales = {
-    archivo: {
-      $in: [
-        '1_curso_trading_online_vivo.txt',
-        '2_curso_trading_online_grabado.txt',
-        '4_curso_trading_miami.txt',
-        '5_curso_trading_santiago.txt',
-        '9_soporte_general.txt',
-      ]
-    }
+    archivo: '9_soporte_general.txt'
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
+
+  // let i = 0;
+  // for ( const [ doc, number ] of resultadosOtros ) {
+  //   console.log( '📥 Documentos recuperados por Global:' );
+  //   console.log( `\n#${ i + 1 }` );
+  //   console.log( 'Archivo:', doc.metadata?.archivo );
+  //   console.log( 'Chunk:', doc.metadata?.chunk );
+  //   console.log( 'Tipo:', doc.metadata?.tipo );
+  //   console.log( 'Score:', number.toFixed( 4 ) );
+  //   i++;
+  // }
 
   const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
     const archivo = doc.metadata.archivo;
@@ -520,7 +753,10 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const archivo = doc.metadata.archivo;
     const esFallback = doc.metadata.es_fallback;
     const coincideContexto = archivo === nuevoContextoDetectado;
-    return esFallback || coincideContexto;
+
+    //    console.log( `⛔ Filtro 1 - archivo: ${ archivo }, esFallback: ${ esFallback }, coincideContexto: ${ coincideContexto }` );
+    //    return esFallback || coincideContexto || archivo === '9_soporte_general.txt';
+    return true;
   } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
 
   return await responderConResultados( relevantesPermitidos, query, nuevoContextoDetectado || archivoActual );
@@ -532,16 +768,16 @@ const responderConResultados = async (
   query: string,
   archivoContexto: string
 ) => {
-  let i = 0;
-  for ( const [ doc, number ] of resultados ) {
-    console.log( '📥 Documentos recuperados por Pinecone:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
-  }
+  // let i = 0;
+  // for ( const [ doc, number ] of resultados ) {
+  //   console.log( '📥 Documentos recuperados por Pinecone:' );
+  //   console.log( `\n#${ i + 1 }` );
+  //   console.log( 'Archivo:', doc.metadata?.archivo );
+  //   console.log( 'Chunk:', doc.metadata?.chunk );
+  //   console.log( 'Tipo:', doc.metadata?.tipo );
+  //   console.log( 'Score:', number.toFixed( 4 ) );
+  //   i++;
+  // }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
     .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
@@ -591,6 +827,7 @@ Respuesta:
   const finalPrompt = await prompt.format( { context, query } );
   const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
 
+  console.log( "gemini responde" );
 
   return {
     texto: typeof response === "string" ? response : ( response.text || "" ),
@@ -656,6 +893,7 @@ Respuesta:
   const finalPrompt = await prompt.format( { context, query } );
   const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
 
+  console.log( "gemini responde" );
 
   return {
     texto: typeof response === "string" ? response : ( response.text || "" ),
