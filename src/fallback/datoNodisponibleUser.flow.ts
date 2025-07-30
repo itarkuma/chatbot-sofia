@@ -33,6 +33,7 @@ const detectDatoNodisponibleUser = ( query: string ): boolean => {
 
 const fallbackDatoNodisponibleUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> DatoNodisponibleUser' );
 
     const seccion = await state.get( 'seccionActual' );
 

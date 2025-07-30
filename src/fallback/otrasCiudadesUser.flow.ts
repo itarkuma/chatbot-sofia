@@ -34,6 +34,7 @@ const detectOtrasCiudadesUser = ( query: string ): boolean => {
 
 const fallbackOtrasCiudadesUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> OtrasCiudadesUser' );
 
     const seccion = await state.get( 'seccionActual' );
 

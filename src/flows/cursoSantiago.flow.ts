@@ -52,7 +52,14 @@ const flowCursoSantiago = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { 
     await state.update( { seccionActual: 'formacion_miami' } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_santiago' );
-
+    if ( origen === 'curso_online_vivo' ||
+      origen === 'curso_online_grabado' ||
+      origen === 'formacion_miami' ||
+      origen === 'formacion_santiago'
+    ) {
+      await state.update( { seccionActual: origen } );
+      console.log( 'update seccion ->:', origen );
+    }
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 

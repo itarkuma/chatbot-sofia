@@ -48,7 +48,7 @@ const detectderivarJavierUser = ( query: string ): boolean => {
 
 const fallbackderiverJavierUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, gotoFlow, flowDynamic, extensions } ) => {
   try {
-
+    console.log( 'fallback -> deriverJavierUser' );
     const seccion = await state.get( 'seccionActual' );
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'user_derivarjavier' );

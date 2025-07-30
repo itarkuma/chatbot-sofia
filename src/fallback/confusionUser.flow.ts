@@ -7,9 +7,11 @@ const detectConfusionUser = ( query: string ): boolean => {
   const texto = preprocessPregunta( query ); // Normaliza: minúsculas, sin tildes, trim
 
   const confusionTriggers: ( string | RegExp )[] = [
-    // Confusión
-    "que",
-    "como",
+    // Confusión genérica: detecta solo si el mensaje es "¿Qué?" o "¿Cómo?"
+    /^que[\?¡!\.\s]*$/i,
+    /^como[\?¡!\.\s]*$/i,
+
+    // Expresiones comunes de confusión
     "no entiendo",
     "me puedes repetir eso",
     "no te sigo",
@@ -37,8 +39,7 @@ const detectConfusionUser = ( query: string ): boolean => {
     "puedo hablar con alguien real",
     "basta de ia",
 
-
-    // Nuevas frases más flexibles
+    // Variaciones frecuentes
     /no\s+me\s+ayuda/,
     /no\s+ayuda/,
     /no\s+sirve/,
@@ -46,7 +47,7 @@ const detectConfusionUser = ( query: string ): boolean => {
     /no\s+me\s+sirve/,
     /no\s+me\s+estas\s+ayudando/,
 
-    // Emojis o símbolos de confusión o molestia
+    // Emojis o símbolos de molestia/confusión
     /😕/,
     /❓/,
     /😠/,
@@ -57,7 +58,7 @@ const detectConfusionUser = ( query: string ): boolean => {
       return texto.includes( trigger );
     }
     if ( trigger instanceof RegExp ) {
-      return trigger.test( query ); // usamos el texto original para los emojis
+      return trigger.test( query ); // usamos el texto original para emojis y signos
     }
     return false;
   } );
@@ -65,6 +66,7 @@ const detectConfusionUser = ( query: string ): boolean => {
 
 const fallbackConfusionUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> ConfusionUser' );
 
     const seccion = await state.get( 'seccionActual' );
     let contador = await state.get( 'estado_confucion' );
@@ -72,6 +74,15 @@ const fallbackConfusionUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx
     if ( contador === 1 ) { contador = 2; await state.update( { estado_confucion: '2' } ); }
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'esta_confuso_' + contador );
+
+    if ( origen === 'curso_online_vivo' ||
+      origen === 'curso_online_grabado' ||
+      origen === 'formacion_miami' ||
+      origen === 'formacion_santiago'
+    ) {
+      await state.update( { seccionActual: origen } );
+      console.log( 'update seccion ->:', origen );
+    }
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );

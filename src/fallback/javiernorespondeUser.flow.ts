@@ -33,9 +33,10 @@ const detectJavierNoRespondeUser = ( query: string ): boolean => {
 
 const fallbackJavierNoRespondeUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> JavierNoRespondeUser' );
 
     const seccion = await state.get( 'seccionActual' );
-    0;
+
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'user_javiernoresponde' );
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );

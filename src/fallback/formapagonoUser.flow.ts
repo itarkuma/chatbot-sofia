@@ -33,6 +33,7 @@ const detectFormasdepagoUser = ( query: string ): boolean => {
 
 const fallbackFormasdepagoUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> FormasdepagoUser' );
 
     const seccion = await state.get( 'seccionActual' );
 

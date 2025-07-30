@@ -46,12 +46,16 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     async ( ctx, { flowDynamic, endFlow, state } ) => {
       if ( ctx.body === 'no' ) {
         return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
-      }
-      if ( ctx.body !== 'si' ) {
-        return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
+      } else {
+        if ( ctx.body !== 'si' ) {
+          return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
+        } else {
+
+          await flowDynamic( `✅ Para empezar solo necesito:` );
+        }
       }
 
-      return flowDynamic( `✅ Para empezar solo necesito:` );
+
     }
   )
   .addAnswer(
@@ -60,7 +64,7 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
       if ( ctx.body === 'no' ) {
-        return endFlow();
+        return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       }
       await state.update( { derivar_nombre: ctx.body } );
       //      return flowDynamic(`Perfect *${ctx.body}*, finally...`);
@@ -72,7 +76,7 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
       if ( ctx.body === 'no' ) {
-        return endFlow();
+        return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       }
       await state.update( { derivar_correo: ctx.body } );
       //      return flowDynamic(`Perfect *${ctx.body}*, finally...`);
@@ -84,16 +88,17 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
       if ( ctx.body === 'no' ) {
-        return endFlow();
-      }
-      await state.update( { derivar_motivo: ctx.body } );
+        return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
+      } else {
 
-      const nombre = await state.get( 'derivar_nombre' ) || 'No especificado';
-      const correo = await state.get( 'derivar_correo' ) || 'No proporcionado';
-      const pais = await state.get( 'derivar_motivo' ) || 'No indicado';
-      const telefono = ctx.from || 'Desconocido';
+        await state.update( { derivar_motivo: ctx.body } );
 
-      const mensaje = `
+        const nombre = await state.get( 'derivar_nombre' ) || 'No especificado';
+        const correo = await state.get( 'derivar_correo' ) || 'No proporcionado';
+        const pais = await state.get( 'derivar_motivo' ) || 'No indicado';
+        const telefono = ctx.from || 'Desconocido';
+
+        const mensaje = `
     📩 Nueva solicitud de atención humana
 
     👤 Nombre: ${ nombre }
@@ -101,13 +106,16 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     📝 Motivo: ${ pais }
     📱 Teléfono: ${ telefono }
     `;
-      await enviarDerivacionWhatsApp( mensaje );
-      const texto_success = `✅ Gracias *${ nombre }* . Hemos recibido correctamente sus datos.`;
-      await flowDynamic( [ { body: texto_success, delay: generateTimer( 150, 250 ) } ] );
+        await enviarDerivacionWhatsApp( mensaje );
+        const texto_success = `✅ Gracias *${ nombre }* . Hemos recibido correctamente sus datos.`;
+        await flowDynamic( [ { body: texto_success, delay: generateTimer( 150, 250 ) } ] );
 
-      await state.update( { derivar_nombre: "" } );
-      await state.update( { derivar_correo: "" } );
-      await state.update( { derivar_motivo: "" } );
+        await state.update( { derivar_nombre: "" } );
+        await state.update( { derivar_correo: "" } );
+        await state.update( { derivar_motivo: "" } );
+
+      }
+
 
     }
   );

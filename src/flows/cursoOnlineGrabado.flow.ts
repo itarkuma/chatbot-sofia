@@ -43,7 +43,14 @@ const flowCursoOnlineGrabado = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     await state.update( { estaconfundido_answer: false } );
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'curso_online_grabado' );
-
+    if ( origen === 'curso_online_vivo' ||
+      origen === 'curso_online_grabado' ||
+      origen === 'formacion_miami' ||
+      origen === 'formacion_santiago'
+    ) {
+      await state.update( { seccionActual: origen } );
+      console.log( 'update seccion ->:', origen );
+    }
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     await flowDynamic( [ { body: "¿Le gustaría ver el *temario completo* o un *resumen* con los principales detalles?", delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );

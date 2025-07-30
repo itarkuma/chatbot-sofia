@@ -36,6 +36,7 @@ const detectPromocionesUser = ( query: string ): boolean => {
 
 const fallbackPromocionesUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
+    console.log( 'fallback -> PromocionesUser' );
 
     const seccion = await state.get( 'seccionActual' );
 

@@ -690,6 +690,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     filters.archivo = mapSeccionToArchivo( seccion );
   }
 
+
   if ( esAlumno ) {
     filters.archivo = filters.archivo
       ? { $and: [ filters.archivo, { $ne: '3_alumnos.txt' } ] }
@@ -697,7 +698,6 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   }
 
   const archivoActual = mapSeccionToArchivo( seccion );
-  const filtersActual: any = { archivo: archivoActual };
 
   const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
 
@@ -721,29 +721,21 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   console.log( 'buscar en global' );
 
   const filtrosGlobales = {
-    archivo: {
-      $in: [
-        '1_curso_trading_online_vivo.txt',
-        '2_curso_trading_online_grabado.txt',
-        '4_curso_trading_miami.txt',
-        '5_curso_trading_santiago.txt',
-        '9_soporte_general.txt',
-      ]
-    }
+    archivo: '9_soporte_general.txt'
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
 
-  let i = 0;
-  for ( const [ doc, number ] of resultadosOtros ) {
-    console.log( '📥 Documentos recuperados por Global:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
-  }
+  // let i = 0;
+  // for ( const [ doc, number ] of resultadosOtros ) {
+  //   console.log( '📥 Documentos recuperados por Global:' );
+  //   console.log( `\n#${ i + 1 }` );
+  //   console.log( 'Archivo:', doc.metadata?.archivo );
+  //   console.log( 'Chunk:', doc.metadata?.chunk );
+  //   console.log( 'Tipo:', doc.metadata?.tipo );
+  //   console.log( 'Score:', number.toFixed( 4 ) );
+  //   i++;
+  // }
 
   const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
     const archivo = doc.metadata.archivo;
@@ -776,16 +768,16 @@ const responderConResultados = async (
   query: string,
   archivoContexto: string
 ) => {
-  let i = 0;
-  for ( const [ doc, number ] of resultados ) {
-    console.log( '📥 Documentos recuperados por Pinecone:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
-  }
+  // let i = 0;
+  // for ( const [ doc, number ] of resultados ) {
+  //   console.log( '📥 Documentos recuperados por Pinecone:' );
+  //   console.log( `\n#${ i + 1 }` );
+  //   console.log( 'Archivo:', doc.metadata?.archivo );
+  //   console.log( 'Chunk:', doc.metadata?.chunk );
+  //   console.log( 'Tipo:', doc.metadata?.tipo );
+  //   console.log( 'Score:', number.toFixed( 4 ) );
+  //   i++;
+  // }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
     .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
