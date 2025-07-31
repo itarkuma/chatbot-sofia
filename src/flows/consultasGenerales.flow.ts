@@ -36,7 +36,7 @@ const flowConsultasGenerales = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
 
-    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Quién es Fran Fialli?' ), seccion );
+    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Qué puedo hacer desde cero?' ), seccion );
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
