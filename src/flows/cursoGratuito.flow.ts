@@ -3,6 +3,7 @@ import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 import { removeAccents } from '../lib/utils/removeAccents';
+import { log } from 'console';
 
 const detectflowCursorGratuito = ( query: string, seccionActual: string ): boolean => {
   const texto = preprocessPregunta( query );
@@ -11,18 +12,18 @@ const detectflowCursorGratuito = ( query: string, seccionActual: string ): boole
   const cursoGratuitoTriggers = [
     "curso gratuito por email",
     //    "5", // número
-    /algo\s+gratuito/,
-    /empezar.*sin\s+pagar/,
-    /probar.*antes.*inscribirme/,
-    /ofrecen.*recursos.*sin\s+costo/,
-    /curso.*principiantes?/,
-    /algo\s+gratis/,
-    /probar.*sin\s+pagar/,
-    /curso.*sin\s+coste/,
-    /algo.*novatos?/,
-    /recursos\s+de\s+prueba/,
-    /interesa.*aprender.*no\s+gastar/,
-    /empezar.*b[aá]sico/
+    /\balgo\s+gratuito\b/,
+    /\bempezar.*sin\s+pagar\b/,
+    /\bprobar.*antes.*inscribirme\b/,
+    /\bofrecen.*recursos.*sin\s+costo\b/,
+    /\bcurso.*principiantes\b/,
+    /\balgo\s+gratis\b/,
+    /\bprobar.*sin\s+pagar\b/,
+    /\bcurso.*sin\s+coste\b/,
+    /\balgo.*novatos\b/,
+    /\brecursos\s+de\s+prueba\b/,
+    /\binteresa.*aprender.*no\s+gastar\b/,
+    /\bempezar.*b[aá]sico\b/
   ];
 
   return cursoGratuitoTriggers.some( trigger => {
@@ -39,7 +40,7 @@ const detectflowCursorGratuito = ( query: string, seccionActual: string ): boole
 
 const flowCursoGratis = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
-
+    console.log( 'flow curso gratuito' );
     const seccion = await state.get( 'seccionActual' );
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'curso_gratis' );

@@ -142,6 +142,8 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 
 
 export const askSofia = async ( question: string, seccion: string, ask_menu: string = '', esAlumno: boolean = false ) => {
+  console.log( 'fallo buscar 1' );
+
   const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
   const vectorStore = await PineconeStore.fromExistingIndex( new OpenAIEmbeddings(), {
     pineconeIndex: index,
@@ -181,6 +183,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     seccion = cambio;
   }
 
+  console.log( 'fallo buscar 2' );
 
   if ( ask_menu === 'user_question_multiples' ) {
     const archivoActual = 'fallbacks.txt';
@@ -820,7 +823,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-
+  console.log( 'fallo buscar 3' );
 
 
   const filters: any = {};
@@ -993,16 +996,16 @@ const responderConResultadosFijo = async (
   query: string,
   archivoContexto: string
 ) => {
-  let i = 0;
-  for ( const [ doc, number ] of resultados ) {
-    console.log( '📥 Documentos recuperados por Pinecone:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
-  }
+  // let i = 0;
+  // for ( const [ doc, number ] of resultados ) {
+  //   console.log( '📥 Documentos recuperados por Pinecone:' );
+  //   console.log( `\n#${ i + 1 }` );
+  //   console.log( 'Archivo:', doc.metadata?.archivo );
+  //   console.log( 'Chunk:', doc.metadata?.chunk );
+  //   console.log( 'Tipo:', doc.metadata?.tipo );
+  //   console.log( 'Score:', number.toFixed( 4 ) );
+  //   i++;
+  // }
 
   const mejor = resultados[ 0 ]?.[ 0 ];
 

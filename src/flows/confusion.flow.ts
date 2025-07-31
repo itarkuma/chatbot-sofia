@@ -10,43 +10,18 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
   const texto = preprocessPregunta( query );
   const textoNormalizado = removeAccents( texto.toLowerCase() );
 
-  if ( /grabado|en vivo|miami|santiago/.test( texto ) ) {
-    return false; // ya es específico
+  // Paso 1: Revisar si el texto menciona "curso online"
+  if ( /curso online/.test( textoNormalizado ) ) {
+
+    // Paso 2: Revisar si se menciona alguna modalidad (grabado, en vivo, en directo)
+    if ( !/(grabado|en vivo|en directo)/.test( textoNormalizado ) ) {
+      console.log( `⚠️ Confusión detectada: Mención de "curso online" sin modalidad especificada.` );
+      return true;  // Confusión detectada, no se especificó modalidad
+    }
   }
 
-  const frasesExactas = [
-    "curso online",
-    "el curso online",
-    "info curso online",
-    "informacion curso online",
-    "información sobre el curso online",
-    "información del curso online",
-    "info sobre el curso online",
-    "tienen curso online",
-    "tenéis curso online",
-    "tenes curso online",
-    "tiene curso online",
-    "hay curso online",
-    "ofrecen curso online"
-  ];
-
-  const patrones = [
-    /(informaci[oó]n|info).*curso online/,
-    /curso online.*(informaci[oó]n|info)/,
-    /(tienen|tiene|hay|dan|ofrecen).*curso online/,
-    /me.*interesa.*curso online/,
-    /quisiera.*curso online/,
-    /quiero.*curso online/,
-    /saber.*curso online/,
-    /sobre.*curso online/,
-    /^curso online\??$/,
-    /cu[aá]nto.*cuesta.*curso online/,
-    /precio.*curso online/,
-    /preguntar.*cu[aá]nto.*cuesta.*curso online/
-  ];
-
-  return frasesExactas.includes( textoNormalizado ) || patrones.some( p => p.test( textoNormalizado ) );
-
+  // Si se menciona modalidad, o no se menciona "curso online", no hay confusión
+  return false;
 };
 
 const flowConfusion = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {

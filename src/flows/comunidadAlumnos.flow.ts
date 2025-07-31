@@ -11,16 +11,16 @@ const detectflowComunidadAlumno = ( query: string, seccionActual: string ): bool
   const comunidadAlumnoTriggers = [
     "comunidad de alumnos",
     //    "7",
-    /grupo.*alumnos/,
-    /tienen.*comunidad.*compartir/,
-    /hablar.*otros.*alumnos/,
-    /grupo.*telegram/,
-    /compartir.*analisis.*otros/,
-    /telegram.*alumnos/,
-    /comunidad.*alumnos.*curso/,
-    /chat.*alumnos/,
-    /grupo.*para.*alumnos/,
-    /unirme.*comunidad.*alumnos/
+    /\bgrupo.*alumnos\b/,
+    /\btienen.*comunidad.*compartir\b/,
+    /\bhablar.*otros.*alumnos\b/,
+    /\bgrupo.*telegram\b/,
+    /\bcompartir.*analisis.*otros\b/,
+    /\btelegram.*alumnos\b/,
+    /\bcomunidad.*alumnos.*curso\b/,
+    /\bchat.*alumnos\b/,
+    /\bgrupo.*para.*alumnos\b/,
+    /\bunirme.*comunidad.*alumnos\b/
   ];
 
   return comunidadAlumnoTriggers.some( trigger => {

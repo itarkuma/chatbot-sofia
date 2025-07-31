@@ -13,9 +13,9 @@ import { distance } from 'fastest-levenshtein';
 
 import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
 
-import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
+//import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
 import { detectflowLibroFran, flowLibroFran } from './flows/libroFran.flow';
-import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
+//import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
 import { detectflowNoticiasMercado, flowNoticiasMercado } from './flows/noticiasMercado.flow';
 import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
 import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
@@ -206,9 +206,9 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     const isCommandMenu = detectflowMenu( consulta, seccion );
     const isSaludo = detectflowSaludo( consulta, seccion );
-    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
+    //    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
     const isMenuOption6 = detectflowLibroFran( consulta, seccion );
-    const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
+    //    const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
     const isMenuOption8 = detectflowNoticiasMercado( consulta, seccion );
     const isMenuOption9 = detectflowClubFran( consulta, seccion );
     const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
@@ -252,8 +252,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
     if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
-    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
-    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
+    //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
+    //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -555,9 +555,9 @@ const main = async () => {
     [ flowMenu,
       flowSaludo,
       welcomeFlow,
-      flowCursoGratis,
+      //      flowCursoGratis,
       flowLibroFran,
-      flowComunidadAlumno,
+      //      flowComunidadAlumno,
       flowNoticiasMercado,
       flowClubFran,
       flowConsultasGenerales,
