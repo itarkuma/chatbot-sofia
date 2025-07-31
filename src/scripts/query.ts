@@ -37,7 +37,6 @@ function matchDisparador( doc: any, question: string ): boolean {
   ] );
 
   const queryLower = preprocessPregunta( question );
-  //const palabrasQuery = queryLower.split( /\s+/ ); // palabras individuales
   const palabrasQuery = queryLower.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
 
   const disparadoras: string[] = doc.metadata?.disparadoras || [];
@@ -91,7 +90,6 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
 
     // c) Coincidencia por palabras clave
-    //const palabrasFrase = fraseLimpia.split( /\s+/ );
     const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
     const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
 
@@ -152,6 +150,37 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   const query = preprocessPregunta( question );
   const palabrasQuery = query.split( /\s+/ );
+
+  // Detectar cambio de flujo si se menciona otro curso o sección
+  const detectarCambioDeFlujo = ( query: string, seccionActual: string ): string | null => {
+
+    const normalizada = preprocessPregunta( query );
+
+    if ( esComparacionGrabadoVsVivo( normalizada ) ) { return null; }
+
+    const mapeo: Record<string, string[]> = {
+      'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
+      'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
+      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
+      'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
+      'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
+    };
+
+
+    for ( const [ seccionKey, keywords ] of Object.entries( mapeo ) ) {
+      if ( seccionKey !== seccionActual && keywords.some( k => normalizada.includes( k ) ) ) {
+        return seccionKey;
+      }
+    }
+    return null;
+  };
+
+  const cambio = detectarCambioDeFlujo( query, seccion );
+  if ( cambio ) {
+    console.log( `⚠️ Cambio de flujo detectado: ${ seccion } -> ${ cambio }` );
+    seccion = cambio;
+  }
+
 
   if ( ask_menu === 'user_question_multiples' ) {
     const archivoActual = 'fallbacks.txt';
@@ -414,6 +443,36 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+  const isPrecioRelated =
+    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
+    preprocessPregunta( query ).includes( 'precio curso' ) ||
+    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
+    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
+    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
+    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
+    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
+    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
+    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
+    preprocessPregunta( query ).includes( 'cual es el costo' );
+  if ( seccion === 'curso_online_grabado' && isPrecioRelated ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_24'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
 
   if ( ask_menu === 'curso_online_vivo' ) {
 
@@ -434,7 +493,36 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+  const isPrecioRelated2 =
+    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
+    preprocessPregunta( query ).includes( 'precio curso' ) ||
+    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
+    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
+    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
+    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
+    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
+    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
+    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
+    preprocessPregunta( query ).includes( 'cual es el costo' );
+  if ( seccion === 'curso_online_vivo' && isPrecioRelated2 ) {
 
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_11'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
   if ( ask_menu === 'formacion_miami' ) {
 
     const archivoActual = '4_curso_trading_miami.txt';
@@ -454,7 +542,36 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+  const isPrecioRelated3 =
+    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
+    preprocessPregunta( query ).includes( 'precio curso' ) ||
+    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
+    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
+    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
+    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
+    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
+    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
+    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
+    preprocessPregunta( query ).includes( 'cual es el costo' );
+  if ( seccion === 'curso_miami' && isPrecioRelated3 ) {
 
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_51'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
   if ( ask_menu === 'formacion_santiago' ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
@@ -474,7 +591,36 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+  const isPrecioRelated4 =
+    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
+    preprocessPregunta( query ).includes( 'precio curso' ) ||
+    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
+    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
+    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
+    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
+    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
+    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
+    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
+    preprocessPregunta( query ).includes( 'cual es el costo' );
+  if ( seccion === 'curso_santiago' && isPrecioRelated4 ) {
 
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_50'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
   if ( ask_menu === 'soy_alumno' ) {
 
     const archivoActual = '3_alumnos.txt';
@@ -675,35 +821,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  // Detectar cambio de flujo si se menciona otro curso o sección
-  const detectarCambioDeFlujo = ( query: string, seccionActual: string ): string | null => {
 
-    const normalizada = preprocessPregunta( query );
-
-    if ( esComparacionGrabadoVsVivo( normalizada ) ) { return null; }
-
-    const mapeo: Record<string, string[]> = {
-      'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
-      'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
-      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
-      'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
-      'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
-    };
-
-
-    for ( const [ seccionKey, keywords ] of Object.entries( mapeo ) ) {
-      if ( seccionKey !== seccionActual && keywords.some( k => normalizada.includes( k ) ) ) {
-        return seccionKey;
-      }
-    }
-    return null;
-  };
-
-  const cambio = detectarCambioDeFlujo( query, seccion );
-  if ( cambio ) {
-    console.log( `⚠️ Cambio de flujo detectado: ${ seccion } -> ${ cambio }` );
-    seccion = cambio;
-  }
 
   const filters: any = {};
   if ( seccion ) {
@@ -733,7 +851,6 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
 
   const nuevoContextoDetectado = detectarCambioDeContexto( query );
-  console.log( { nuevoContextoDetectado } );
 
   if ( relevantesActuales.length > 0 ) {
     return await responderConResultados( relevantesActuales, query, archivoActual );

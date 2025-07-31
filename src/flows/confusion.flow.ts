@@ -39,7 +39,10 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
     /quiero.*curso online/,
     /saber.*curso online/,
     /sobre.*curso online/,
-    /^curso online\??$/
+    /^curso online\??$/,
+    /cu[aá]nto.*cuesta.*curso online/,
+    /precio.*curso online/,
+    /preguntar.*cu[aá]nto.*cuesta.*curso online/
   ];
 
   return frasesExactas.includes( textoNormalizado ) || patrones.some( p => p.test( textoNormalizado ) );
@@ -48,18 +51,18 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
 
 const flowConfusion = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic } ) => {
   try {
-    console.log( 'flow confusion' );
+    console.log( 'flow confusion anwser -> no sabe si online o grabado' );
     await state.update( { estaconfundido_answer: true } );
     const seccion = await state.get( 'seccionActual' );
 
     const texto = "¿Podrías confirmarme si te refieres al *Curso Grabado* o al *Curso en vivo* con Fran?\nAmbos se realizan en modalidad online, pero tienen características diferentes. Así podré darte una respuesta más precisa. 😊";
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-    console.log( 'texto ingresado fijo' );
+    console.log( 'chunk texto ingresado fijo' );
 
 
   } catch ( err ) {
-    console.log( `[ERROR]: en el flujo confusion`, err );
+    console.log( `[ERROR]: en el flujo confusion chunk ingresado fijo`, err );
     return;
   }
 } );

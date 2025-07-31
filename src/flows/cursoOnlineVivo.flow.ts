@@ -32,9 +32,41 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
     /^2$/,
   ];
 
+  // Lista de frases o palabras clave relacionadas con detalles específicos (temario, lugar, precio, etc.)
+  const frasesDetallesEspecificos = [
+    "temario",
+    "temario del curso grabado",
+    "contenido del curso grabado",
+    "temario completo",
+    "cuánto cuesta",
+    "precio",
+    "costo",
+    "dónde se realiza",
+    "lugar del curso",
+    "fecha del curso",
+    "fechas de inicio",
+    "horarios del curso",
+    "duración del curso",
+    "cómo se realiza",
+  ];
+
+  // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos
+  const esPreguntaSobreDetalleEspecifico = frasesDetallesEspecificos.some( f =>
+    textoNormalizado.includes( removeAccents( f.toLowerCase() ) )
+  );
+
+  // Si se detecta que el usuario está preguntando por un detalle específico (precio, temario, lugar, etc.)
+  // Se redirige a otro flujo y se devuelve false
+  if ( esPreguntaSobreDetalleEspecifico ) {
+    return false;  // No activar el flujo de "curso grabado", ya que se está preguntando por un detalle específico
+  }
+
+  // Verificar si el texto coincide exactamente con las frases clave
   const coincideFrase = frasesClaves.some(
     ( f ) => textoNormalizado === preprocessPregunta( f )
   );
+
+  // Verificar si el texto coincide con alguna expresión regular
   const coincideRegex = regexes.some( ( r ) => r.test( textoNormalizado ) );
 
   return coincideFrase || coincideRegex;
