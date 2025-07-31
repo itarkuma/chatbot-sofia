@@ -375,7 +375,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'curso_online_grabado' && query === 'resumen' ) {
+  if ( seccion === 'curso_online_grabado' && /resumen/.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -395,7 +395,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'curso_online_grabado' && query === 'temario completo' ) {
+  if ( seccion === 'curso_online_grabado' && /temario completo/.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
