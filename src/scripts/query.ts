@@ -62,7 +62,7 @@ function matchDisparador( doc: any, question: string ): boolean {
       const maxLen = Math.max( palabra.length, tag.length );
       const porcentaje = dist / maxLen;
 
-      if ( porcentaje < 0.35 ) {
+      if ( porcentaje < 0.45 ) {
         console.log( `✅ [TAG-FUZZY] Palabra "${ palabra }" ≈ tag "${ tag }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
         return true;
       }
@@ -839,16 +839,29 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
 
-  const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
-    const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-    const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-    let bonificacion = 0;
-    if ( interseccion.length > 0 ) {
-      bonificacion += 0.03;
-      console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-    }
-    return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-  } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
+  // const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
+  //   const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
+  //   const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
+  //   let bonificacion = 0;
+  //   if ( interseccion.length > 0 ) {
+  //     bonificacion += 0.03;
+  //     console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
+  //   }
+  //   return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
+  // } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
+
+  const relevantesActuales = resultadosActuales
+    .filter( ( [ doc ] ) => matchDisparador( doc, query ) )
+    .map( ( [ doc, score ] ) => {
+      const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
+      const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
+      let bonificacion = 0;
+      if ( interseccion.length > 0 ) {
+        bonificacion += 0.03;
+        console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
+      }
+      return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
+    } );
 
   const nuevoContextoDetectado = detectarCambioDeContexto( query );
 
@@ -905,16 +918,16 @@ const responderConResultados = async (
   query: string,
   archivoContexto: string
 ) => {
-  // let i = 0;
-  // for ( const [ doc, number ] of resultados ) {
-  //   console.log( '📥 Documentos recuperados por Pinecone:' );
-  //   console.log( `\n#${ i + 1 }` );
-  //   console.log( 'Archivo:', doc.metadata?.archivo );
-  //   console.log( 'Chunk:', doc.metadata?.chunk );
-  //   console.log( 'Tipo:', doc.metadata?.tipo );
-  //   console.log( 'Score:', number.toFixed( 4 ) );
-  //   i++;
-  // }
+  let i = 0;
+  for ( const [ doc, number ] of resultados ) {
+    console.log( '📥 Documentos recuperados por Pinecone:' );
+    console.log( `\n#${ i + 1 }` );
+    console.log( 'Archivo:', doc.metadata?.archivo );
+    console.log( 'Chunk:', doc.metadata?.chunk );
+    console.log( 'Tipo:', doc.metadata?.tipo );
+    console.log( 'Score:', number.toFixed( 4 ) );
+    i++;
+  }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
     .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
