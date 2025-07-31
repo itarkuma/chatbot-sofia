@@ -457,6 +457,27 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+
+  if ( seccion === 'curso_online_grabado' && /plataforma de trading/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'plataforma_trading'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   const isPrecioRelated =
     preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
     preprocessPregunta( query ).includes( 'precio curso' ) ||
