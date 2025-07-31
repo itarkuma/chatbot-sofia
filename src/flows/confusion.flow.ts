@@ -13,6 +13,12 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
   // Paso 1: Revisar si el texto menciona "curso online"
   if ( /curso online/.test( textoNormalizado ) ) {
 
+    // Paso 2: Excluir frases con "mercado" y "curso online"
+    if ( /mercado.*curso online/.test( textoNormalizado ) ) {
+      console.log( `⚠️ Excluido: Mención de "mercado" y "curso online" sin modalidad.` );
+      return false;  // No hay confusión en este caso
+    }
+
     // Paso 2: Revisar si se menciona alguna modalidad (grabado, en vivo, en directo)
     if ( !/(grabado|en vivo|en directo)/.test( textoNormalizado ) ) {
       console.log( `⚠️ Confusión detectada: Mención de "curso online" sin modalidad especificada.` );

@@ -57,12 +57,22 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
 
     // ✅ [3] Fuzzy match palabra con tags
+    const threshold = 0.55; // Cambiar este valor según tu preferencia
+    const palabrasIrrelevantes = new Set( [
+      "resultados", "descansos", "horarios", "detalles" // Agrega otras palabras irrelevantes que no deberían considerarse
+    ] );
+
     for ( const tag of tags ) {
+
+      if ( palabrasIrrelevantes.has( tag ) ) {
+        continue; // Si es irrelevante, pasamos al siguiente tag
+      }
+
       const dist = distance( palabra, tag );
       const maxLen = Math.max( palabra.length, tag.length );
       const porcentaje = dist / maxLen;
 
-      if ( porcentaje < 0.45 ) {
+      if ( porcentaje < threshold ) {
         console.log( `✅ [TAG-FUZZY] Palabra "${ palabra }" ≈ tag "${ tag }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
         return true;
       }
@@ -91,8 +101,9 @@ function matchDisparador( doc: any, question: string ): boolean {
 
     // c) Coincidencia por palabras clave
     const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-    const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
-
+    //    const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
+    const comunes = palabrasFrase
+      .filter( p => p !== "curso" && palabrasQuery.includes( p ) );
     if ( comunes.length >= 2 ) {
       console.log( `✅ [DISPARADORA-PALABRAS] Palabras comunes: ${ comunes.join( ', ' ) } en chunk ${ chunkId }` );
       return true;
