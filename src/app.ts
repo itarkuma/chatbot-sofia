@@ -20,6 +20,7 @@ import { detectflowNoticiasMercado, flowNoticiasMercado } from './flows/noticias
 import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
 import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
 import { detectflowMenu, flowMenu } from './flows/menu.flow';
+import { detectflowSaludo, flowSaludo } from './flows/saludo.flow';
 import { detectflowsoyAlumno, flowSoyAlumno } from './flows/soyAlumno.flow';
 import { detectflowCursoOonlineGrabado, flowCursoOnlineGrabado } from './flows/cursoOnlineGrabado.flow';
 import { detectflowCursoOonlineVivo, flowCursoOnlineVivo } from './flows/cursoOnlineVivo.flow';
@@ -204,6 +205,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const consulta = preprocessPregunta( ctx.body );
 
     const isCommandMenu = detectflowMenu( consulta, seccion );
+    const isSaludo = detectflowSaludo( consulta, seccion );
     const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
     const isMenuOption6 = detectflowLibroFran( consulta, seccion );
     const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
@@ -238,6 +240,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
 
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
     if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
@@ -550,6 +553,7 @@ const main = async () => {
 
   const adapterFlow = createFlow(
     [ flowMenu,
+      flowSaludo,
       welcomeFlow,
       flowCursoGratis,
       flowLibroFran,
