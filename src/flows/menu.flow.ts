@@ -2,31 +2,26 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
   const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
 
-  // Frases disparadoras simples
-  const frasesDisparadoras = [
-    "menu",
+  // Frases disparadoras para el menú
+  const frasesDisparadorasMenu = [
+    "menú",
+    "menu",        // Agregamos 'menu' sin tilde
+    "muestra el menú",
+    "quiero ver las opciones",
+    "¿qué puedo hacer aquí?",
+    "envíame el listado",
     "quiero comenzar",
-    "dame opciones",
-    "quiero información",
-    "necesito ayuda",
-    "me puedes ayudar",
-    "qué cursos ofrecen",
-    "más información",
-    "información",
-    "hola",
-    "buenas",
-    "saludos",
-    "ola",
-    "buenos días",
-    "buenas tardes"
+    "dame las opciones"
   ];
 
-  // Patrones para detectar frases comunes más flexibles
-  const patronesDisparadores = [
+  // Patrones para detectar frases comunes más flexibles del menú
+  const patronesDisparadoresMenu = [
     /muestra.*menu/,
     /ver.*opciones/,
     /que.*puedo.*hacer.*aqu[ií]/,
@@ -38,8 +33,13 @@ const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
     /m[aá]s.*informaci[oó]n/,
   ];
 
-  return frasesDisparadoras.some( f => texto.includes( f ) ) ||
-    patronesDisparadores.some( p => p.test( texto ) );
+  const esMenu = frasesDisparadorasMenu.some( f =>
+    textoNormalizado.includes( removeAccents( f.toLowerCase() ) )
+  ) ||
+    patronesDisparadoresMenu.some( p => p.test( textoNormalizado ) );
+
+  return esMenu; // Devuelve true solo si detecta el menú
+
 
 };
 

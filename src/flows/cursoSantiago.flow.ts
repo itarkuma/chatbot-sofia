@@ -2,11 +2,12 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolean => {
 
   const texto = preprocessPregunta( query );
-
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
   //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
   //  if ( !seccionEsGeneral ) return false;
 
@@ -27,7 +28,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "trading santiago"
   ];
 
-  const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
+  const coincideFrase = frasesExactas.some( f => textoNormalizado === preprocessPregunta( f ) );
 
   const regexes = [
     /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?santiago(\s+de\s+compostela)?\b/,
@@ -39,7 +40,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
   ];
 
 
-  const coincideRegex = regexes.some( r => r.test( texto ) );
+  const coincideRegex = regexes.some( r => r.test( textoNormalizado ) );
 
   return coincideFrase || coincideRegex;
 

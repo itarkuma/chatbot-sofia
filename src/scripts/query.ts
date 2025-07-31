@@ -335,6 +335,26 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  if ( ask_menu === 'saludo' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_01'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'curso_online_grabado' ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';

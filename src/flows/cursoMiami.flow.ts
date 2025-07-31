@@ -2,14 +2,12 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean => {
   const texto = preprocessPregunta( query ).toLowerCase();
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
 
-  //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
-  //  if ( !seccionEsGeneral ) return false;
-
-  // Frases comunes completas (exactas después de normalizar)
   const frasesExactas = [
     "¿tienen un curso de trading en miami?",
     "¿podrias explicarme el entrenamiento de miami con fran fialli?",
@@ -29,7 +27,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "trading miami",
   ];
 
-  const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
+  const coincideFrase = frasesExactas.some( f => textoNormalizado === preprocessPregunta( f ) );
 
   const regexes = [
     /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?miami\b/,
@@ -40,7 +38,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     /^3$/, // opción por número
   ];
 
-  const coincideRegex = regexes.some( r => r.test( texto ) );
+  const coincideRegex = regexes.some( r => r.test( textoNormalizado ) );
 
   return coincideFrase || coincideRegex;
 };

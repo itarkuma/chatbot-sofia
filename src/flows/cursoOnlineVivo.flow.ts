@@ -3,10 +3,13 @@ import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boolean => {
 
   const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
+
   if ( esComparacionGrabadoVsVivo( texto ) ) return false;
   const frasesClaves = [
     "curso online en vivo",
@@ -30,9 +33,9 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
   ];
 
   const coincideFrase = frasesClaves.some(
-    ( f ) => texto === preprocessPregunta( f )
+    ( f ) => textoNormalizado === preprocessPregunta( f )
   );
-  const coincideRegex = regexes.some( ( r ) => r.test( texto ) );
+  const coincideRegex = regexes.some( ( r ) => r.test( textoNormalizado ) );
 
   return coincideFrase || coincideRegex;
 };

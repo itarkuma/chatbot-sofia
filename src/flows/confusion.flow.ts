@@ -3,10 +3,12 @@ import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowConfusion = ( query: string, seccionActual: string ): boolean => {
 
   const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
 
   if ( /grabado|en vivo|miami|santiago/.test( texto ) ) {
     return false; // ya es específico
@@ -40,7 +42,7 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
     /^curso online\??$/
   ];
 
-  return frasesExactas.includes( texto ) || patrones.some( p => p.test( texto ) );
+  return frasesExactas.includes( textoNormalizado ) || patrones.some( p => p.test( textoNormalizado ) );
 
 };
 

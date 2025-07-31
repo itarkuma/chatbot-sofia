@@ -2,8 +2,11 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowLibroFran = ( query: string, seccionActual: string ): boolean => {
+  const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
   const libroFranTriggers = [
     "Libro de Fran Fialli  ",
     "5", // número
@@ -21,14 +24,13 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
     /leer.*trading/,
     /venden.*libro.*fran/
   ];
-  const texto = preprocessPregunta( query );
 
   return libroFranTriggers.some( trigger => {
     if ( typeof trigger === "string" ) {
-      return texto === trigger; // coincidencia exacta
+      return textoNormalizado === trigger; // coincidencia exacta
     }
     if ( trigger instanceof RegExp ) {
-      return trigger.test( texto ); // coincidencia por patrón
+      return trigger.test( textoNormalizado ); // coincidencia por patrón
     }
     return false;
   } );
