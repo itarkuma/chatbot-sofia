@@ -9,7 +9,7 @@ const detectflowSaludo = ( query: string, seccionActual: string ): boolean => {
   const textoNormalizado = removeAccents( texto.toLowerCase() );
 
   // Palabras clave que no deben ser consideradas como un saludo
-  const excluidosDeSaludo = [ "trading", "curso", "ofrecen", "opciones", "información sobre" ];
+  const excluidosDeSaludo = [ "trading", "curso", "ofrecen", "opciones", "información sobre", "dolar", "euro" ];
 
   // Frases disparadoras para saludo (sin incluir "trading" ni temas relacionados con cursos)
   const frasesDisparadorasSaludo = [
@@ -26,13 +26,13 @@ const detectflowSaludo = ( query: string, seccionActual: string ): boolean => {
 
   // Patrones para detectar frases comunes más flexibles del saludo
   const patronesDisparadoresSaludo = [
-    /hola/,
-    /buenas/,
-    /saludos/,
-    /ola/,
-    /buenos días/,
-    /buenas tardes/,
-    /no sé nada de trading/,  // Para evitar que "trading" sea interpretado como un tema del menú
+    /\bhola\b/,
+    /\bbuenas\b/,
+    /\bsaludos\b/,
+    /\bola\b/,
+    /\bbuenos días\b/,
+    /\bbuenas tardes\b/,
+    /no sé nada de trading/,
     /estoy empezando/,
     /me gustaría información sobre/,
     /quiero información/,

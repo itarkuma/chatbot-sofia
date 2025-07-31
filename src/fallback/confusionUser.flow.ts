@@ -7,9 +7,6 @@ const detectConfusionUser = ( query: string ): boolean => {
   const texto = preprocessPregunta( query ); // Normaliza: minúsculas, sin tildes, trim
 
   const confusionTriggers: ( string | RegExp )[] = [
-    // Confusión genérica: detecta solo si el mensaje es "¿Qué?" o "¿Cómo?"
-    /^que[\?¡!\.\s]*$/i,
-    /^como[\?¡!\.\s]*$/i,
 
     // Expresiones comunes de confusión
     "no entiendo",
