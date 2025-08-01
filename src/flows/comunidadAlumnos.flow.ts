@@ -2,30 +2,33 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowComunidadAlumno = ( query: string, seccionActual: string ): boolean => {
+  const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
+
   const comunidadAlumnoTriggers = [
     "comunidad de alumnos",
     //    "7",
-    /grupo.*alumnos/,
-    /tienen.*comunidad.*compartir/,
-    /hablar.*otros.*alumnos/,
-    /grupo.*telegram/,
-    /compartir.*analisis.*otros/,
-    /telegram.*alumnos/,
-    /comunidad.*alumnos.*curso/,
-    /chat.*alumnos/,
-    /grupo.*para.*alumnos/,
-    /unirme.*comunidad.*alumnos/
+    /\bgrupo.*alumnos\b/,
+    /\btienen.*comunidad.*compartir\b/,
+    /\bhablar.*otros.*alumnos\b/,
+    /\bgrupo.*telegram\b/,
+    /\bcompartir.*analisis.*otros\b/,
+    /\btelegram.*alumnos\b/,
+    /\bcomunidad.*alumnos.*curso\b/,
+    /\bchat.*alumnos\b/,
+    /\bgrupo.*para.*alumnos\b/,
+    /\bunirme.*comunidad.*alumnos\b/
   ];
-  const texto = preprocessPregunta( query );
 
   return comunidadAlumnoTriggers.some( trigger => {
     if ( typeof trigger === "string" ) {
-      return texto === trigger; // coincidencia exacta
+      return textoNormalizado === trigger; // coincidencia exacta
     }
     if ( trigger instanceof RegExp ) {
-      return trigger.test( texto ); // coincidencia por patrón
+      return trigger.test( textoNormalizado ); // coincidencia por patrón
     }
     return false;
   } );

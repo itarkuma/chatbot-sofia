@@ -2,8 +2,12 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowClubFran = ( query: string, seccionActual: string ): boolean => {
+  const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
+
   const clubFranTriggers = [
     "club fran fialli",
     "9",
@@ -21,14 +25,13 @@ const detectflowClubFran = ( query: string, seccionActual: string ): boolean => 
     /hay.*algo.*despues.*curso/,
     /como.*sigo.*aprendiendo.*ustedes/
   ];
-  const texto = preprocessPregunta( query );
 
   return clubFranTriggers.some( trigger => {
     if ( typeof trigger === "string" ) {
-      return texto === trigger; // coincidencia exacta
+      return textoNormalizado === trigger; // coincidencia exacta
     }
     if ( trigger instanceof RegExp ) {
-      return trigger.test( texto ); // coincidencia por patrón
+      return trigger.test( textoNormalizado ); // coincidencia por patrón
     }
     return false;
   } );

@@ -10,16 +10,17 @@ import { preprocessPregunta } from './lib/utils/preprocessinText';
 import { pineconeQuery } from './scripts/pineconeQuery';
 
 import { distance } from 'fastest-levenshtein';
+import { generateTimer } from './lib/utils/generateTimer';
 
-import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
 
-import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
+//import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
 import { detectflowLibroFran, flowLibroFran } from './flows/libroFran.flow';
-import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
+//import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
 import { detectflowNoticiasMercado, flowNoticiasMercado } from './flows/noticiasMercado.flow';
 import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
 import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
 import { detectflowMenu, flowMenu } from './flows/menu.flow';
+import { detectflowSaludo, flowSaludo } from './flows/saludo.flow';
 import { detectflowsoyAlumno, flowSoyAlumno } from './flows/soyAlumno.flow';
 import { detectflowCursoOonlineGrabado, flowCursoOnlineGrabado } from './flows/cursoOnlineGrabado.flow';
 import { detectflowCursoOonlineVivo, flowCursoOnlineVivo } from './flows/cursoOnlineVivo.flow';
@@ -40,6 +41,28 @@ import { detectderivarJavierUser, fallbackderiverJavierUser } from './fallback/d
 import { fallbackconfirmarderivacionUser } from './fallback/confirmarDerivacionUser.flow';
 import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fallback/javiernorespondeUser.flow';
 import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
+
+function verificarConsulta( query: string ): boolean {
+  // Definir las palabras aceptadas "sí" y "no"
+  const respuestasAceptadas = [ 'sí', 'no', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
+
+  // Eliminar posibles espacios y convertir a minúsculas
+  const queryNormalizada = query.trim().toLowerCase();
+
+  // Si la consulta es "sí" o "no", la aceptamos sin más validaciones
+  if ( respuestasAceptadas.includes( queryNormalizada ) ) {
+    return true;
+  }
+
+  // Si la consulta tiene menos de 3 caracteres, la consideramos inválida
+  if ( queryNormalizada.length < 3 ) {
+    console.log( "Consulta demasiado corta" );
+    return false;
+  }
+
+  // Si pasa todas las validaciones, la consulta es válida
+  return true;
+}
 
 function esConfirmacionDerivacion( texto: string ): boolean {
   const frasesBase = [
@@ -176,6 +199,7 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
 export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectada | null> {
   const query = preprocessPregunta( mensaje );
   const resultados = await pineconeQuery( query );
+  // Log para ver los resultados obtenidos de Pinecone
 
   if ( resultados.length > 0 ) {
     const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
@@ -202,11 +226,15 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
-
+    if ( !verificarConsulta( consulta ) ) {
+      await flowDynamic( `La pregunta es demasiado corta o no es válida. Por favor, intenta de nuevo.` );
+      return;
+    }
+    const isSaludo = detectflowSaludo( consulta, seccion );
     const isCommandMenu = detectflowMenu( consulta, seccion );
-    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
+    //    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
     const isMenuOption6 = detectflowLibroFran( consulta, seccion );
-    const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
+    //    const isMenuOption7 = detectflowComunidadAlumno( consulta, seccion );
     const isMenuOption8 = detectflowNoticiasMercado( consulta, seccion );
     const isMenuOption9 = detectflowClubFran( consulta, seccion );
     const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
@@ -237,6 +265,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
+    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
@@ -249,8 +278,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
     if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
-    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
-    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
+    //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
+    //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -475,11 +504,28 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         if ( intencion.is_fallback ) {
           console.log( 'Detecto Fallback intencion else' );
-          const { texto } = await askSofiaFallback( consulta );
+          const { texto, tags } = await askSofiaFallback( consulta );
           console.log( 'retorno un fallback' );
 
-          await delay( 2000 );
-          await flowDynamic( texto );
+
+          await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+
+          if ( tags.includes( 'hablar_con_humano' ) ) {
+            console.log( 'Caso especial fallback 1' );
+            console.log( "send enviar mensaje a Javier" );
+
+            return gotoFlow( fallbackconfirmarderivacionUser );
+
+          }
+          if ( tags.includes( 'derivación_humana' ) ) {
+            console.log( 'Caso especial fallback 2' );
+            console.log( "send enviar mensaje a Javier" );
+
+            return gotoFlow( fallbackconfirmarderivacionUser );
+
+          }
+
+
         } else {
 
           if ( intencion.seccion ) {
@@ -550,10 +596,11 @@ const main = async () => {
 
   const adapterFlow = createFlow(
     [ flowMenu,
+      flowSaludo,
       welcomeFlow,
-      flowCursoGratis,
+      //      flowCursoGratis,
       flowLibroFran,
-      flowComunidadAlumno,
+      //      flowComunidadAlumno,
       flowNoticiasMercado,
       flowClubFran,
       flowConsultasGenerales,

@@ -2,15 +2,13 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean => {
   const texto = preprocessPregunta( query ).toLowerCase();
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
 
-  //  const seccionEsGeneral = seccionActual === "" || seccionActual === "menu";
-  //  if ( !seccionEsGeneral ) return false;
-
-  // Frases comunes completas (exactas después de normalizar)
-  const frasesExactas = [
+  const frasesClaves = [
     "¿tienen un curso de trading en miami?",
     "¿podrias explicarme el entrenamiento de miami con fran fialli?",
     "¿puedo hacer un curso presencial de bolsa en estados unidos?",
@@ -29,8 +27,6 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "trading miami",
   ];
 
-  const coincideFrase = frasesExactas.some( f => texto === preprocessPregunta( f ) );
-
   const regexes = [
     /\bcurso(s)?\s+(de\s+)?trading\s+(presencial\s+)?(en\s+)?miami\b/,
     /\b(entrenamiento|formaci[oó]n|masterclass|clase(s)?)\s+(presencial\s+)?(de\s+)?trading\s+(en\s+)?miami\b/,
@@ -40,7 +36,47 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     /^3$/, // opción por número
   ];
 
-  const coincideRegex = regexes.some( r => r.test( texto ) );
+  // Lista de frases o palabras clave relacionadas con detalles específicos (temario, lugar, precio, etc.)
+  const frasesDetallesEspecificos = [
+    "temario",
+    "temario del curso grabado",
+    "contenido del curso grabado",
+    "temario completo",
+    "cuánto cuesta",
+    "precio",
+    "trading",
+    "aprendere",
+    "aprender",
+    "organizado",
+    "costo",
+    "dónde se realiza",
+    "lugar del curso",
+    "fecha del curso",
+    "fechas de inicio",
+    "horarios del curso",
+    "duración del curso",
+    "cómo se realiza",
+    "indicadores",
+  ];
+
+  // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos
+  const esPreguntaSobreDetalleEspecifico = frasesDetallesEspecificos.some( f =>
+    textoNormalizado.includes( removeAccents( f.toLowerCase() ) )
+  );
+
+  // Si se detecta que el usuario está preguntando por un detalle específico (precio, temario, lugar, etc.)
+  // Se redirige a otro flujo y se devuelve false
+  if ( esPreguntaSobreDetalleEspecifico ) {
+    return false;  // No activar el flujo de "curso grabado", ya que se está preguntando por un detalle específico
+  }
+
+  // Verificar si el texto coincide exactamente con las frases clave
+  const coincideFrase = frasesClaves.some(
+    ( f ) => textoNormalizado === preprocessPregunta( f )
+  );
+
+  // Verificar si el texto coincide con alguna expresión regular
+  const coincideRegex = regexes.some( ( r ) => r.test( textoNormalizado ) );
 
   return coincideFrase || coincideRegex;
 };

@@ -2,8 +2,12 @@ import { addKeyword, EVENTS } from '@builderbot/bot';
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
+import { removeAccents } from '../lib/utils/removeAccents';
 
 const detectflowConsultasGenerales = ( query: string, seccionActual: string ): boolean => {
+  const texto = preprocessPregunta( query );
+  const textoNormalizado = removeAccents( texto.toLowerCase() );
+
   const consultasGeneralesTriggers = [
     "consultas generales",
     "7",
@@ -13,14 +17,13 @@ const detectflowConsultasGenerales = ( query: string, seccionActual: string ): b
     /esto\s+es\s+serio/,
     /otro\s+curso\s+mas/
   ];
-  const texto = preprocessPregunta( query );
 
   return consultasGeneralesTriggers.some( trigger => {
     if ( typeof trigger === "string" ) {
-      return texto === trigger; // coincidencia exacta
+      return textoNormalizado === trigger; // coincidencia exacta
     }
     if ( trigger instanceof RegExp ) {
-      return trigger.test( texto ); // coincidencia por patrón
+      return trigger.test( textoNormalizado ); // coincidencia por patrón
     }
     return false;
   } );
@@ -33,9 +36,11 @@ const flowConsultasGenerales = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
 
-    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Quién es Fran Fialli?' ), seccion );
+    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Qué puedo hacer desde cero?' ), seccion );
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+    const textomsm = "Para comenzar, ¿podría indicarme su consulta?";
+    await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 
 
