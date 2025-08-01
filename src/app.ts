@@ -10,8 +10,8 @@ import { preprocessPregunta } from './lib/utils/preprocessinText';
 import { pineconeQuery } from './scripts/pineconeQuery';
 
 import { distance } from 'fastest-levenshtein';
+import { generateTimer } from './lib/utils/generateTimer';
 
-import { enviarDerivacionWhatsApp } from './lib/utils/sendMessagewa';
 
 //import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
 import { detectflowLibroFran, flowLibroFran } from './flows/libroFran.flow';
@@ -504,11 +504,28 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         if ( intencion.is_fallback ) {
           console.log( 'Detecto Fallback intencion else' );
-          const { texto } = await askSofiaFallback( consulta );
+          const { texto, tags } = await askSofiaFallback( consulta );
           console.log( 'retorno un fallback' );
 
-          await delay( 2000 );
-          await flowDynamic( texto );
+
+          await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+
+          if ( tags.includes( 'hablar_con_humano' ) ) {
+            console.log( 'Caso especial fallback 1' );
+            console.log( "send enviar mensaje a Javier" );
+
+            return gotoFlow( fallbackconfirmarderivacionUser );
+
+          }
+          if ( tags.includes( 'derivación_humana' ) ) {
+            console.log( 'Caso especial fallback 2' );
+            console.log( "send enviar mensaje a Javier" );
+
+            return gotoFlow( fallbackconfirmarderivacionUser );
+
+          }
+
+
         } else {
 
           if ( intencion.seccion ) {

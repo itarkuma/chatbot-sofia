@@ -10,19 +10,19 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
   const libroFranTriggers = [
     "Libro de Fran Fialli  ",
     "5", // número
-    /fran.*libro/,
-    /empezar.*aprender.*trading/,
-    /material.*escrito/,
-    /libro.*recom/i,
-    /libro.*principiante/,
-    /comprar.*libro.*fran/,
-    /libro\s+fran/,
-    /ebook/,
-    /libro.*empezar/,
-    /conseguir.*libro/,
-    /material.*novatos?/,
-    /leer.*trading/,
-    /venden.*libro.*fran/
+    /\bfran.*libro\b/,
+    //    /\bempezar.*aprender.*trading\b/,
+    /\bmaterial.*escrito\b/,
+    /\blibro.*recom\b/i,
+    /\blibro.*principiante\b/,
+    /\bcomprar.*libro.*fran\b/,
+    /\blibro\s+fran\b/,
+    /\bebook\b/,
+    /\blibro.*empezar\b/,
+    /\bconseguir.*libro\b/,
+    /\bmaterial.*novatos?\b/,
+    //    /\bleer.*trading\b/,
+    /\bvenden.*libro.*fran\b/
   ];
 
   return libroFranTriggers.some( trigger => {
@@ -39,7 +39,7 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
 
 const flowLibroFran = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { state, flowDynamic, extensions } ) => {
   try {
-
+    console.log( 'flow libro fran' );
     const seccion = await state.get( 'seccionActual' );
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'libro_fran' );

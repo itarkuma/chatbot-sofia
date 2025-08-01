@@ -12,7 +12,6 @@ const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 
 
-
 function extractFrasesDisparadoras( text ) {
   const match = text.match( /\*\*Frases disparadoras típicas:\*\*([\s\S]*?)\n\n|👉/ );
   if ( !match ) return [];
@@ -37,23 +36,23 @@ export const loadChunksPlataformaTrading = async () => {
 
   await index.upsert( [
     {
-      id: 'chunk_grabado_plataforma', // id único
+      id: 'chunk_vivo_indicadores', // id único
       values: vector,
       metadata: {
-        archivo: '2_curso_trading_online_grabado.txt',
-        chunk: 'plataforma_trading',
+        archivo: '1_curso_trading_online_vivo.txt',
+        chunk: 'indicadores',
         tipo: 'respuesta_fija',
         es_fallback: false,
-        tags: [ 'plataformas', 'ninjatrader', 'tradingview', 'mapas_de_calor', 'configuración_en_aula' ],
+        tags: [ 'indicadores_técnicos', 'análisis_técnico', 'rsi', 'macd', 'medias_móviles', 'volumen', 'momentum', 'vwap' ],
         disparadoras: [
-          '¿Qué plataformas se usan en el curso?',
-          '¿Utilizan NinjaTrader o TradingView?',
-          '¿Tengo que saber usar plataformas antes del curso?',
-          '¿Se configuran las plataformas en clase?',
-          '¿Se usa algún mapa de calor o software profesional?',
-          '¿Podría explicarme qué plataforma se utiliza durante el curso presencial?',
-          'utilizan tradingview o ninjatrader en el curso?',
-          'plataformas curso santiago mapa calor',
+          '¿Qué indicadores enseñan en el curso?',
+          '¿Se trabaja con indicadores técnicos como RSI o MACD?',
+          '¿El curso incluye análisis con volumen y medias móviles?',
+          '¿Se estudia lectura de velas japonesas?',
+          '¿Aprenderé a usar indicadores reales? ',
+          'Quisiera saber qué indicadores se aprenden en el curso.',
+          'se trabaja con indicadores tecnicos rsi macd? ',
+          'indicadores curso rsi macd volumen',
         ],
         text: text.trim(), // importante si luego quieres indexar texto original
       }

@@ -33,7 +33,7 @@ function matchDisparador( doc: any, question: string ): boolean {
     'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro',
     'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
     'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas',
-    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas'
+    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas', 'puedo', 'leer'
   ] );
 
   const queryLower = preprocessPregunta( question );
@@ -57,26 +57,26 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
 
     // ✅ [3] Fuzzy match palabra con tags
-    const threshold = 0.55; // Cambiar este valor según tu preferencia
-    const palabrasIrrelevantes = new Set( [
-      "resultados", "descansos", "horarios", "detalles" // Agrega otras palabras irrelevantes que no deberían considerarse
-    ] );
+    // const threshold = 0.55; 
+    // const palabrasIrrelevantes = new Set( [
+    //   "resultados", "descansos", "horarios", "detalles" // Agrega otras palabras irrelevantes que no deberían considerarse
+    // ] );
 
-    for ( const tag of tags ) {
+    // for ( const tag of tags ) {
 
-      if ( palabrasIrrelevantes.has( tag ) ) {
-        continue; // Si es irrelevante, pasamos al siguiente tag
-      }
+    //   if ( palabrasIrrelevantes.has( tag ) ) {
+    //     continue; // Si es irrelevante, pasamos al siguiente tag
+    //   }
 
-      const dist = distance( palabra, tag );
-      const maxLen = Math.max( palabra.length, tag.length );
-      const porcentaje = dist / maxLen;
+    //   const dist = distance( palabra, tag );
+    //   const maxLen = Math.max( palabra.length, tag.length );
+    //   const porcentaje = dist / maxLen;
 
-      if ( porcentaje < threshold ) {
-        console.log( `✅ [TAG-FUZZY] Palabra "${ palabra }" ≈ tag "${ tag }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
-        return true;
-      }
-    }
+    //   if ( porcentaje < threshold ) {
+    //     console.log( `✅ [TAG-FUZZY] Palabra "${ palabra }" ≈ tag "${ tag }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
+    //     return true;
+    //   }
+    // }
   }
 
   // ✅ [4] Coincidencia con frases disparadoras
@@ -90,18 +90,19 @@ function matchDisparador( doc: any, question: string ): boolean {
     }
 
     // b) Fuzzy completo
-    const dist = distance( queryLower, fraseLimpia );
-    const maxLen = Math.max( queryLower.length, fraseLimpia.length );
-    const porcentaje = dist / maxLen;
+    // const dist = distance( queryLower, fraseLimpia );
+    // const maxLen = Math.max( queryLower.length, fraseLimpia.length );
+    // const porcentaje = dist / maxLen;
+    // const threshold = 0.5; 
 
-    if ( porcentaje < 0.45 ) {
-      console.log( `✅ [DISPARADORA-LEV] "${ fraseLimpia }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
-      return true;
-    }
+    // if ( porcentaje < 0.5 ) {
+    //   console.log( `✅ [DISPARADORA-LEV] "${ fraseLimpia }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
+    //   return true;
+    // }
 
     // c) Coincidencia por palabras clave
     const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-    //    const comunes = palabrasFrase.filter( p => palabrasQuery.includes( p ) );
+
     const comunes = palabrasFrase
       .filter( p => p !== "curso" && palabrasQuery.includes( p ) );
     if ( comunes.length >= 2 ) {
@@ -153,7 +154,7 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 
 
 export const askSofia = async ( question: string, seccion: string, ask_menu: string = '', esAlumno: boolean = false ) => {
-  console.log( 'fallo buscar 1' );
+
 
   const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
   const vectorStore = await PineconeStore.fromExistingIndex( new OpenAIEmbeddings(), {
@@ -174,8 +175,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const mapeo: Record<string, string[]> = {
       'curso_online_grabado': [ 'curso grabado', 'módulos grabados', 'modulos grabados', 'curso online grabado', 'online grabado' ],
       'curso_online_vivo': [ 'en vivo', 'en zoom', 'clases por Zoom', 'por Zoom', 'curso en vivo', 'en directo', 'en tiempo real', 'tiempo real' ],
-      'curso_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
-      'curso_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
+      'formacion_miami': [ 'curso en miami', 'en miami', 'curso miami', 'curso de miami' ],
+      'formacion_santiago': [ 'curso santiago', 'curso en santiago', 'curso de santiago', 'curso en Santiago de Compostela', 'Santiago de Compostela', 'Santiago Compostela' ],
       'soporte_general': [ 'soporte', 'ayuda', 'asistencia' ],
     };
 
@@ -194,7 +195,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     seccion = cambio;
   }
 
-  console.log( 'fallo buscar 2' );
+
 
   if ( ask_menu === 'user_question_multiples' ) {
     const archivoActual = 'fallbacks.txt';
@@ -855,7 +856,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  console.log( 'fallo buscar 3' );
+
 
 
   const filters: any = {};
@@ -872,7 +873,15 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   const archivoActual = mapSeccionToArchivo( seccion );
 
-  const resultadosActuales = await vectorStore.similaritySearchWithScore( query, 10, filters ) as [ SofiaDocument, number ][];
+  const STOPWORDS = new Set( [
+    'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las'
+  ] );
+  const palabrasIrrelevantes = new Set( [ 'miami', 'santiago', 'grabado', 'en vivo', 'en directo' ] );
+  const palabrasFiltradas = query.split( /\s+/ ).filter( p => !palabrasIrrelevantes.has( p ) );
+  const queryFiltrada = palabrasFiltradas.filter( p => !STOPWORDS.has( p ) ).join( " " );
+  console.log( 'query filtrada:', queryFiltrada );
+
+  const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
 
   // const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
   //   const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
@@ -906,7 +915,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   console.log( 'buscar en global' );
 
   const filtrosGlobales = {
-    archivo: '9_soporte_general.txt'
+    archivo: { $in: [ '9_soporte_general.txt', '8_flujos_recursos_web.txt' ] }
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
