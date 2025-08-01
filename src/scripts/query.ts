@@ -82,10 +82,21 @@ function matchDisparador( doc: any, question: string ): boolean {
   // ✅ [4] Coincidencia con frases disparadoras
   for ( const frase of disparadoras ) {
     const fraseLimpia = preprocessPregunta( frase ).toLowerCase();
+    const queryLimpia = queryLower;
 
-    // a) Inclusión mutua
-    if ( fraseLimpia.includes( queryLower ) || queryLower.includes( fraseLimpia ) ) {
-      console.log( `✅ [DISPARADORA-INCLUYE] "${ queryLower }" ≈ "${ fraseLimpia }" en chunk ${ chunkId }` );
+    const palabrasFras = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
+    const palabrasQuery = queryLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
+
+    const fraseSinStop = palabrasFras.join( ' ' );
+    const querySinStop = palabrasQuery.join( ' ' );
+
+    // a) Inclusión mutua sin stopwords
+    if (
+      fraseSinStop.length > 0 &&
+      querySinStop.length > 0 &&
+      ( fraseSinStop.includes( querySinStop ) || querySinStop.includes( fraseSinStop ) )
+    ) {
+      console.log( `✅ [DISPARADORA-INCLUYE] "${ querySinStop }" ≈ "${ fraseSinStop }" en chunk ${ chunkId }` );
       return true;
     }
 
@@ -919,17 +930,6 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
-
-  // let i = 0;
-  // for ( const [ doc, number ] of resultadosOtros ) {
-  //   console.log( '📥 Documentos recuperados por Global:' );
-  //   console.log( `\n#${ i + 1 }` );
-  //   console.log( 'Archivo:', doc.metadata?.archivo );
-  //   console.log( 'Chunk:', doc.metadata?.chunk );
-  //   console.log( 'Tipo:', doc.metadata?.tipo );
-  //   console.log( 'Score:', number.toFixed( 4 ) );
-  //   i++;
-  // }
 
   const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
     const archivo = doc.metadata.archivo;
