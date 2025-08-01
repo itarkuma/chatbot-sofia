@@ -48,6 +48,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "trading",
     "aprendere",
     "aprender",
+    "organizado",
     "costo",
     "dónde se realiza",
     "lugar del curso",
@@ -56,6 +57,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "horarios del curso",
     "duración del curso",
     "cómo se realiza",
+    "indicadores",
   ];
 
   // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos

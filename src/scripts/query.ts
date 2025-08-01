@@ -470,6 +470,46 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+  const esConsultaIndicadoresg = /\bindicadores(?:\s+(t[eé]cnicos?|que\s+enseñan|enseñan|de trading))?|\benseñan\s+indicadores\b/i.test( preprocessPregunta( query ) );
+
+  if ( seccion === 'curso_online_grabado' && esConsultaIndicadoresg ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+  if ( seccion === 'curso_online_grabado' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'metodo_pago'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
 
   if ( seccion === 'curso_online_grabado' && /plataforma de trading/.test( preprocessPregunta( query ) ) ) {
 
@@ -551,6 +591,48 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+
+  const esConsultaIndicadores = /\bindicadores(?:\s+(t[eé]cnicos?|que\s+enseñan|enseñan|de trading))?|\benseñan\s+indicadores\b/i.test( preprocessPregunta( query ) );
+
+  if ( seccion === 'curso_online_vivo' && esConsultaIndicadores ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+  if ( seccion === 'curso_online_vivo' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'metodo_pago'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'formacion_miami' ) {
 
     const archivoActual = '4_curso_trading_miami.txt';

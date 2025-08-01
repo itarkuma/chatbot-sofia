@@ -47,6 +47,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "trading",
     "aprendere",
     "aprender",
+    "organizado",
     "costo",
     "dónde se realiza",
     "lugar del curso",
@@ -55,6 +56,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "horarios del curso",
     "duración del curso",
     "cómo se realiza",
+    "indicadores",
   ];
 
   // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos

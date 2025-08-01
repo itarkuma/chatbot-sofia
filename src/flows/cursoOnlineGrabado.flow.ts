@@ -42,6 +42,7 @@ const detectflowCursoOonlineGrabado = ( query: string, seccionActual: string ): 
     "trading",
     "aprendere",
     "aprender",
+    "organizado",
     "costo",
     "dónde se realiza",
     "lugar del curso",
@@ -50,6 +51,7 @@ const detectflowCursoOonlineGrabado = ( query: string, seccionActual: string ): 
     "horarios del curso",
     "duración del curso",
     "cómo se realiza",
+    "indicadores",
   ];
 
   // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos

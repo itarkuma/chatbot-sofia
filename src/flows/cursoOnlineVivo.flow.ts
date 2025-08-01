@@ -43,6 +43,7 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
     "trading",
     "aprendere",
     "aprender",
+    "organizado",
     "costo",
     "dónde se realiza",
     "lugar del curso",
@@ -51,6 +52,7 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
     "horarios del curso",
     "duración del curso",
     "cómo se realiza",
+    "indicadores",
   ];
 
   // Verificar si el texto contiene alguna de las frases relacionadas con detalles específicos
