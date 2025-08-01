@@ -4,11 +4,17 @@ import { generateTimer } from '../lib/utils/generateTimer';
 import { askSofia } from '../scripts/query';
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
 import { removeAccents } from '../lib/utils/removeAccents';
+import { esPrecioRelacion } from '../lib/utils/esPrecioRelacion';
 
 const detectflowConfusion = ( query: string, seccionActual: string ): boolean => {
 
   const texto = preprocessPregunta( query );
   const textoNormalizado = removeAccents( texto.toLowerCase() );
+
+  if ( !seccionActual && esPrecioRelacion( query ) ) {
+    return true;
+  }
+
 
   // Paso 1: Revisar si el texto menciona "curso online"
   if ( /curso online/.test( textoNormalizado ) ) {

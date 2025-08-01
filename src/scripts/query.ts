@@ -8,6 +8,7 @@ import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
 import { distance } from 'fastest-levenshtein';
+import { esPrecioRelacion } from '../lib/utils/esPrecioRelacion';
 
 interface SofiaMetadata {
   archivo: string;
@@ -490,18 +491,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  const isPrecioRelated =
-    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
-    preprocessPregunta( query ).includes( 'precio curso' ) ||
-    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
-    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
-    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
-    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
-    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
-    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
-    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
-    preprocessPregunta( query ).includes( 'cual es el costo' );
-  if ( seccion === 'curso_online_grabado' && isPrecioRelated ) {
+
+  if ( seccion === 'curso_online_grabado' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -540,18 +531,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  const isPrecioRelated2 =
-    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
-    preprocessPregunta( query ).includes( 'precio curso' ) ||
-    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
-    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
-    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
-    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
-    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
-    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
-    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
-    preprocessPregunta( query ).includes( 'cual es el costo' );
-  if ( seccion === 'curso_online_vivo' && isPrecioRelated2 ) {
+
+  if ( seccion === 'curso_online_vivo' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
@@ -589,18 +570,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  const isPrecioRelated3 =
-    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
-    preprocessPregunta( query ).includes( 'precio curso' ) ||
-    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
-    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
-    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
-    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
-    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
-    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
-    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
-    preprocessPregunta( query ).includes( 'cual es el costo' );
-  if ( seccion === 'curso_miami' && isPrecioRelated3 ) {
+
+  if ( seccion === 'curso_miami' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '4_curso_trading_miami.txt';
     const filters = {
@@ -638,18 +609,8 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  const isPrecioRelated4 =
-    preprocessPregunta( query ).includes( 'cuanto cuesta' ) ||
-    preprocessPregunta( query ).includes( 'precio curso' ) ||
-    preprocessPregunta( query ).includes( 'cual es el precio' ) ||
-    preprocessPregunta( query ).includes( 'que precio tiene' ) ||
-    preprocessPregunta( query ).includes( 'decirme el costo' ) ||
-    preprocessPregunta( query ).includes( 'decirme el coste' ) ||
-    preprocessPregunta( query ).includes( 'cuanto vale' ) ||
-    preprocessPregunta( query ).includes( 'el valor aproximado' ) ||
-    preprocessPregunta( query ).includes( 'cuanto sale' ) ||
-    preprocessPregunta( query ).includes( 'cual es el costo' );
-  if ( seccion === 'curso_santiago' && isPrecioRelated4 ) {
+
+  if ( seccion === 'curso_santiago' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
     const filters = {
