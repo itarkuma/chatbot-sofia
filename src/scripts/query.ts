@@ -923,29 +923,30 @@ const responderConResultados = async (
   query: string,
   archivoContexto: string
 ) => {
-  let i = 0;
-  for ( const [ doc, number ] of resultados ) {
-    console.log( '📥 Documentos recuperados por Pinecone:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
+  // Filtrar consultas triviales o irrelevantes
+  const consultaSimple = query.trim().toLowerCase();
+  const sinIntencionClara = [ "", "n", "ok", "gracias", "?", "👍", "🙃" ];
+  if ( consultaSimple.length < 3 && ![ "sí", "no" ].includes( consultaSimple ) ) {
+    return {
+      texto: "¿Podrías darme un poco más de contexto o detalle para ayudarte mejor?",
+      origen: "sin_intencion_clara",
+      tags: [],
+      chunkId: null
+    };
   }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
     .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
     .sort( ( a, b ) => b[ 1 ] - a[ 1 ] );
   const coincidenciasFallback = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && doc.metadata.es_fallback );
-  const coincidenciasLibres = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_libre' );
+
 
   const mejor =
     coincidenciasFijas[ 0 ]?.[ 0 ] ||
-    coincidenciasFallback[ 0 ]?.[ 0 ] ||
-    coincidenciasLibres[ 0 ]?.[ 0 ];
+    coincidenciasFallback[ 0 ]?.[ 0 ];
+  const score = resultados[ 0 ]?.[ 1 ] || 0;
 
-  if ( mejor ) {
+  if ( mejor && score >= 0.65 ) {
     const match = mejor.pageContent.match( /👉[^\n]*\n+([\s\S]*)/ );
     const onlyAnswer = match?.[ 1 ]?.trim() || mejor.pageContent;
 
@@ -957,35 +958,63 @@ const responderConResultados = async (
     };
   }
 
-  // Si no hay nada, usar modelo generativo con contexto
-  const context = resultados.map( ( [ doc ] ) => doc.pageContent ).join( "\n\n" );
+
+
+  const contextoFiltrado = resultados
+    .filter( ( [ doc ] ) => doc.pageContent && doc.pageContent.trim().length > 0 )
+    .map( ( [ doc ] ) => doc.pageContent.trim() )
+    .join( "\n\n" );
+  const instruccionesSofia = `
+Eres *Sofía*, la agente virtual de la Escuela "Tu Plan A: Bolsa y Trading", especializada en responder con precisión y empatía sobre los cursos y recursos de Fran Fialli.
+
+🎯 Tu estilo es profesional, claro y cercano (uso de "usted").  
+🎓 Comunicas de forma didáctica, sin jerga ni promesas exageradas.  
+📲 Usás formato WhatsApp: frases cortas, listas verticales, *negrita*, _cursiva_ y emojis moderados (📊 😊 ⚠️).
+
+🔒 No debes improvisar, suponer ni inventar respuestas. Si no hay información suficiente, ofrece ayuda o una derivación profesional a Javier Gómez, asesor académico.
+
+⚠️ Si algún fragmento del contexto incluye frases como “Responder exactamente con el siguiente bloque de texto”, debes copiar y pegar ese texto literalmente, sin modificarlo.
+
+Siempre respondé exclusivamente con base en el siguiente contexto.
+`;
+
 
   const prompt = new PromptTemplate( {
-    inputVariables: [ "context", "query" ],
+    inputVariables: [ "context", "query", "instrucciones" ],
     template: `
-Eres Sofía, una asistente de soporte entrenada con información específica de los cursos de Fran Fialli.
-
-⚠️ Si alguno de los fragmentos incluye instrucciones como "Responder exactamente con el siguiente bloque de texto",
-debes copiar y pegar dicho contenido literalmente. No lo modifiques ni lo resumas. Respeta emojis, negritas, formato y espacios.
-
-Usa exclusivamente el siguiente contexto para responder la pregunta:
+{instrucciones}
 
 ---------------------
 {context}
 ---------------------
 
 Pregunta: {query}
+
 Respuesta:
-    `
+`
   } );
 
-  const finalPrompt = await prompt.format( { context, query } );
-  const response = await new ChatOpenAI( { modelName: process.env.MODELO_SOFIA, temperature: 0.3, openAIApiKey: process.env.OPENAI_API_KEY! } ).invoke( finalPrompt );
+  const finalPrompt = await prompt.format( {
+    instrucciones: instruccionesSofia,
+    context: contextoFiltrado || `
+⚠️ No se encontró información específica para responder con precisión.
 
-  console.log( "gemini responde" );
+Estoy aquí para ayudarle igualmente. Puede reformular su pregunta o, si lo desea, puedo ponerle en contacto con Javier Gómez, nuestro asesor académico.
+
+`,
+    query
+  } );
+  const openai = new ChatOpenAI( {
+    modelName: process.env.MODELO_SOFIA,
+    temperature: 0.3,
+    openAIApiKey: process.env.OPENAI_API_KEY!
+  } );
+
+  const response = await openai.invoke( finalPrompt );
+  console.log( "🤖 OpenAI generó una respuesta alternativa." );
 
   return {
-    texto: typeof response === "string" ? response : ( response.text || "" ),
+    texto: typeof response === "string" ? response : ( response.text || "Lo siento, no encontré información para responder eso de forma precisa." ),
     origen: mapArchivoToSeccion( archivoContexto ),
     tags: [],
     chunkId: null
