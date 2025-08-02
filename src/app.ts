@@ -45,7 +45,7 @@ import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from 
 
 function verificarConsulta( query: string ): boolean {
   // Definir las palabras aceptadas "sí" y "no"
-  const respuestasAceptadas = [ 'sí', 'no', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
+  const respuestasAceptadas = [ 'sí', 'no', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
 
   // Eliminar posibles espacios y convertir a minúsculas
   const queryNormalizada = query.trim().toLowerCase();
