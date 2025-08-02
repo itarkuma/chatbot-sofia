@@ -61,6 +61,18 @@ function verificarConsulta( query: string ): boolean {
     return false;
   }
 
+  if ( queryNormalizada.length > 150 ) {
+    console.log( "Consulta demasiado larga" );
+    return false;
+  }
+
+  // Si contiene solo símbolos o letras sueltas, lo descartamos como ruido
+  const esRuido = /^[^\w\s]+$/.test( queryNormalizada ) || /^[a-zA-Z]{1,2}$/.test( queryNormalizada );
+  if ( esRuido ) {
+    console.log( "Entrada parece accidental o sin sentido" );
+    return false;
+  }
+
   // Si pasa todas las validaciones, la consulta es válida
   return true;
 }
