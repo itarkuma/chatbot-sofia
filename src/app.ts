@@ -29,6 +29,7 @@ import { detectflowCursoSantiago, flowCursoSantiago } from './flows/cursoSantiag
 import { flowComparacion } from './flows/comparacion.flow';
 import { esComparacionGrabadoVsVivo } from './lib/utils/esComparacionGrabadoVsVivo';
 import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
+import { detectflowRecursosGratuitos, flowRecursosGratuitos } from './flows/recursosGratuitos.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
@@ -245,6 +246,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isCursoSantiago = detectflowCursoSantiago( consulta, seccion );
     const isComparacion = esComparacionGrabadoVsVivo( consulta );
     const isConfusion = detectflowConfusion( consulta, seccion );
+    const isRecursosGratuitos = detectflowRecursosGratuitos( consulta, seccion );
 
     const isConfusoUser = detectConfusionUser( consulta );
     const isDataNodisponibleUser = detectDatoNodisponibleUser( consulta );
@@ -274,6 +276,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
+    if ( isRecursosGratuitos ) { return gotoFlow( flowRecursosGratuitos ); }
     if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
@@ -612,6 +615,7 @@ const main = async () => {
       flowCursoSantiago,
       flowComparacion,
       flowConfusion,
+      flowRecursosGratuitos,
       fallbackConfusionUser,
       fallbackDatoNodisponibleUser,
       fallbackPromocionesUser,

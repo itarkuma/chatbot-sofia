@@ -993,6 +993,27 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+
+  if ( ask_menu === 'recursos_gratuitos' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_08'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'club_fran' ) {
 
     const archivoActual = '8_flujos_recursos_web.txt';
