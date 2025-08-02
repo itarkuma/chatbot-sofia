@@ -10,6 +10,7 @@ const detectflowRecursosGratuitos = ( query: string, seccionActual: string ): bo
 
   const clubFranTriggers = [
     "recursos gratuitos",
+    "recurso gratuito",
     "10",
     /recurso\s+grati\s/,
     /recurso\s+gratuito\s/,
