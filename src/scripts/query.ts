@@ -592,6 +592,46 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  if ( seccion === 'curso_online_vivo' && /resumen/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_vivo' && /temario completo/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_20'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   const esConsultaIndicadores = /\bindicadores(?:\s+(t[eé]cnicos?|que\s+enseñan|enseñan|de trading))?|\benseñan\s+indicadores\b/i.test( preprocessPregunta( query ) );
 
   if ( seccion === 'curso_online_vivo' && esConsultaIndicadores ) {
@@ -653,7 +693,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'curso_miami' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'formacion_miami' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '4_curso_trading_miami.txt';
     const filters = {
@@ -672,6 +712,47 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+
+  if ( seccion === 'formacion_miami' && /resumen/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_miami' && /temario completo/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_42'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'formacion_santiago' ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
@@ -692,7 +773,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'curso_santiago' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'formacion_santiago' && esPrecioRelacion( query ) ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
     const filters = {
@@ -711,6 +792,47 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
+
+  if ( seccion === 'formacion_santiago' && /resumen/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_santiago' && /temario completo/.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_41'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'soy_alumno' ) {
 
     const archivoActual = '3_alumnos.txt';
@@ -857,6 +979,27 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const filters = {
       archivo: '8_flujos_recursos_web.txt',
       chunk: 'chunk_3'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+
+  if ( ask_menu === 'recursos_gratuitos' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_08'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
