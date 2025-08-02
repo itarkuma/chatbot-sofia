@@ -39,7 +39,7 @@ const flowConsultasGenerales = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Qué puedo hacer desde cero?' ), seccion );
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-    const textomsm = "Para comenzar, ¿podría indicarme su consulta?";
+    const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";
     await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 
