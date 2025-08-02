@@ -185,14 +185,7 @@ export const askSofiaFallback = async ( question: string, esAlumno: boolean = fa
       return [ doc, score ] as [ SofiaDocument, number ];
     } );
 
-  console.log( '📥 Documentos recuperados por Pinecone fallback:' );
-  retrievedDocs.forEach( ( [ doc, score ], i ) => {
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', score.toFixed( 4 ) );
-  } );
+
 
   // const coincidenciasFallback = retrievedDocs.filter( doc =>
   //   doc.metadata?.es_fallback === true &&
@@ -205,6 +198,7 @@ export const askSofiaFallback = async ( question: string, esAlumno: boolean = fa
   if ( retrievedDocs.length > 0 ) {
     return await responderConResultados( retrievedDocs, query, "" );
   }
+
   console.log( 'buscar en global' );
 
   const filtrosGlobales = {
@@ -231,16 +225,7 @@ const responderConResultados = async (
   query: string,
   archivoContexto: string
 ) => {
-  let i = 0;
-  for ( const [ doc, number ] of resultados ) {
-    console.log( '📥 Documentos recuperados por Pinecone:' );
-    console.log( `\n#${ i + 1 }` );
-    console.log( 'Archivo:', doc.metadata?.archivo );
-    console.log( 'Chunk:', doc.metadata?.chunk );
-    console.log( 'Tipo:', doc.metadata?.tipo );
-    console.log( 'Score:', number.toFixed( 4 ) );
-    i++;
-  }
+
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
     .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )

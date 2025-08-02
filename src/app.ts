@@ -340,7 +340,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         console.log( 'Nombre Seccion:', seccion );
         const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
-
+        console.log( { origen, chunkId } );
         if ( origen === 'curso_online_vivo' ||
           origen === 'curso_online_grabado' ||
           origen === 'formacion_miami' ||
@@ -350,7 +350,13 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'update seccion ->:', origen );
         }
 
-
+        if ( tags.includes( 'derivacion_humana' ) ) {
+          // Acción específica
+          console.log( 'Caso especial derivacion humana' );
+          await delay( 2000 );
+          await flowDynamic( texto );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
         if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
           // Acción específica
           console.log( 'Caso especial 1' );
@@ -519,12 +525,21 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         if ( intencion.is_fallback ) {
           console.log( 'Detecto Fallback intencion else' );
-          const { texto, tags } = await askSofiaFallback( consulta );
+          const { texto, tags, chunkId, origen } = await askSofiaFallback( consulta );
           console.log( 'retorno un fallback' );
+          console.log( { origen, chunkId } );
+
 
 
           await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
 
+          if ( tags.includes( 'contacto_humano' ) ) {
+            console.log( 'Caso especial fallback 1' );
+            console.log( "send enviar mensaje a Javier" );
+
+            return gotoFlow( fallbackconfirmarderivacionUser );
+
+          }
           if ( tags.includes( 'hablar_con_humano' ) ) {
             console.log( 'Caso especial fallback 1' );
             console.log( "send enviar mensaje a Javier" );
