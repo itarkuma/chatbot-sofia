@@ -347,7 +347,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           origen === 'formacion_santiago'
         ) {
           await state.update( { seccionActual: origen } );
-          console.log( 'update seccion ->:', origen );
+          console.log( 'update seccion app.ts ->:', origen );
         }
 
         if ( tags.includes( 'derivacion_humana' ) ) {
