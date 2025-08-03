@@ -17,7 +17,9 @@ const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
     "¿qué puedo hacer aquí?",
     "envíame el listado",
     "quiero comenzar",
-    "dame las opciones"
+    "dame las opciones",
+    "¿Qué ofrecen?",
+    "Que ofrecen",
   ];
 
   // Patrones para detectar frases comunes más flexibles del menú

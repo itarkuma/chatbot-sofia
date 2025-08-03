@@ -9,6 +9,7 @@ import { preprocessPregunta } from '../lib/utils/preprocessinText';
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
 import { distance } from 'fastest-levenshtein';
 import { esPrecioRelacion } from '../lib/utils/esPrecioRelacion';
+import { ordenarPorMejorCoincidencia } from "../lib/utils/ordernarPorMejorCoincidencia";
 
 interface SofiaMetadata {
   archivo: string;
@@ -22,112 +23,6 @@ interface SofiaMetadata {
 
 type SofiaDocument = Document<SofiaMetadata>;
 
-function matchDisparador( doc: any, question: string ): boolean {
-
-  const STOPWORDS = new Set( [
-    'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las',
-    'por', 'un', 'para', 'con', 'no', 'una', 'su', 'al', 'lo', 'como',
-    'más', 'pero', 'sus', 'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta',
-    'entre', 'cuando', 'muy', 'sin', 'sobre', 'también', 'me', 'hasta',
-    'hay', 'donde', 'quien', 'desde', 'todo', 'nos', 'durante', 'todos',
-    'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante', 'ellos',
-    'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro',
-    'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
-    'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas',
-    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas', 'puedo', 'leer'
-  ] );
-
-  const queryLower = preprocessPregunta( question );
-  const palabrasQuery = queryLower.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-
-  const disparadoras: string[] = doc.metadata?.disparadoras || [];
-  const tags: string[] = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-  const chunkId = doc.metadata?.chunk || 'unknown';
-
-  // ✅ [1] Match exacto con tag
-  if ( tags.includes( queryLower ) ) {
-    console.log( `✅ [TAG-EXACT] Match exacto con tag "${ queryLower }" en chunk ${ chunkId }` );
-    return true;
-  }
-
-  // ✅ [2] Coincidencia palabra a palabra con tags
-  for ( const palabra of palabrasQuery ) {
-    if ( tags.includes( palabra ) ) {
-      console.log( `✅ [TAG-WORD] Palabra "${ palabra }" coincide con tag en chunk ${ chunkId }` );
-      return true;
-    }
-
-    // ✅ [3] Fuzzy match palabra con tags
-    // const threshold = 0.55; 
-    // const palabrasIrrelevantes = new Set( [
-    //   "resultados", "descansos", "horarios", "detalles" // Agrega otras palabras irrelevantes que no deberían considerarse
-    // ] );
-
-    // for ( const tag of tags ) {
-
-    //   if ( palabrasIrrelevantes.has( tag ) ) {
-    //     continue; // Si es irrelevante, pasamos al siguiente tag
-    //   }
-
-    //   const dist = distance( palabra, tag );
-    //   const maxLen = Math.max( palabra.length, tag.length );
-    //   const porcentaje = dist / maxLen;
-
-    //   if ( porcentaje < threshold ) {
-    //     console.log( `✅ [TAG-FUZZY] Palabra "${ palabra }" ≈ tag "${ tag }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
-    //     return true;
-    //   }
-    // }
-  }
-
-  // ✅ [4] Coincidencia con frases disparadoras
-  for ( const frase of disparadoras ) {
-    const fraseLimpia = preprocessPregunta( frase ).toLowerCase();
-    const queryLimpia = queryLower;
-
-    const palabrasFras = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-    const palabrasQuery = queryLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-
-    const fraseSinStop = palabrasFras.join( ' ' );
-    const querySinStop = palabrasQuery.join( ' ' );
-
-    // a) Inclusión mutua sin stopwords
-    if (
-      fraseSinStop.length > 0 &&
-      querySinStop.length > 0 &&
-      ( fraseSinStop.includes( querySinStop ) || querySinStop.includes( fraseSinStop ) )
-    ) {
-      console.log( `✅ [DISPARADORA-INCLUYE] "${ querySinStop }" ≈ "${ fraseSinStop }" en chunk ${ chunkId }` );
-      return true;
-    }
-
-    // b) Fuzzy completo
-    // const dist = distance( queryLower, fraseLimpia );
-    // const maxLen = Math.max( queryLower.length, fraseLimpia.length );
-    // const porcentaje = dist / maxLen;
-    // const threshold = 0.5; 
-
-    // if ( porcentaje < 0.5 ) {
-    //   console.log( `✅ [DISPARADORA-LEV] "${ fraseLimpia }" (dist: ${ dist }, %: ${ porcentaje.toFixed( 2 ) }) en chunk ${ chunkId }` );
-    //   return true;
-    // }
-
-    // c) Coincidencia por palabras clave
-    const palabrasFrase = fraseLimpia.split( /\s+/ ).filter( p => !STOPWORDS.has( p ) );
-
-    const comunes = palabrasFrase
-      .filter( p => p !== "curso" && palabrasQuery.includes( p ) );
-    if ( comunes.length >= 2 ) {
-      console.log( `✅ [DISPARADORA-PALABRAS] Palabras comunes: ${ comunes.join( ', ' ) } en chunk ${ chunkId }` );
-      return true;
-    }
-  }
-
-  console.log( `❌ No match en chunk ${ chunkId }` );
-  return false;
-}
-
-
 const detectarCambioDeContexto = ( q: string ): string | null => {
   const query = preprocessPregunta( q );
   if ( query.includes( "miami" ) ) return "4_curso_trading_miami.txt";
@@ -136,7 +31,6 @@ const detectarCambioDeContexto = ( q: string ): string | null => {
   if ( query.includes( "en vivo" ) || query.includes( "zoom" ) || query.includes( "clases" ) ) return "1_curso_trading_online_vivo.txt";
   return null;
 };
-
 
 function mapSeccionToArchivo( seccion ) {
   return {
@@ -431,6 +325,32 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  const regexPlataformas = new RegExp(
+    "\\b(plataforma|plataformas|software|herramienta[s]?|ninjatrader|tradingview|bookmap|mapa[s]? de calor)\\b.*\\b(usan|usa|utilizan|utiliza|se\\s+usa|se\\s+usan)?|" +
+    "\\b(usan|usa|utilizan|utiliza|se\\s+usa|se\\s+usan)\\b.*\\b(plataforma|plataformas|software|herramienta[s]?|ninjatrader|tradingview|bookmap|mapa[s]? de calor)\\b",
+    "i"
+  );
+
+  if ( seccion === 'curso_online_grabado' && regexPlataformas.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( seccion === 'curso_online_grabado' && /resumen/.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
@@ -578,6 +498,33 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const filters = {
       archivo: '1_curso_trading_online_vivo.txt',
       chunk: 'chunk_11'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+
+  const regexPlataformasvivo = new RegExp(
+    "\\b(plataforma|plataformas|software|herramienta[s]?|ninjatrader|tradingview|bookmap|mapa[s]? de calor)\\b.*\\b(usan|usa|utilizan|utiliza|se\\s+usa|se\\s+usan)?|" +
+    "\\b(usan|usa|utilizan|utiliza|se\\s+usa|se\\s+usan)\\b.*\\b(plataforma|plataformas|software|herramienta[s]?|ninjatrader|tradingview|bookmap|mapa[s]? de calor)\\b",
+    "i"
+  );
+
+  if ( seccion === 'curso_online_vivo' && regexPlataformasvivo.test( preprocessPregunta( query ) ) ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_22'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -1071,75 +1018,49 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   const archivoActual = mapSeccionToArchivo( seccion );
 
   const STOPWORDS = new Set( [
-    'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las'
+    'a'
   ] );
   const palabrasIrrelevantes = new Set( [ 'miami', 'santiago', 'grabado', 'en vivo', 'en directo' ] );
   const palabrasFiltradas = query.split( /\s+/ ).filter( p => !palabrasIrrelevantes.has( p ) );
   const queryFiltrada = palabrasFiltradas.filter( p => !STOPWORDS.has( p ) ).join( " " );
   console.log( 'query filtrada:', queryFiltrada );
+  const nuevoContextoDetectado = detectarCambioDeContexto( query );
 
   const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
 
-  // const relevantesActuales = resultadosActuales.map( ( [ doc, score ] ) => {
-  //   const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-  //   const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-  //   let bonificacion = 0;
-  //   if ( interseccion.length > 0 ) {
-  //     bonificacion += 0.03;
-  //     console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-  //   }
-  //   return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-  // } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
-
-  const relevantesActuales = resultadosActuales
-    .filter( ( [ doc ] ) => matchDisparador( doc, query ) )
-    .map( ( [ doc, score ] ) => {
-      const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-      const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-      let bonificacion = 0;
-      if ( interseccion.length > 0 ) {
-        bonificacion += 0.03;
-        console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-      }
-      return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-    } );
-
-  const nuevoContextoDetectado = detectarCambioDeContexto( query );
-
-  if ( relevantesActuales.length > 0 ) {
-    return await responderConResultados( relevantesActuales, query, archivoActual );
+  const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
+    .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
+  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
+  resultadosFiltrados.forEach( ( r, i ) => {
+    console.log(
+      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
+    );
+  } );
+  if ( resultadosFiltrados.length > 0 ) {
+    const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
+    return await responderConResultados( soloDocsYScore, query, archivoActual );
   }
-  console.log( 'buscar en global' );
 
+  console.log( "🔍 No hubo coincidencias fuertes. Buscando en recursos globales..." );
+
+  // realizar búsqueda en recursos generales
   const filtrosGlobales = {
     archivo: { $in: [ '9_soporte_general.txt', '8_flujos_recursos_web.txt' ] }
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
+  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
 
-  const relevantesPermitidos = resultadosOtros.map( ( [ doc, score ] ) => {
-    const archivo = doc.metadata.archivo;
-    const esFallback = doc.metadata.es_fallback;
-    const coincideContexto = archivo === nuevoContextoDetectado;
-    const tags = ( doc.metadata?.tags || [] ).map( ( t: string ) => t.toLowerCase() );
-    const interseccion = palabrasQuery.filter( p => tags.includes( p ) );
-    let bonificacion = 0;
-    if ( interseccion.length > 0 ) {
-      bonificacion += 0.03;
-      console.log( `✅ Bonificación por coincidencia con tags: ${ interseccion.join( ', ' ) } en chunk ${ doc.metadata?.chunk }` );
-    }
-    return [ doc, score + bonificacion ] as [ SofiaDocument, number ];
-  } ).filter( ( [ doc ] ) => {
-    const archivo = doc.metadata.archivo;
-    const esFallback = doc.metadata.es_fallback;
-    const coincideContexto = archivo === nuevoContextoDetectado;
+  if ( globalOrdenadas.length > 0 ) {
+    const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
+    return await responderConResultados( soloDocsYScore, query, nuevoContextoDetectado || archivoActual );
+  }
 
-    //    console.log( `⛔ Filtro 1 - archivo: ${ archivo }, esFallback: ${ esFallback }, coincideContexto: ${ coincideContexto }` );
-    //    return esFallback || coincideContexto || archivo === '9_soporte_general.txt';
-    return true;
-  } ).filter( ( [ doc ] ) => matchDisparador( doc, query ) );
 
-  return await responderConResultados( relevantesPermitidos, query, nuevoContextoDetectado || archivoActual );
+  // 🧯 Si nada funcionó, devolvé una respuesta vacía pero controlada:
+  console.log( "🛑 No se encontraron coincidencias relevantes en ningún contexto." );
+  return await responderConResultados( [], query, archivoActual );
+
 };
 
 

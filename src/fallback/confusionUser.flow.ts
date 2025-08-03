@@ -66,9 +66,15 @@ const fallbackConfusionUser = addKeyword( EVENTS.ACTION ).addAction( async ( ctx
     console.log( 'fallback -> ConfusionUser' );
 
     const seccion = await state.get( 'seccionActual' );
-    let contador = await state.get( 'estado_confucion' );
-    if ( contador === 0 ) { contador = 1; await state.update( { estado_confucion: '1' } ); }
-    if ( contador === 1 ) { contador = 2; await state.update( { estado_confucion: '2' } ); }
+    let contador = await state.get( 'estado_confucion' ) || '0';
+    if ( parseInt( contador, 10 ) === 0 ) {
+      contador = '1'; await state.update( { estado_confucion: '1' } );
+    }
+    else {
+      if ( parseInt( contador, 10 ) === 1 ) { contador = '2'; await state.update( { estado_confucion: '2' } ); }
+    }
+
+    console.log( 'esta_confuso_' + contador );
 
     const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'esta_confuso_' + contador );
 
