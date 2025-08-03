@@ -11,15 +11,9 @@ function matchDisparadorMejor( doc: any, question: string ): {
 } {
   const STOPWORDS = new Set( [
     'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las',
-    'por', 'un', 'para', 'con', 'una', 'su', 'al', 'lo', 'como',
+    'por', 'un', 'para', 'con', 'una', 'su', 'al', 'lo',
     'más', 'pero', 'sus', 'le', 'ya', 'o', 'este', 'sí', 'porque', 'esta',
-    'entre', 'cuando', 'muy', 'sobre', 'también', 'me', 'hasta',
-    'hay', 'quien', 'desde', 'todo', 'nos', 'durante', 'todos',
-    'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante', 'ellos',
-    'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro',
-    'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes',
-    'nada', 'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas',
-    'algo', 'nosotros', 'mi', 'mis', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas'
+    'e', 'tú', 'te', 'ti', 'tu', 'tus', 'ellas'
   ] );
 
   const PALABRAS_NEUTRAS = new Set( [

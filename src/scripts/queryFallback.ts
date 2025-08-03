@@ -89,7 +89,7 @@ export const askSofiaFallback = async ( question: string, esAlumno: boolean = fa
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
-  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );;
+  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
 
   if ( globalOrdenadas.length > 0 ) {
     const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );

@@ -1030,7 +1030,12 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
     .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
-
+  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
+  resultadosFiltrados.forEach( ( r, i ) => {
+    console.log(
+      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
+    );
+  } );
   if ( resultadosFiltrados.length > 0 ) {
     const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
     return await responderConResultados( soloDocsYScore, query, archivoActual );
@@ -1044,7 +1049,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   };
 
   const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
-  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );;
+  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
 
   if ( globalOrdenadas.length > 0 ) {
     const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
