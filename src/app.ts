@@ -12,7 +12,7 @@ import { pineconeQuery } from './scripts/pineconeQuery';
 import { distance } from 'fastest-levenshtein';
 import { generateTimer } from './lib/utils/generateTimer';
 
-
+import { derivarHumano } from './lib/utils/derivaciones';
 //import { detectflowCursorGratuito, flowCursoGratis } from './flows/cursoGratuito.flow';
 import { detectflowLibroFran, flowLibroFran } from './flows/libroFran.flow';
 //import { detectflowComunidadAlumno, flowComunidadAlumno } from './flows/comunidadAlumnos.flow';
@@ -260,7 +260,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isConfusion = detectflowConfusion( consulta, seccion );
     const isRecursosGratuitos = detectflowRecursosGratuitos( consulta, seccion );
 
-    const isConfusoUser = detectConfusionUser( consulta );
+    const isConfusoUser = false;
     const isDataNodisponibleUser = detectDatoNodisponibleUser( consulta );
     const isPromocionesUser = detectPromocionesUser( consulta );
     const isFormasDePagoUser = detectFormasdepagoUser( consulta );
@@ -350,129 +350,16 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'update seccion app.ts ->:', origen );
         }
 
-        if ( tags.includes( 'derivacion_humana' ) ) {
-          // Acción específica
-          console.log( 'Caso especial derivacion humana' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
-          // Acción específica
-          console.log( 'Caso especial 1' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'reserva_plaza' ) && origen === 'curso_online_vivo' ) {
-          // Acción específica
-          console.log( 'Caso especial 2' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'inscripción' ) && origen === 'curso_online_grabado' ) {
-          // Acción específica
-          console.log( 'Caso especial 3' );
-          await delay( 2000 );
-          await flowDynamic( texto );
+        await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+
+        const isDerivarHumano = derivarHumano( tags, origen );
+
+        if ( isDerivarHumano ) {
+          console.log( 'Caso especial derivacion humana -> si tiene seccion' );
+
           return gotoFlow( fallbackconfirmarderivacionUser );
         }
 
-        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) && origen === 'formacion_miami' ) {
-          console.log( 'Caso especial 7' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
-          console.log( 'Caso especial 8' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'captación_datos' ) && origen === 'formacion_miami' ) {
-          console.log( 'Caso especial 9' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'falta_confirmación' ) && origen === 'formacion_miami' ) {
-          console.log( 'Caso especial 9' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-
-        if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_miami' ) {
-          // Acción específica
-          console.log( 'Caso especial 1' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_miami' ) {
-          // Acción específica
-          console.log( 'Caso especial 1' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'precio_curso_Miami' ) && origen === 'formacion_miami' ) {
-          // Acción específica
-          console.log( 'Caso especial 1' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'admisiones' ) && origen === 'formacion_santiago' ) {
-          console.log( 'Caso especial 1_11' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'reserva_de_plaza' ) && origen === 'formacion_santiago' ) {
-          console.log( 'Caso especial 2_12' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'inscripción_presencial' ) && origen === 'formacion_santiago' ) {
-          console.log( 'Caso especial 3_13' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'precio_curso_Santiago' ) && origen === 'formacion_santiago' ) {
-          console.log( 'Caso especial 4_14' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'escenario_entrenable-sin_fechas-interés_usuario-lead_prioritario' ) ) {
-          console.log( 'Caso especial 5_15' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'escenario_entrenable-inscripciones_cerradas-lead_urgente' ) ) {
-          console.log( 'Caso especial 6_16' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'escenario_entrenable-post_inscripción' ) ) {
-          console.log( 'Caso especial 7_17' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
-        if ( tags.includes( 'contacto_humano' ) ) {
-          console.log( 'Caso especial 1_20' );
-          await delay( 2000 );
-          await flowDynamic( texto );
-          return gotoFlow( fallbackconfirmarderivacionUser );
-        }
 
         if ( tags.includes( 'escenario_entrenable-fallback-dato_no_disponible-derivación-Javier_Gómez' ) && origen === 'curso_online_grabado' ) {
           console.log( 'Caso especial 4' );
@@ -499,15 +386,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'Caso especial 9_19' );
           await state.update( { esperandoSeguimiento: true } );
         }
-        if ( tags.includes( 'asesor_activo' ) && origen === 'soporte_general' ) {
-          console.log( 'Caso especial 2_21' );
-          console.log( "send enviar mensaje a Javier" );
 
-          return gotoFlow( fallbackconfirmarderivacionUser );
 
-        }
-        await delay( 2000 );
-        await flowDynamic( texto );
 
       } else {
         console.log( 'No se eligio seccion' );
@@ -533,27 +413,13 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
           await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
 
-          if ( tags.includes( 'contacto_humano' ) ) {
-            console.log( 'Caso especial fallback 1' );
-            console.log( "send enviar mensaje a Javier" );
+          const isDerivarHumano = derivarHumano( tags, origen );
 
+          if ( isDerivarHumano ) {
+            console.log( 'Caso especial derivacion humana -> fallback else' );
             return gotoFlow( fallbackconfirmarderivacionUser );
-
           }
-          if ( tags.includes( 'hablar_con_humano' ) ) {
-            console.log( 'Caso especial fallback 1' );
-            console.log( "send enviar mensaje a Javier" );
 
-            return gotoFlow( fallbackconfirmarderivacionUser );
-
-          }
-          if ( tags.includes( 'derivación_humana' ) ) {
-            console.log( 'Caso especial fallback 2' );
-            console.log( "send enviar mensaje a Javier" );
-
-            return gotoFlow( fallbackconfirmarderivacionUser );
-
-          }
 
 
         } else {
@@ -570,7 +436,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
               default: {
                 console.log( 'No detecto la intencion' );
-                const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+                const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion );
                 console.log( { origen, chunkId } );
 
                 if ( origen == 'curso_online_vivo' ||
@@ -582,14 +448,22 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
                   console.log( 'update seccion ->:', origen );
                 }
 
-                await delay( 2000 );
-                await flowDynamic( texto );
+                const isDerivarHumano = derivarHumano( tags, origen );
+
+                if ( isDerivarHumano ) {
+                  console.log( 'Caso especial derivacion humana -> no intencion' );
+
+                  return gotoFlow( fallbackconfirmarderivacionUser );
+                }
+
+
+                await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
                 break;
               }
             }
           } else {
             console.log( 'No detecto la intencion else' );
-            const { texto, origen, chunkId } = await askSofia( consulta, seccion );
+            const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
             console.log( { origen, chunkId } );
             if ( origen == 'curso_online_vivo' ||
               origen == 'curso_online_grabado' ||
@@ -599,8 +473,14 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
               await state.update( { seccionActual: origen } );
               console.log( 'update seccion ->:', origen );
             }
-            await delay( 2000 );
-            await flowDynamic( texto );
+            await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+            const isDerivarHumano = derivarHumano( tags, origen );
+
+            if ( isDerivarHumano ) {
+              console.log( 'Caso especial derivacion humana -> no intencion else' );
+              return gotoFlow( fallbackconfirmarderivacionUser );
+            }
+
           }
         }
 

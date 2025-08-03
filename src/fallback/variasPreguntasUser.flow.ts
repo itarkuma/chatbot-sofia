@@ -23,9 +23,7 @@ const detectarMensajeMultiplesPreguntas = ( query: string ): boolean => {
     "otra duda",
     "otra consulta",
     "ya que estamos",
-    "de paso",
-    "y si",
-    "o si"
+    "de paso"
   ];
 
   if ( conectores.some( frase => texto.includes( frase ) ) ) {
