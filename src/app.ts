@@ -43,6 +43,8 @@ import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fall
 import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
 
 import { getIntention } from './ai/cath-intention';
+import type { IntencionDetectada } from "./ai/cath-intention"; // importa solo el tipo
+
 
 function verificarConsulta( query: string ): boolean {
   // Definir las palabras aceptadas "sí" y "no"
@@ -142,7 +144,7 @@ function esNegacionDerivacion( texto: string ): boolean {
 
 const PORT = process.env.PORT ?? 3008;
 
-type IntencionDetectada = {
+type IntencionDetectadaaux = {
   seccion: string;
   texto: string;
   is_fallback: boolean;
@@ -210,7 +212,7 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
   return null;
 }
 
-export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectada | null> {
+export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectadaaux | null> {
   const query = preprocessPregunta( mensaje );
   const resultados = await pineconeQuery( query );
   // Log para ver los resultados obtenidos de Pinecone
@@ -245,8 +247,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       return;
     }
 
-    const intencion = await getIntention( consulta );
-    console.log( { intencion } );
+    const myintencion: IntencionDetectada = await getIntention( consulta );
+    console.log( { myintencion } );
 
     //    const isSaludo = detectflowSaludo( consulta, seccion );
     const isCommandMenu = detectflowMenu( consulta, seccion );
@@ -285,7 +287,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
 
-    if ( intencion === "GREETING" || intencion === "INFO_REQUEST" ) {
+    if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
       return gotoFlow( flowSaludo );
     }
     //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
@@ -348,7 +350,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         console.log( 'Si tiene seccion' );
 
         console.log( 'Nombre Seccion:', seccion );
-        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
+        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
         console.log( { origen, chunkId } );
         if ( origen === 'curso_online_vivo' ||
           origen === 'curso_online_grabado' ||
@@ -445,7 +447,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
               default: {
                 console.log( 'No detecto la intencion' );
-                const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion );
+                const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
                 console.log( { origen, chunkId } );
 
                 if ( origen == 'curso_online_vivo' ||
@@ -472,7 +474,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
             }
           } else {
             console.log( 'No detecto la intencion else' );
-            const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
+            const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
             console.log( { origen, chunkId } );
             if ( origen == 'curso_online_vivo' ||
               origen == 'curso_online_grabado' ||

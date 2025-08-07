@@ -7,9 +7,10 @@ import { Document } from "langchain/document";
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
-import { distance } from 'fastest-levenshtein';
 import { esPrecioRelacion } from '../lib/utils/esPrecioRelacion';
 import { ordenarPorMejorCoincidencia } from "../lib/utils/ordernarPorMejorCoincidencia";
+import { type IntencionDetectada } from "../ai/cath-intention";
+
 
 interface SofiaMetadata {
   archivo: string;
@@ -59,7 +60,13 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 }
 
 
-export const askSofia = async ( question: string, seccion: string, ask_menu: string = '', esAlumno: boolean = false ) => {
+export const askSofia = async (
+  question: string,
+  seccion: string,
+  ask_menu: string = '',
+  esAlumno: boolean = false,
+  intencion: IntencionDetectada = "UNKNOWN"
+) => {
 
 
   const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
@@ -337,6 +344,66 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     const filters = {
       archivo: '2_curso_trading_online_grabado.txt',
       chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_EURO' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_25'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_DOLAR' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_26'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_MONEDA_LOCAL' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_27'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
