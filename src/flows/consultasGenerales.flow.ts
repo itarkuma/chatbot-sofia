@@ -11,6 +11,8 @@ const detectflowConsultasGenerales = ( query: string, seccionActual: string ): b
   const consultasGeneralesTriggers = [
     "consultas generales",
     "7",
+    /\bopci[oó]n 7\b/,
+    /\b¿qu[eé] ofrecen?\b/,
     /quien\s+es\s+fran\s+fialli/,
     /por\s+que\s+deber[ií]a\s+confiar/,
     /que\s+respaldo\s+tienen?/,
@@ -36,7 +38,7 @@ const flowConsultasGenerales = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     //    await state.update( { seccionActual: 'soporte_general' } );
     const seccion = await state.get( 'seccionActual' );
 
-    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( '¿Qué puedo hacer desde cero?' ), seccion );
+    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'consultas_generales' );
 
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";

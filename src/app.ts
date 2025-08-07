@@ -258,6 +258,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isMenuOption8 = detectflowNoticiasMercado( consulta, seccion );
     const isMenuOption9 = detectflowClubFran( consulta, seccion );
     const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
+
     const isAlumno = detectflowsoyAlumno( consulta, seccion );
     const isOnlineGrabado = detectflowCursoOonlineGrabado( consulta, seccion );
     const isOnlineVivo = detectflowCursoOonlineVivo( consulta, seccion );
@@ -303,7 +304,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
-    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
+
+    if ( isMenuOption7_1 || myintencion === "INFO_REQUEST_INICIAR_DESDE_CERO" ) { return gotoFlow( flowConsultasGenerales ); }
     //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
     //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 

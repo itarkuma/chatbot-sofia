@@ -987,6 +987,26 @@ export const askSofia = async (
 
   }
 
+  if ( ask_menu === 'consultas_generales' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'comunidad_alumnos' ) {
 
     const archivoActual = '3_alumnos.txt';
