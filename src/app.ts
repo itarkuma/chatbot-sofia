@@ -42,6 +42,8 @@ import { fallbackconfirmarderivacionUser } from './fallback/confirmarDerivacionU
 import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fallback/javiernorespondeUser.flow';
 import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
 
+import { getIntention } from './ai/cath-intention';
+
 function verificarConsulta( query: string ): boolean {
   // Definir las palabras aceptadas "sí" y "no"
   const respuestasAceptadas = [ 'sí', 'no', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
@@ -242,7 +244,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       await flowDynamic( `La pregunta es demasiado corta o no es válida. Por favor, intenta de nuevo.` );
       return;
     }
-    const isSaludo = detectflowSaludo( consulta, seccion );
+
+    const intencion = await getIntention( consulta );
+    console.log( { intencion } );
+
+    //    const isSaludo = detectflowSaludo( consulta, seccion );
     const isCommandMenu = detectflowMenu( consulta, seccion );
     //    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
     const isMenuOption6 = detectflowLibroFran( consulta, seccion );
@@ -278,7 +284,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     if ( isConfusion ) { return gotoFlow( flowConfusion ); }
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
-    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
+
+    if ( intencion === "GREETING" || intencion === "INFO_REQUEST" ) {
+      return gotoFlow( flowSaludo );
+    }
+    //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
