@@ -24,6 +24,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "formacion en miami",
     "curso en miami",
     "curso miami",
+    "masterclass miami",
     "trading miami",
   ];
 
