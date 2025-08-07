@@ -29,6 +29,7 @@ import { flowComparacion } from './flows/comparacion.flow';
 import { esComparacionGrabadoVsVivo } from './lib/utils/esComparacionGrabadoVsVivo';
 import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 import { detectflowRecursosGratuitos, flowRecursosGratuitos } from './flows/recursosGratuitos.flow';
+import { flowPresencial } from './flows/presencial.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
@@ -302,10 +303,12 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
-    if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
-    if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
-    if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
-    if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
+    if ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES" ) { return gotoFlow( flowPresencial ); }
+
+    if ( isOnlineGrabado || ( myintencion === "INFO_REQUEST_CURSO_ONLINE_GRABADO" ) ) { return gotoFlow( flowCursoOnlineGrabado ); }
+    if ( isOnlineVivo || ( myintencion === "INFO_REQUEST_CURSO_ONLINE_VIVO" ) ) { return gotoFlow( flowCursoOnlineVivo ); }
+    if ( isCursoMiami || ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES_MIAMI" ) ) { return gotoFlow( flowCursoMiami ); }
+    if ( isCursoSantiago || ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES_SANTIAGO" ) ) { return gotoFlow( flowCursoSantiago ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
     if ( isRecursosGratuitos ) { return gotoFlow( flowRecursosGratuitos ); }
@@ -544,6 +547,7 @@ const main = async () => {
       flowComparacion,
       flowConfusion,
       flowRecursosGratuitos,
+      flowPresencial,
       fallbackConfusionUser,
       fallbackDatoNodisponibleUser,
       fallbackPromocionesUser,

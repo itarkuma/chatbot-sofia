@@ -272,6 +272,25 @@ export const askSofia = async (
     }
   }
 
+  if ( ask_menu === 'curso_presencial' ) {
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_unknown_53'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+
   if ( ask_menu === 'menu' ) {
 
     const archivoActual = 'fallbacks.txt';

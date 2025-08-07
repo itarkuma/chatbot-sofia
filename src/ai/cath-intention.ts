@@ -77,35 +77,35 @@ export const getIntention = async ( text: string ): Promise<IntencionDetectada> 
 };
 
 // --- Ejemplo de uso ---
-( async () => {
-  let intention = await getIntention( "¿Cuánto cuesta el curso grabado?" );
-  console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Buenas noches" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Saludos" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Hey cómo están?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Cuánto cuesta el curso en Miami?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Qué vale el curso en Santiago de Compostela?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Precio del curso?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Hello" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Buenas, ¿qué hay?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "moneda local" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "pesos colombianos" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Cuáles son los métodos de pago?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Qué formas de pago hay?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "¿Cuáles son las modalidades de pago?" );
-  // console.log( "Intention:", intention ); // -> sales
-  // intention = await getIntention( "Buen día" );
-  // console.log( "Intention:", intention ); // -> sales
-} )();
+// ( async () => {
+//   let intention = await getIntention( "¿Cuánto cuesta el curso grabado?" );
+//   console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Buenas noches" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Saludos" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Hey cómo están?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Cuánto cuesta el curso en Miami?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Qué vale el curso en Santiago de Compostela?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Precio del curso?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Hello" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Buenas, ¿qué hay?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "moneda local" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "pesos colombianos" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Cuáles son los métodos de pago?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Qué formas de pago hay?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "¿Cuáles son las modalidades de pago?" );
+// console.log( "Intention:", intention ); // -> sales
+// intention = await getIntention( "Buen día" );
+// console.log( "Intention:", intention ); // -> sales
+//} ) ();
