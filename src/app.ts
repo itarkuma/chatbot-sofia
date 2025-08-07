@@ -302,10 +302,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
-    if ( ( myintencion === "PRECIO_CURSO_GRABADO" ) || isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
-    if ( ( myintencion === "PRECIO_CURSO_VIVO" ) || isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
-    if ( ( myintencion === "PRECIO_CURSO_MIAMI" ) || isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
-    if ( ( myintencion === "PRECIO_CURSO_SANTIAGO" ) || isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
+    if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
+    if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
+    if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
+    if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
     if ( isRecursosGratuitos ) { return gotoFlow( flowRecursosGratuitos ); }

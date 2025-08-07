@@ -539,7 +539,11 @@ export const askSofia = async (
   }
 
 
-  if ( seccion === 'curso_online_grabado' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'curso_online_grabado' &&
+    (
+      ( intencion === "PRECIO_CURSO_GRABADO" ) ||
+      ( intencion === "PRECIO_CURSO" )
+    ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -579,7 +583,12 @@ export const askSofia = async (
 
   }
 
-  if ( seccion === 'curso_online_vivo' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'curso_online_vivo' &&
+    (
+      ( intencion === "PRECIO_CURSO_VIVO" ) ||
+      ( intencion === "PRECIO_CURSO" )
+    )
+  ) {
 
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
@@ -727,7 +736,12 @@ export const askSofia = async (
 
   }
 
-  if ( seccion === 'formacion_miami' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'formacion_miami' &&
+    (
+      ( intencion === "PRECIO_CURSO_MIAMI" ) ||
+      ( intencion === "PRECIO_CURSO" )
+    )
+  ) {
 
     const archivoActual = '4_curso_trading_miami.txt';
     const filters = {
@@ -807,7 +821,12 @@ export const askSofia = async (
 
   }
 
-  if ( seccion === 'formacion_santiago' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'formacion_santiago' &&
+    (
+      ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
+      ( intencion === "PRECIO_CURSO" )
+    )
+  ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
     const filters = {
