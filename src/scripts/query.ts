@@ -584,6 +584,7 @@ export const askSofia = async (
 
   if ( ask_menu === 'curso_online_vivo' ) {
 
+
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
       archivo: '1_curso_trading_online_vivo.txt',
