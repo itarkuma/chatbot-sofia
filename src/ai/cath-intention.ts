@@ -78,8 +78,8 @@ export const getIntention = async ( text: string ): Promise<IntencionDetectada> 
 
 // --- Ejemplo de uso ---
 ( async () => {
-  // let intention = await getIntention( "¿Cuál es el precio del curso en Miami?" );
-  // console.log( "Intention:", intention ); // -> sales
+  let intention = await getIntention( "¿Cuánto cuesta el curso grabado?" );
+  console.log( "Intention:", intention ); // -> sales
   // intention = await getIntention( "Buenas noches" );
   // console.log( "Intention:", intention ); // -> sales
   // intention = await getIntention( "Saludos" );

@@ -285,7 +285,15 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isDataNodisponibleUser ) { return gotoFlow( fallbackDatoNodisponibleUser ); }
     if ( isConfusoUser ) { return gotoFlow( fallbackConfusionUser ); }
 
-    if ( isConfusion ) { return gotoFlow( flowConfusion ); }
+    if (
+      !(
+        ( myintencion === "PRECIO_CURSO_MIAMI" ) ||
+        ( myintencion === "PRECIO_CURSO_SANTIAGO" ) ||
+        ( myintencion === "PRECIO_CURSO_GRABADO" ) ||
+        ( myintencion === "PRECIO_CURSO_VIVO" )
+      )
+      && isConfusion ) { return gotoFlow( flowConfusion ); }
+
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
 
     if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
@@ -294,10 +302,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
-    if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
-    if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
-    if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
-    if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
+    if ( ( myintencion === "PRECIO_CURSO_GRABADO" ) || isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
+    if ( ( myintencion === "PRECIO_CURSO_VIVO" ) || isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
+    if ( ( myintencion === "PRECIO_CURSO_MIAMI" ) || isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
+    if ( ( myintencion === "PRECIO_CURSO_SANTIAGO" ) || isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
     if ( isRecursosGratuitos ) { return gotoFlow( flowRecursosGratuitos ); }
