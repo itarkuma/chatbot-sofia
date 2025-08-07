@@ -59,23 +59,23 @@ Puedes pagar desde cualquier país con total seguridad. Si necesitas ayuda perso
 
   await index.upsert( [
     {
-      id: 'chunk_grabado_metodo_pago', // id único
+      id: 'chunk_general_metodo_pago', // id único
       values: vector,
       metadata: {
-        archivo: '2_curso_trading_online_grabado.txt',
+        archivo: '9_soporte_general.txt',
         chunk: 'metodo_pago',
         tipo: 'respuesta_fija',
         es_fallback: false,
-        tags: [ 'curso_online_en_vivo', 'métodos_de_pago', 'formas_de_pago', 'pago_en_euros', 'pago_en_dólares', 'pago_internacional' ],
+        tags: [ 'métodos_de_pago', 'formas_de_pago', 'pago_en_euros', 'pago_en_dólares', 'pago_internacional' ],
         disparadoras: [
-          '¿Cómo puedo pagar el curso online en vivo?',
-          '¿Qué formas de pago tenéis para el curso de Fran en directo?',
+          '¿Cómo puedo pagar el curso?',
+          '¿Qué formas de pago tenéis para el curso de Fran?',
           '¿Se puede pagar desde el extranjero?',
           '¿Puedo pagar con PayPal o Wise?',
-          '¿Aceptáis pagos en cuotas para el curso en vivo?',
+          '¿Aceptáis pagos en cuotas para el curso?',
           '¿Qué métodos de pago hay si estoy en otro país?',
           '¿Se puede pagar por transferencia o Zelle?',
-          '¿Qué opciones hay para pagar el curso online que no está grabado?',
+          '¿Qué opciones hay para pagar el curso?',
         ],
         text: text.trim(), // importante si luego quieres indexar texto original
       }

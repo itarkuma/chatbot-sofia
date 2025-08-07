@@ -338,6 +338,26 @@ export const askSofia = async (
     "i"
   );
 
+  if ( seccion === '' && intencion === 'METODO_PAGO' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'metodo_pago'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( seccion === 'curso_online_grabado' && regexPlataformas.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
