@@ -15,6 +15,9 @@
     "rootDir": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
     "paths": {
       "~/*": [
         "./src/*"

@@ -1,4 +1,3 @@
-import { join } from 'path';
 import 'dotenv/config';
 import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
