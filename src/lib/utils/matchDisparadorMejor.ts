@@ -17,7 +17,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
   ] );
 
   const PALABRAS_NEUTRAS = new Set( [
-    'trading', 'curso', 'formación', 'aprendizaje', 'fran', 'bolsa', 'mercado', 'finanzas', 'modulo', 'estudio'
+    'curso', 'formación', 'aprendizaje', 'fran', 'bolsa', 'mercado', 'finanzas', 'modulo', 'estudio'
   ] );
 
   const queryLower = preprocessPregunta( question );
@@ -31,6 +31,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
 
   // [1] TAG-EXACT
   if ( tags.includes( queryLower ) ) {
+
     return { match: true, tipo: 'TAG-EXACT', detalle: queryLower, chunkId, fuerza: 5 };
   }
 
@@ -51,6 +52,17 @@ function matchDisparadorMejor( doc: any, question: string ): {
 
     const fraseSinStop = palabrasFrase.join( " " );
     const querySinStop = palabrasPregunta.join( " " );
+
+    // [3.0] DISPARADORA-EXACTA
+    if ( fraseSinStop === querySinStop ) {
+      return {
+        match: true,
+        tipo: 'DISPARADORA-EXACTA',
+        detalle: `"${ querySinStop }"`,
+        chunkId,
+        fuerza: 6 // puntaje alto por coincidencia exacta
+      };
+    }
 
     // [3.a] Inclusión mutua
     if (

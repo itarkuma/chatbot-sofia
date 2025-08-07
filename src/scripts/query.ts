@@ -108,7 +108,45 @@ export const askSofia = async (
     seccion = cambio;
   }
 
+  if ( intencion === 'CURSO_MIAMI_IDIOMA' ) {
 
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( intencion === 'CURSO_SANTIAGO_IDIOMA' ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_44'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
 
   if ( ask_menu === 'user_question_multiples' ) {
     const archivoActual = 'fallbacks.txt';
@@ -1228,15 +1266,16 @@ const responderConResultados = async (
   }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
-    .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
-    .sort( ( a, b ) => b[ 1 ] - a[ 1 ] );
+    .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFallback = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && doc.metadata.es_fallback );
 
 
-  const mejor =
-    coincidenciasFijas[ 0 ]?.[ 0 ] ||
-    coincidenciasFallback[ 0 ]?.[ 0 ];
-  const score = resultados[ 0 ]?.[ 1 ] || 0;
+  const mejorEntry =
+    coincidenciasFijas[ 0 ] ||
+    coincidenciasFallback[ 0 ];
+
+  const mejor = mejorEntry?.[ 0 ];
+  const score = mejorEntry?.[ 1 ] || 0;
 
   if ( mejor && score >= 0.65 ) {
     const match = mejor.pageContent.match( /👉[^\n]*\n+([\s\S]*)/ );
