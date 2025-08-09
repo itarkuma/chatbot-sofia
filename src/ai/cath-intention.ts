@@ -45,6 +45,9 @@ export const INTENCIONES = [
   "PRECIO_CURSO_VIVO",
   "CURSO_MIAMI_IDIOMA",
   "CURSO_SANTIAGO_IDIOMA",
+  "INSCRIPCION",
+  "VENTAJAS_CURSO", //chunk 16
+  "INCLUYE_CURSO", //chunk 04
 ] as const;
 
 
