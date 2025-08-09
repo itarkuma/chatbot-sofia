@@ -645,6 +645,25 @@ export const askSofia = async (
 
   }
 
+  if ( ( seccion === 'curso_online_vivo' ) &&
+    ( intencion === "LISTA_PRIORITARIA" ) ) {
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_07'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
   if ( seccion === 'curso_online_vivo' &&
     (
       ( intencion === "PRECIO_CURSO_VIVO" ) ||

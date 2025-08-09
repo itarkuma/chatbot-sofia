@@ -48,6 +48,7 @@ export const INTENCIONES = [
   "INSCRIPCION",
   "VENTAJAS_CURSO", //chunk 16
   "INCLUYE_CURSO", //chunk 04
+  "LISTA_PRIORITARIA", //chunk 04
 ] as const;
 
 
