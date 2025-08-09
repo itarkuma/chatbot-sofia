@@ -298,9 +298,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
 
-    if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
-      return gotoFlow( flowSaludo );
-    }
     //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
 
@@ -318,6 +315,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
 
     if ( isMenuOption7_1 || myintencion === "INFO_REQUEST_INICIAR_DESDE_CERO" ) { return gotoFlow( flowConsultasGenerales ); }
+
+    if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
+      return gotoFlow( flowSaludo );
+    }
+
     //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
     //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 

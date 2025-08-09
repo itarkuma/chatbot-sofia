@@ -11,6 +11,7 @@ const detectflowConsultasGenerales = ( query: string, seccionActual: string ): b
   const consultasGeneralesTriggers = [
     "consultas generales",
     "7",
+    /\bconsultas generales\b/,
     /\bopci[oó]n 7\b/,
     /\b¿qu[eé] ofrecen?\b/,
     /quien\s+es\s+fran\s+fialli/,
