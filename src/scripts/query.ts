@@ -600,7 +600,7 @@ export const askSofia = async (
   }
 
 
-  if ( seccion === 'curso_online_grabado' &&
+  if (
     (
       ( intencion === "PRECIO_CURSO_GRABADO" ) ||
       ( intencion === "PRECIO_CURSO" )
@@ -664,7 +664,7 @@ export const askSofia = async (
     }
   }
 
-  if ( seccion === 'curso_online_vivo' &&
+  if (
     (
       ( intencion === "PRECIO_CURSO_VIVO" ) ||
       ( intencion === "PRECIO_CURSO" )
@@ -817,7 +817,7 @@ export const askSofia = async (
 
   }
 
-  if ( seccion === 'formacion_miami' &&
+  if (
     (
       ( intencion === "PRECIO_CURSO_MIAMI" ) ||
       ( intencion === "PRECIO_CURSO" )
@@ -902,7 +902,7 @@ export const askSofia = async (
 
   }
 
-  if ( seccion === 'formacion_santiago' &&
+  if (
     (
       ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
       ( intencion === "PRECIO_CURSO" )
