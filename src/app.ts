@@ -381,6 +381,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
         const isDerivarHumano = derivarHumano( tags, origen );
 
+        if ( tags.includes( 'preguntas_frecuentes' ) ) {
+          const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";
+          await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
+        }
+
         if ( isDerivarHumano ) {
           console.log( 'Caso especial derivacion humana -> si tiene seccion' );
 
@@ -441,6 +446,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         }
         await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
         const isDerivarHumano = derivarHumano( tags, origen );
+
+        if ( tags.includes( 'preguntas_frecuentes' ) ) {
+          const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";
+          await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
+        }
 
         if ( isDerivarHumano ) {
           console.log( 'Caso especial derivacion humana -> no intencion else' );
