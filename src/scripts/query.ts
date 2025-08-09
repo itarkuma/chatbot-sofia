@@ -395,7 +395,11 @@ export const askSofia = async (
     "i"
   );
 
-  if ( seccion === '' && intencion === 'METODO_PAGO' ) {
+
+  if (
+    ( !seccion && intencion === 'METODO_PAGO' ) ||
+    ( seccion === 'soporte_general' && intencion === 'METODO_PAGO' ) ) {
+
 
     const archivoActual = '9_soporte_general.txt';
     const filters = {
@@ -555,7 +559,7 @@ export const askSofia = async (
     }
 
   }
-  if ( seccion === 'curso_online_grabado' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+  if ( seccion === 'curso_online_grabado' && intencion === 'METODO_PAGO' ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -754,7 +758,7 @@ export const askSofia = async (
     }
 
   }
-  if ( seccion === 'curso_online_vivo' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+  if ( seccion === 'curso_online_vivo' && intencion === 'METODO_PAGO' ) {
 
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
