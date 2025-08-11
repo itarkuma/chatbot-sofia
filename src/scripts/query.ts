@@ -396,6 +396,27 @@ export const askSofia = async (
   );
 
 
+  if ( !seccion && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+
   if (
     ( !seccion && intencion === 'METODO_PAGO' ) ||
     ( seccion === 'soporte_general' && intencion === 'METODO_PAGO' ) ) {
@@ -419,12 +440,52 @@ export const askSofia = async (
 
   }
 
+  if ( seccion === 'curso_online_grabado' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( seccion === 'curso_online_grabado' && regexPlataformas.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
       archivo: '2_curso_trading_online_grabado.txt',
       chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'REQUISITOS_NIVEL_CURSO' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_02'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -603,7 +664,7 @@ export const askSofia = async (
   if (
     (
       ( intencion === "PRECIO_CURSO_GRABADO" ) ||
-      ( intencion === "PRECIO_CURSO" )
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
     ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
@@ -645,6 +706,45 @@ export const askSofia = async (
 
   }
 
+  if ( seccion === 'curso_online_vivo' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ( seccion === 'curso_online_vivo' ) &&
+    ( intencion === "REQUISITOS_NIVEL_CURSO" ) ) {
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
   if ( ( seccion === 'curso_online_vivo' ) &&
     ( intencion === "LISTA_PRIORITARIA" ) ) {
     const archivoActual = '1_curso_trading_online_vivo.txt';
@@ -667,7 +767,7 @@ export const askSofia = async (
   if (
     (
       ( intencion === "PRECIO_CURSO_VIVO" ) ||
-      ( intencion === "PRECIO_CURSO" )
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
     )
   ) {
 
@@ -820,7 +920,7 @@ export const askSofia = async (
   if (
     (
       ( intencion === "PRECIO_CURSO_MIAMI" ) ||
-      ( intencion === "PRECIO_CURSO" )
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
     )
   ) {
 
@@ -828,6 +928,26 @@ export const askSofia = async (
     const filters = {
       archivo: '4_curso_trading_miami.txt',
       chunk: 'chunk_51'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_miami' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_05'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -905,7 +1025,7 @@ export const askSofia = async (
   if (
     (
       ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
-      ( intencion === "PRECIO_CURSO" )
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
     )
   ) {
 
@@ -913,6 +1033,26 @@ export const askSofia = async (
     const filters = {
       archivo: '5_curso_trading_santiago.txt',
       chunk: 'chunk_50'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_santiago' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_05'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -1233,35 +1373,91 @@ export const askSofia = async (
   console.log( 'query filtrada:', queryFiltrada );
   const nuevoContextoDetectado = detectarCambioDeContexto( query );
 
-  const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
-
-  const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
-    .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
-  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
-  resultadosFiltrados.forEach( ( r, i ) => {
-    console.log(
-      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
-    );
-  } );
-  if ( resultadosFiltrados.length > 0 ) {
-    const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
-    return await responderConResultados( soloDocsYScore, query, archivoActual );
-  }
-
-  console.log( "🔍 No hubo coincidencias fuertes. Buscando en recursos globales..." );
-
   // realizar búsqueda en recursos generales
   const filtrosGlobales = {
     archivo: { $in: [ '9_soporte_general.txt', '8_flujos_recursos_web.txt' ] }
   };
 
-  const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
-  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+  const resultadosActuales = await vectorStore.similaritySearchWithScore( question, 10, filters );
+  console.log( "📂 Resultados actuales query:", question );
+  resultadosActuales.forEach( ( [ doc, score ], idx ) => {
+    console.log(
+      `#${ idx + 1 } | Score: ${ score.toFixed( 3 ) } | Archivo: ${ doc.metadata?.archivo ?? "-" } | Chunk: ${ doc.metadata?.chunk ?? "-" } | Tipo: ${ doc.metadata?.tipo ?? "-" } | Fuerza: ${ doc.metadata?.fuerza ?? "-" } | Tags: ${ doc.metadata?.tags?.join( ", " ) ?? "-" }`
+    );
+  } );
+  const filtradosActuales = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
+    .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
 
-  if ( globalOrdenadas.length > 0 ) {
-    const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
-    return await responderConResultados( soloDocsYScore, query, nuevoContextoDetectado || archivoActual );
+  const resultadosGlobales = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales );
+  const filtradosGlobales = ordenarPorMejorCoincidencia( resultadosGlobales, query )
+    .filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+
+  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
+  filtradosActuales.forEach( ( r, i ) => {
+    console.log(
+      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
+    );
+  } );
+  console.log( "📌 Resultados filtrados global con fuerza >= 3:" );
+  filtradosGlobales.forEach( ( r, i ) => {
+    console.log(
+      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
+    );
+  } );
+
+  const mejorActual = filtradosActuales[ 0 ];
+  const mejorGlobal = filtradosGlobales[ 0 ];
+
+  if ( mejorActual ) {
+
+    console.log(
+      `Chunk actual: ${ mejorActual.chunkId } | Tipo: ${ mejorActual.tipo } | Fuerza: ${ mejorActual.fuerza } | Score: ${ mejorActual.score } | Tags: ${ mejorActual.doc?.metadata?.tags?.join( ", " ) ?? "-" }`
+    );
   }
+  if ( mejorGlobal ) {
+
+    console.log(
+      `Chunk global: ${ mejorGlobal.chunkId } | Tipo: ${ mejorGlobal.tipo } | Fuerza: ${ mejorGlobal.fuerza } | Score: ${ mejorGlobal.score } | Tags: ${ mejorGlobal.doc?.metadata?.tags?.join( ", " ) ?? "-" }`
+    );
+  }
+
+
+
+
+  if ( mejorGlobal && ( !mejorActual || mejorGlobal.fuerza > mejorActual.fuerza || ( mejorGlobal.fuerza === mejorActual.fuerza && mejorGlobal.score > mejorActual.score + 0.05 ) ) ) {
+    // Mejor resultado global claramente mejor que el actual
+    return await responderConResultados( filtradosGlobales.map( r => [ r.doc, r.score ?? 1 ] ), query, nuevoContextoDetectado || archivoActual );
+  } else if ( filtradosActuales.length > 0 ) {
+    // Resultado contexto actual válido y mejor o igual
+    return await responderConResultados( filtradosActuales.map( r => [ r.doc, r.score ?? 1 ] ), query, archivoActual );
+  } else {
+    // No hay buenos resultados en ningún lado, manejar fallback o respuesta vacía
+    console.log( "🛑 No se encontraron coincidencias relevantes en ningún contexto." );
+    return await responderConResultados( [], query, archivoActual );
+  }
+
+  //  const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
+  // const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
+  //   .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
+
+  // const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
+  // const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+
+
+  // if ( resultadosFiltrados.length > 0 ) {
+  //   const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
+  //   return await responderConResultados( soloDocsYScore, query, archivoActual );
+  // }
+
+  // console.log( "🔍 No hubo coincidencias fuertes. Buscando en recursos globales..." );
+
+
+
+
+  // if ( globalOrdenadas.length > 0 ) {
+  //   const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
+  //   return await responderConResultados( soloDocsYScore, query, nuevoContextoDetectado || archivoActual );
+  // }
 
 
   // 🧯 Si nada funcionó, devolvé una respuesta vacía pero controlada:

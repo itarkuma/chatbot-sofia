@@ -243,6 +243,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
+    const preguntaoriginal = ctx.body;
     if ( !verificarConsulta( consulta ) ) {
       await flowDynamic( `La pregunta es demasiado corta o no es válida. Por favor, intenta de nuevo.` );
       return;
@@ -279,7 +280,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isMultiplesPreguntas = detectarMensajeMultiplesPreguntas( consulta );
     if ( isMultiplesPreguntas ) { return gotoFlow( fallbackMensajeMultiplesUser ); }
     if ( isNorespondeJavierUser ) { return gotoFlow( fallbackJavierNoRespondeUser ); }
-    if ( isDerivarJavierUser ) { return gotoFlow( fallbackderiverJavierUser ); }
+    if ( isDerivarJavierUser || ( myintencion === "SOLICITUD_CONTACTO_HUMANO" ) ) { return gotoFlow( fallbackderiverJavierUser ); }
     if ( isOtrasCiudadesUser ) { return gotoFlow( fallbackOtrasCiudadesUser ); }
     if ( isFormasDePagoUser ) { return gotoFlow( fallbackFormasdepagoUser ); }
     if ( isPromocionesUser ) { return gotoFlow( fallbackPromocionesUser ); }
@@ -303,10 +304,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
     if ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES" ) { return gotoFlow( flowPresencial ); }
 
-    if ( isOnlineGrabado || ( myintencion === "INFO_REQUEST_CURSO_ONLINE_GRABADO" ) ) { return gotoFlow( flowCursoOnlineGrabado ); }
-    if ( isOnlineVivo || ( myintencion === "INFO_REQUEST_CURSO_ONLINE_VIVO" ) ) { return gotoFlow( flowCursoOnlineVivo ); }
-    if ( isCursoMiami || ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES_MIAMI" ) ) { return gotoFlow( flowCursoMiami ); }
-    if ( isCursoSantiago || ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES_SANTIAGO" ) ) { return gotoFlow( flowCursoSantiago ); }
+    if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
+    if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
+    if ( isCursoMiami ) { return gotoFlow( flowCursoMiami ); }
+    if ( isCursoSantiago ) { return gotoFlow( flowCursoSantiago ); }
     if ( isAlumno ) { return gotoFlow( flowSoyAlumno ); }
 
     if ( isRecursosGratuitos ) { return gotoFlow( flowRecursosGratuitos ); }
@@ -366,7 +367,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         console.log( 'Si tiene seccion' );
 
         console.log( 'Nombre Seccion:', seccion );
-        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
+        const { texto, origen, tags, chunkId } = await askSofia( preguntaoriginal, seccion, '', false, myintencion );
         console.log( { origen, chunkId } );
         if ( origen === 'curso_online_vivo' ||
           origen === 'curso_online_grabado' ||

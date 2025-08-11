@@ -9,6 +9,8 @@ function matchDisparadorMejor( doc: any, question: string ): {
   score?: number;
   doc?: any;
 } {
+  console.log( 'match ', question );
+
   const STOPWORDS = new Set( [
     'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las',
     'por', 'un', 'para', 'con', 'una', 'su', 'al', 'lo',
@@ -31,13 +33,14 @@ function matchDisparadorMejor( doc: any, question: string ): {
 
   // [1] TAG-EXACT
   if ( tags.includes( queryLower ) ) {
-
+    console.log( 'match TAG-EXACT: ', chunkId );
     return { match: true, tipo: 'TAG-EXACT', detalle: queryLower, chunkId, fuerza: 5 };
   }
 
   // [2] TAG-WORD
   for ( const palabra of palabrasQuery ) {
     if ( tags.includes( palabra ) ) {
+      console.log( 'match TAG-WORD: ', chunkId );
       return { match: true, tipo: 'TAG-WORD', detalle: palabra, chunkId, fuerza: 4 };
     }
   }
@@ -55,6 +58,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
 
     // [3.0] DISPARADORA-EXACTA
     if ( fraseSinStop === querySinStop ) {
+      console.log( 'match DISPARADORA-EXACTA: ', chunkId );
       return {
         match: true,
         tipo: 'DISPARADORA-EXACTA',
@@ -74,6 +78,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
         p => !PALABRAS_NEUTRAS.has( p ) && palabrasPregunta.includes( p )
       );
       const fuerza = comunes.length >= 3 ? 3 : comunes.length === 2 ? 2 : 1;
+      console.log( 'match DISPARADORA-INCLUYE: ', chunkId );
       return {
         match: true,
         tipo: 'DISPARADORA-INCLUYE',
@@ -86,6 +91,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
     // [3.b] Coincidencia por palabras comunes
     const comunes = palabrasFrase.filter( p => p !== "curso" && palabrasPregunta.includes( p ) );
     if ( comunes.length >= 3 ) {
+      console.log( 'match DISPARADORA-PALABRAS: ', chunkId );
       return {
         match: true,
         tipo: 'DISPARADORA-PALABRAS',
@@ -94,6 +100,7 @@ function matchDisparadorMejor( doc: any, question: string ): {
         fuerza: 4
       };
     } else if ( comunes.length === 2 ) {
+      console.log( 'match DISPARADORA-PALABRAS: ', chunkId );
       return {
         match: true,
         tipo: 'DISPARADORA-PALABRAS',
