@@ -417,6 +417,24 @@ export const askSofia = async (
   }
 
 
+  if ( intencion === 'INFO_REQUEST_UBICACION' ) {
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_15'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
   if (
     ( !seccion && intencion === 'METODO_PAGO' ) ||
     ( seccion === 'soporte_general' && intencion === 'METODO_PAGO' ) ) {
@@ -1379,31 +1397,13 @@ export const askSofia = async (
   };
 
   const resultadosActuales = await vectorStore.similaritySearchWithScore( question, 10, filters );
-  console.log( "📂 Resultados actuales query:", question );
-  resultadosActuales.forEach( ( [ doc, score ], idx ) => {
-    console.log(
-      `#${ idx + 1 } | Score: ${ score.toFixed( 3 ) } | Archivo: ${ doc.metadata?.archivo ?? "-" } | Chunk: ${ doc.metadata?.chunk ?? "-" } | Tipo: ${ doc.metadata?.tipo ?? "-" } | Fuerza: ${ doc.metadata?.fuerza ?? "-" } | Tags: ${ doc.metadata?.tags?.join( ", " ) ?? "-" }`
-    );
-  } );
+
   const filtradosActuales = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
     .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
 
   const resultadosGlobales = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales );
   const filtradosGlobales = ordenarPorMejorCoincidencia( resultadosGlobales, query )
     .filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
-
-  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
-  filtradosActuales.forEach( ( r, i ) => {
-    console.log(
-      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
-    );
-  } );
-  console.log( "📌 Resultados filtrados global con fuerza >= 3:" );
-  filtradosGlobales.forEach( ( r, i ) => {
-    console.log(
-      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
-    );
-  } );
 
   const mejorActual = filtradosActuales[ 0 ];
   const mejorGlobal = filtradosGlobales[ 0 ];
