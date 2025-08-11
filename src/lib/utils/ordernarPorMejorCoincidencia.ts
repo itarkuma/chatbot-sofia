@@ -28,16 +28,16 @@ function ordenarPorMejorCoincidencia(
     }
   }
 
-  // Ordenamos por fuerza (desc) y luego score (ascendente, más cercano = mejor)
+  // Ordenar por fuerza (desc), luego por score (desc)
   resultados.sort( ( a, b ) => {
     const fuerzaA = a.fuerza ?? 0;
     const fuerzaB = b.fuerza ?? 0;
 
     if ( fuerzaB !== fuerzaA ) return fuerzaB - fuerzaA;
 
-    // En caso de empate de fuerza, usar el score si está disponible (menor score = más similar)
+    // En caso de empate de fuerza, usar el score (mayor score = mejor)
     if ( a.score !== undefined && b.score !== undefined ) {
-      return a.score - b.score;
+      return b.score - a.score;
     }
 
     return 0;
@@ -45,5 +45,6 @@ function ordenarPorMejorCoincidencia(
 
   return resultados;
 }
+
 
 export { ordenarPorMejorCoincidencia };

@@ -7,9 +7,10 @@ import { Document } from "langchain/document";
 import { preprocessPregunta } from '../lib/utils/preprocessinText';
 
 import { esComparacionGrabadoVsVivo } from '../lib/utils/esComparacionGrabadoVsVivo';
-import { distance } from 'fastest-levenshtein';
 import { esPrecioRelacion } from '../lib/utils/esPrecioRelacion';
 import { ordenarPorMejorCoincidencia } from "../lib/utils/ordernarPorMejorCoincidencia";
+import { type IntencionDetectada } from "../ai/cath-intention";
+
 
 interface SofiaMetadata {
   archivo: string;
@@ -59,7 +60,13 @@ function mapArchivoToSeccion( archivo: string ): string | null {
 }
 
 
-export const askSofia = async ( question: string, seccion: string, ask_menu: string = '', esAlumno: boolean = false ) => {
+export const askSofia = async (
+  question: string,
+  seccion: string,
+  ask_menu: string = '',
+  esAlumno: boolean = false,
+  intencion: IntencionDetectada = "UNKNOWN"
+) => {
 
 
   const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
@@ -101,7 +108,45 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     seccion = cambio;
   }
 
+  if ( intencion === 'CURSO_MIAMI_IDIOMA' ) {
 
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( intencion === 'CURSO_SANTIAGO_IDIOMA' ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_44'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
 
   if ( ask_menu === 'user_question_multiples' ) {
     const archivoActual = 'fallbacks.txt';
@@ -265,6 +310,25 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
   }
 
+  if ( ask_menu === 'curso_presencial' ) {
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_unknown_53'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+
   if ( ask_menu === 'menu' ) {
 
     const archivoActual = 'fallbacks.txt';
@@ -331,12 +395,175 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     "i"
   );
 
+
+  if ( !seccion && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+
+  if ( intencion === 'INFO_REQUEST_UBICACION' ) {
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_15'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if (
+    ( !seccion && intencion === 'METODO_PAGO' ) ||
+    ( seccion === 'soporte_general' && intencion === 'METODO_PAGO' ) ) {
+
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'metodo_pago'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( seccion === 'curso_online_grabado' && regexPlataformas.test( preprocessPregunta( query ) ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
       archivo: '2_curso_trading_online_grabado.txt',
       chunk: 'chunk_45'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'REQUISITOS_NIVEL_CURSO' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_EURO' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_25'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_DOLAR' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_26'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'curso_online_grabado' && intencion === 'PRECIO_MONEDA_LOCAL' ) {
+
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_27'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -411,7 +638,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  if ( seccion === 'curso_online_grabado' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+  if ( seccion === 'curso_online_grabado' && intencion === 'METODO_PAGO' ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -452,7 +679,11 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   }
 
 
-  if ( seccion === 'curso_online_grabado' && esPrecioRelacion( query ) ) {
+  if (
+    (
+      ( intencion === "PRECIO_CURSO_GRABADO" ) ||
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+    ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
     const filters = {
@@ -474,6 +705,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   if ( ask_menu === 'curso_online_vivo' ) {
 
+
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
       archivo: '1_curso_trading_online_vivo.txt',
@@ -492,7 +724,70 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'curso_online_vivo' && esPrecioRelacion( query ) ) {
+  if ( seccion === 'curso_online_vivo' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'indicadores'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( ( seccion === 'curso_online_vivo' ) &&
+    ( intencion === "REQUISITOS_NIVEL_CURSO" ) ) {
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if ( ( seccion === 'curso_online_vivo' ) &&
+    ( intencion === "LISTA_PRIORITARIA" ) ) {
+    const archivoActual = '1_curso_trading_online_vivo.txt';
+    const filters = {
+      archivo: '1_curso_trading_online_vivo.txt',
+      chunk: 'chunk_07'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
+  if (
+    (
+      ( intencion === "PRECIO_CURSO_VIVO" ) ||
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+    )
+  ) {
 
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
@@ -600,7 +895,7 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
     }
 
   }
-  if ( seccion === 'curso_online_vivo' && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( preprocessPregunta( query ) ) ) {
+  if ( seccion === 'curso_online_vivo' && intencion === 'METODO_PAGO' ) {
 
     const archivoActual = '1_curso_trading_online_vivo.txt';
     const filters = {
@@ -640,12 +935,37 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'formacion_miami' && esPrecioRelacion( query ) ) {
+  if (
+    (
+      ( intencion === "PRECIO_CURSO_MIAMI" ) ||
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+    )
+  ) {
 
     const archivoActual = '4_curso_trading_miami.txt';
     const filters = {
       archivo: '4_curso_trading_miami.txt',
       chunk: 'chunk_51'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_miami' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '4_curso_trading_miami.txt';
+    const filters = {
+      archivo: '4_curso_trading_miami.txt',
+      chunk: 'chunk_05'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -720,12 +1040,37 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
-  if ( seccion === 'formacion_santiago' && esPrecioRelacion( query ) ) {
+  if (
+    (
+      ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
+      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+    )
+  ) {
 
     const archivoActual = '5_curso_trading_santiago.txt';
     const filters = {
       archivo: '5_curso_trading_santiago.txt',
       chunk: 'chunk_50'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
+  if ( seccion === 'formacion_santiago' && intencion === 'INFO_INDICADORES' ) {
+
+    const archivoActual = '5_curso_trading_santiago.txt';
+    const filters = {
+      archivo: '5_curso_trading_santiago.txt',
+      chunk: 'chunk_05'
     };
 
     const resultados = await vectorStore.similaritySearchWithScore(
@@ -900,6 +1245,26 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
 
   }
 
+  if ( ask_menu === 'consultas_generales' ) {
+
+    const archivoActual = '9_soporte_general.txt';
+    const filters = {
+      archivo: '9_soporte_general.txt',
+      chunk: 'chunk_04'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+
+  }
+
   if ( ask_menu === 'comunidad_alumnos' ) {
 
     const archivoActual = '3_alumnos.txt';
@@ -1026,35 +1391,73 @@ export const askSofia = async ( question: string, seccion: string, ask_menu: str
   console.log( 'query filtrada:', queryFiltrada );
   const nuevoContextoDetectado = detectarCambioDeContexto( query );
 
-  const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
-
-  const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
-    .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
-  console.log( "📌 Resultados filtrados con fuerza >= 3:" );
-  resultadosFiltrados.forEach( ( r, i ) => {
-    console.log(
-      `#${ i + 1 } — Chunk: ${ r.chunkId } | Tipo: ${ r.tipo } | Fuerza: ${ r.fuerza } | Score: ${ r.score } | Tags: ${ r.doc?.metadata?.tags?.join( ', ' ) ?? '-' }`,
-    );
-  } );
-  if ( resultadosFiltrados.length > 0 ) {
-    const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
-    return await responderConResultados( soloDocsYScore, query, archivoActual );
-  }
-
-  console.log( "🔍 No hubo coincidencias fuertes. Buscando en recursos globales..." );
-
   // realizar búsqueda en recursos generales
   const filtrosGlobales = {
     archivo: { $in: [ '9_soporte_general.txt', '8_flujos_recursos_web.txt' ] }
   };
 
-  const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
-  const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+  const resultadosActuales = await vectorStore.similaritySearchWithScore( question, 10, filters );
 
-  if ( globalOrdenadas.length > 0 ) {
-    const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
-    return await responderConResultados( soloDocsYScore, query, nuevoContextoDetectado || archivoActual );
+  const filtradosActuales = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
+    .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
+
+  const resultadosGlobales = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales );
+  const filtradosGlobales = ordenarPorMejorCoincidencia( resultadosGlobales, query )
+    .filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+
+  const mejorActual = filtradosActuales[ 0 ];
+  const mejorGlobal = filtradosGlobales[ 0 ];
+
+  if ( mejorActual ) {
+
+    console.log(
+      `Chunk actual: ${ mejorActual.chunkId } | Tipo: ${ mejorActual.tipo } | Fuerza: ${ mejorActual.fuerza } | Score: ${ mejorActual.score } | Tags: ${ mejorActual.doc?.metadata?.tags?.join( ", " ) ?? "-" }`
+    );
   }
+  if ( mejorGlobal ) {
+
+    console.log(
+      `Chunk global: ${ mejorGlobal.chunkId } | Tipo: ${ mejorGlobal.tipo } | Fuerza: ${ mejorGlobal.fuerza } | Score: ${ mejorGlobal.score } | Tags: ${ mejorGlobal.doc?.metadata?.tags?.join( ", " ) ?? "-" }`
+    );
+  }
+
+
+
+
+  if ( mejorGlobal && ( !mejorActual || mejorGlobal.fuerza > mejorActual.fuerza || ( mejorGlobal.fuerza === mejorActual.fuerza && mejorGlobal.score > mejorActual.score + 0.05 ) ) ) {
+    // Mejor resultado global claramente mejor que el actual
+    return await responderConResultados( filtradosGlobales.map( r => [ r.doc, r.score ?? 1 ] ), query, nuevoContextoDetectado || archivoActual );
+  } else if ( filtradosActuales.length > 0 ) {
+    // Resultado contexto actual válido y mejor o igual
+    return await responderConResultados( filtradosActuales.map( r => [ r.doc, r.score ?? 1 ] ), query, archivoActual );
+  } else {
+    // No hay buenos resultados en ningún lado, manejar fallback o respuesta vacía
+    console.log( "🛑 No se encontraron coincidencias relevantes en ningún contexto." );
+    return await responderConResultados( [], query, archivoActual );
+  }
+
+  //  const resultadosActuales = await vectorStore.similaritySearchWithScore( queryFiltrada, 10, filters ) as [ SofiaDocument, number ][];
+  // const resultadosFiltrados = ordenarPorMejorCoincidencia( resultadosActuales, queryFiltrada )
+  //   .filter( r => r.fuerza !== undefined && r.fuerza >= 3 );
+
+  // const resultadosOtros = await vectorStore.similaritySearchWithScore( query, 10, filtrosGlobales ) as [ SofiaDocument, number ][];
+  // const globalOrdenadas = ordenarPorMejorCoincidencia( resultadosOtros, query ).filter( r => r.fuerza !== undefined && r.fuerza >= 2 );
+
+
+  // if ( resultadosFiltrados.length > 0 ) {
+  //   const soloDocsYScore: [ SofiaDocument, number ][] = resultadosFiltrados.map( r => [ r.doc, r.score ?? 1 ] );
+  //   return await responderConResultados( soloDocsYScore, query, archivoActual );
+  // }
+
+  // console.log( "🔍 No hubo coincidencias fuertes. Buscando en recursos globales..." );
+
+
+
+
+  // if ( globalOrdenadas.length > 0 ) {
+  //   const soloDocsYScore: [ SofiaDocument, number ][] = globalOrdenadas.map( r => [ r.doc, r.score ?? 1 ] );
+  //   return await responderConResultados( soloDocsYScore, query, nuevoContextoDetectado || archivoActual );
+  // }
 
 
   // 🧯 Si nada funcionó, devolvé una respuesta vacía pero controlada:
@@ -1082,15 +1485,16 @@ const responderConResultados = async (
   }
   //  const coincidenciasFijas = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFijas = resultados
-    .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback )
-    .sort( ( a, b ) => b[ 1 ] - a[ 1 ] );
+    .filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && !doc.metadata.es_fallback );
   const coincidenciasFallback = resultados.filter( ( [ doc ] ) => doc.metadata.tipo === 'respuesta_fija' && doc.metadata.es_fallback );
 
 
-  const mejor =
-    coincidenciasFijas[ 0 ]?.[ 0 ] ||
-    coincidenciasFallback[ 0 ]?.[ 0 ];
-  const score = resultados[ 0 ]?.[ 1 ] || 0;
+  const mejorEntry =
+    coincidenciasFijas[ 0 ] ||
+    coincidenciasFallback[ 0 ];
+
+  const mejor = mejorEntry?.[ 0 ];
+  const score = mejorEntry?.[ 1 ] || 0;
 
   if ( mejor && score >= 0.65 ) {
     const match = mejor.pageContent.match( /👉[^\n]*\n+([\s\S]*)/ );

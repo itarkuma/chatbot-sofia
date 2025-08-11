@@ -10,10 +10,8 @@
     "dev": "npm run lint && nodemon ./src/app.ts",
     "build": "npx rollup -c",
     "reset-pine": "tsx  ./src/scripts/clearIndex.ts",
-    "load-contexto": "tsx  ./src/scripts/loadContexto.ts",
-    "load-flow": "tsx  ./src/scripts/chunk_flow.ts",
-    "load-info": "tsx  ./src/scripts/chunk_tipos_trading.ts",
-    "load-pine": "tsx  ./src/scripts/load.ts"
+    "load-info": "tsx  ./src/scripts/chunk_metodopago_general.ts",
+    "test": "tsx  ./src/ai/cath-intention.ts"
   },
   "keywords": [],
   "dependencies": {
@@ -26,7 +24,8 @@
     "dotenv": "^17.2.0",
     "fastest-levenshtein": "^1.0.16",
     "langchain": "0.1.16",
-    "openai": "^5.8.3"
+    "openai": "^5.8.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",

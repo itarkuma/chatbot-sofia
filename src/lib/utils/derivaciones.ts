@@ -1,5 +1,12 @@
 export const derivarHumano = ( tags: string[], origen: string ): boolean => {
 
+
+  if ( tags.includes( 'moneda_local-Hotmart-LATAM-precio_en_pesos' ) && origen === 'curso_online_grabado' ) {
+    // Acción específica
+    console.log( 'Caso especial moneda local' );
+    return true;
+  }
+
   if ( tags.includes( 'derivacion_humana' ) ) {
     // Acción específica
     console.log( 'Caso especial derivacion humana' );

@@ -1,4 +1,3 @@
-import { join } from 'path';
 import 'dotenv/config';
 import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
@@ -30,6 +29,7 @@ import { flowComparacion } from './flows/comparacion.flow';
 import { esComparacionGrabadoVsVivo } from './lib/utils/esComparacionGrabadoVsVivo';
 import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 import { detectflowRecursosGratuitos, flowRecursosGratuitos } from './flows/recursosGratuitos.flow';
+import { flowPresencial } from './flows/presencial.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
 
@@ -42,6 +42,13 @@ import { detectderivarJavierUser, fallbackderiverJavierUser } from './fallback/d
 import { fallbackconfirmarderivacionUser } from './fallback/confirmarDerivacionUser.flow';
 import { detectJavierNoRespondeUser, fallbackJavierNoRespondeUser } from './fallback/javiernorespondeUser.flow';
 import { detectarMensajeMultiplesPreguntas, fallbackMensajeMultiplesUser } from './fallback/variasPreguntasUser.flow';
+
+import { getIntention } from './ai/cath-intention';
+import type { IntencionDetectada } from "./ai/cath-intention"; // importa solo el tipo
+
+
+import { idleFlow, start, stop, reset } from './lib/idle-custom';
+
 
 function verificarConsulta( query: string ): boolean {
   // Definir las palabras aceptadas "sí" y "no"
@@ -141,7 +148,7 @@ function esNegacionDerivacion( texto: string ): boolean {
 
 const PORT = process.env.PORT ?? 3008;
 
-type IntencionDetectada = {
+type IntencionDetectadaaux = {
   seccion: string;
   texto: string;
   is_fallback: boolean;
@@ -209,41 +216,49 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
   return null;
 }
 
-export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectada | null> {
-  const query = preprocessPregunta( mensaje );
-  const resultados = await pineconeQuery( query );
-  // Log para ver los resultados obtenidos de Pinecone
+// export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectadaaux | null> {
+//   const query = preprocessPregunta( mensaje );
+//   const resultados = await pineconeQuery( query );
+//   // Log para ver los resultados obtenidos de Pinecone
 
-  if ( resultados.length > 0 ) {
-    const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
+//   if ( resultados.length > 0 ) {
+//     const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
 
-    //    console.log( 'resultados:', doc.metadata );
+//     //    console.log( 'resultados:', doc.metadata );
 
-    const archivo = doc.metadata.archivo || '';
-    const seccion = mapArchivoToSeccion( archivo );
+//     const archivo = doc.metadata.archivo || '';
+//     const seccion = mapArchivoToSeccion( archivo );
 
-    return {
-      seccion: seccion || '',
-      texto: doc.metadata.text || doc.pageContent || '',
-      is_fallback: doc.metadata.es_fallback || false,
-    };
-  }
+//     return {
+//       seccion: seccion || '',
+//       texto: doc.metadata.text || doc.pageContent || '',
+//       is_fallback: doc.metadata.es_fallback || false,
+//     };
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 
 
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
+  //  .addAction( async ( ctx, { gotoFlow } ) => start( ctx, gotoFlow, 60000 ) )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
+    reset( ctx, gotoFlow, 3600000 );
+    //reset( ctx, gotoFlow, 60000 );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
+    const preguntaoriginal = ctx.body;
     if ( !verificarConsulta( consulta ) ) {
       await flowDynamic( `La pregunta es demasiado corta o no es válida. Por favor, intenta de nuevo.` );
       return;
     }
-    const isSaludo = detectflowSaludo( consulta, seccion );
+
+    const myintencion: IntencionDetectada = await getIntention( consulta );
+    console.log( { myintencion } );
+
+    //    const isSaludo = detectflowSaludo( consulta, seccion );
     const isCommandMenu = detectflowMenu( consulta, seccion );
     //    const isMenuOption5 = detectflowCursorGratuito( consulta, seccion );
     const isMenuOption6 = detectflowLibroFran( consulta, seccion );
@@ -251,6 +266,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isMenuOption8 = detectflowNoticiasMercado( consulta, seccion );
     const isMenuOption9 = detectflowClubFran( consulta, seccion );
     const isMenuOption7_1 = detectflowConsultasGenerales( consulta, seccion );
+
     const isAlumno = detectflowsoyAlumno( consulta, seccion );
     const isOnlineGrabado = detectflowCursoOonlineGrabado( consulta, seccion );
     const isOnlineVivo = detectflowCursoOonlineVivo( consulta, seccion );
@@ -270,17 +286,29 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     const isMultiplesPreguntas = detectarMensajeMultiplesPreguntas( consulta );
     if ( isMultiplesPreguntas ) { return gotoFlow( fallbackMensajeMultiplesUser ); }
     if ( isNorespondeJavierUser ) { return gotoFlow( fallbackJavierNoRespondeUser ); }
-    if ( isDerivarJavierUser ) { return gotoFlow( fallbackderiverJavierUser ); }
+    if ( isDerivarJavierUser || ( myintencion === "SOLICITUD_CONTACTO_HUMANO" ) ) { return gotoFlow( fallbackderiverJavierUser ); }
     if ( isOtrasCiudadesUser ) { return gotoFlow( fallbackOtrasCiudadesUser ); }
     if ( isFormasDePagoUser ) { return gotoFlow( fallbackFormasdepagoUser ); }
     if ( isPromocionesUser ) { return gotoFlow( fallbackPromocionesUser ); }
     if ( isDataNodisponibleUser ) { return gotoFlow( fallbackDatoNodisponibleUser ); }
     if ( isConfusoUser ) { return gotoFlow( fallbackConfusionUser ); }
 
-    if ( isConfusion ) { return gotoFlow( flowConfusion ); }
+    if (
+      !(
+        ( myintencion === "PRECIO_CURSO_MIAMI" ) ||
+        ( myintencion === "PRECIO_CURSO_SANTIAGO" ) ||
+        ( myintencion === "PRECIO_CURSO_GRABADO" ) ||
+        ( myintencion === "PRECIO_CURSO_VIVO" ) ||
+        ( myintencion === "METODO_PAGO" )
+      )
+      && isConfusion ) { return gotoFlow( flowConfusion ); }
+
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
-    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
+
+    //    if ( isSaludo ) { return gotoFlow( flowSaludo ); }
     if ( isCommandMenu ) { return gotoFlow( flowMenu ); }
+
+    if ( myintencion === "INFO_REQUEST_CURSO_PRESENCIALES" ) { return gotoFlow( flowPresencial ); }
 
     if ( isOnlineGrabado ) { return gotoFlow( flowCursoOnlineGrabado ); }
     if ( isOnlineVivo ) { return gotoFlow( flowCursoOnlineVivo ); }
@@ -292,7 +320,13 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isMenuOption9 ) { return gotoFlow( flowClubFran ); }
     if ( isMenuOption6 ) { return gotoFlow( flowLibroFran ); }
     if ( isMenuOption8 ) { return gotoFlow( flowNoticiasMercado ); }
-    if ( isMenuOption7_1 ) { return gotoFlow( flowConsultasGenerales ); }
+
+    if ( isMenuOption7_1 || myintencion === "INFO_REQUEST_INICIAR_DESDE_CERO" ) { return gotoFlow( flowConsultasGenerales ); }
+
+    if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
+      return gotoFlow( flowSaludo );
+    }
+
     //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
     //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
@@ -339,7 +373,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         console.log( 'Si tiene seccion' );
 
         console.log( 'Nombre Seccion:', seccion );
-        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
+        const { texto, origen, tags, chunkId } = await askSofia( preguntaoriginal, seccion, '', false, myintencion );
         console.log( { origen, chunkId } );
         if ( origen === 'curso_online_vivo' ||
           origen === 'curso_online_grabado' ||
@@ -353,6 +387,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
 
         const isDerivarHumano = derivarHumano( tags, origen );
+
+        if ( tags.includes( 'preguntas_frecuentes' ) ) {
+          const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";
+          await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
+        }
 
         if ( isDerivarHumano ) {
           console.log( 'Caso especial derivacion humana -> si tiene seccion' );
@@ -401,88 +440,110 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           return;
         }
 
-        const intencion = await detectarIntencion( consulta );
-
-        if ( intencion.is_fallback ) {
-          console.log( 'Detecto Fallback intencion else' );
-          const { texto, tags, chunkId, origen } = await askSofiaFallback( consulta );
-          console.log( 'retorno un fallback' );
-          console.log( { origen, chunkId } );
-
-
-
-          await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-
-          const isDerivarHumano = derivarHumano( tags, origen );
-
-          if ( isDerivarHumano ) {
-            console.log( 'Caso especial derivacion humana -> fallback else' );
-            return gotoFlow( fallbackconfirmarderivacionUser );
-          }
-
-
-
-        } else {
-
-          if ( intencion.seccion ) {
-            switch ( intencion.seccion ) {
-
-              case 'soporte_general': {
-
-                console.log( 'Intención detectada:', intencion.seccion );
-                return gotoFlow( flowConsultasGenerales );
-              }
-
-
-              default: {
-                console.log( 'No detecto la intencion' );
-                const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion );
-                console.log( { origen, chunkId } );
-
-                if ( origen == 'curso_online_vivo' ||
-                  origen == 'curso_online_grabado' ||
-                  origen == 'formacion_miami' ||
-                  origen == 'formacion_santiago'
-                ) {
-                  await state.update( { seccionActual: origen } );
-                  console.log( 'update seccion ->:', origen );
-                }
-
-                const isDerivarHumano = derivarHumano( tags, origen );
-
-                if ( isDerivarHumano ) {
-                  console.log( 'Caso especial derivacion humana -> no intencion' );
-
-                  return gotoFlow( fallbackconfirmarderivacionUser );
-                }
-
-
-                await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-                break;
-              }
-            }
-          } else {
-            console.log( 'No detecto la intencion else' );
-            const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion );
-            console.log( { origen, chunkId } );
-            if ( origen == 'curso_online_vivo' ||
-              origen == 'curso_online_grabado' ||
-              origen == 'formacion_miami' ||
-              origen == 'formacion_santiago'
-            ) {
-              await state.update( { seccionActual: origen } );
-              console.log( 'update seccion ->:', origen );
-            }
-            await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-            const isDerivarHumano = derivarHumano( tags, origen );
-
-            if ( isDerivarHumano ) {
-              console.log( 'Caso especial derivacion humana -> no intencion else' );
-              return gotoFlow( fallbackconfirmarderivacionUser );
-            }
-
-          }
+        console.log( 'No detecto la intencion else' );
+        const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
+        console.log( { origen, chunkId } );
+        if ( origen == 'curso_online_vivo' ||
+          origen == 'curso_online_grabado' ||
+          origen == 'formacion_miami' ||
+          origen == 'formacion_santiago'
+        ) {
+          await state.update( { seccionActual: origen } );
+          console.log( 'update seccion ->:', origen );
         }
+        await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+        const isDerivarHumano = derivarHumano( tags, origen );
+
+        if ( tags.includes( 'preguntas_frecuentes' ) ) {
+          const textomsm = "❓ *¿Tienes alguna otra duda?* Escríbemelo aquí y estaré encantada de ayudarte.";
+          await flowDynamic( [ { body: textomsm, delay: generateTimer( 150, 250 ) } ] );
+        }
+
+        if ( isDerivarHumano ) {
+          console.log( 'Caso especial derivacion humana -> no intencion else' );
+          return gotoFlow( fallbackconfirmarderivacionUser );
+        }
+
+        //        const intencion = await detectarIntencion( consulta );
+
+        // if ( intencion.is_fallback ) {
+        //   console.log( 'Detecto Fallback intencion else' );
+        //   const { texto, tags, chunkId, origen } = await askSofiaFallback( consulta );
+        //   console.log( 'retorno un fallback' );
+        //   console.log( { origen, chunkId } );
+
+        //   await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+
+        //   const isDerivarHumano = derivarHumano( tags, origen );
+
+        //   if ( isDerivarHumano ) {
+        //     console.log( 'Caso especial derivacion humana -> fallback else' );
+        //     return gotoFlow( fallbackconfirmarderivacionUser );
+        //   }
+
+
+
+        // } else {
+
+        //   if ( intencion.seccion ) {
+        //     switch ( intencion.seccion ) {
+
+        //       case 'soporte_general': {
+
+        //         console.log( 'Intención detectada:', intencion.seccion );
+        //         return gotoFlow( flowConsultasGenerales );
+        //       }
+
+
+        //       default: {
+        //         console.log( 'No detecto la intencion' );
+        //         const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
+        //         console.log( { origen, chunkId } );
+
+        //         if ( origen == 'curso_online_vivo' ||
+        //           origen == 'curso_online_grabado' ||
+        //           origen == 'formacion_miami' ||
+        //           origen == 'formacion_santiago'
+        //         ) {
+        //           await state.update( { seccionActual: origen } );
+        //           console.log( 'update seccion ->:', origen );
+        //         }
+
+        //         const isDerivarHumano = derivarHumano( tags, origen );
+
+        //         if ( isDerivarHumano ) {
+        //           console.log( 'Caso especial derivacion humana -> no intencion' );
+
+        //           return gotoFlow( fallbackconfirmarderivacionUser );
+        //         }
+
+
+        //         await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+        //         break;
+        //       }
+        //     }
+        //   } else {
+        //     console.log( 'No detecto la intencion else' );
+        //     const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
+        //     console.log( { origen, chunkId } );
+        //     if ( origen == 'curso_online_vivo' ||
+        //       origen == 'curso_online_grabado' ||
+        //       origen == 'formacion_miami' ||
+        //       origen == 'formacion_santiago'
+        //     ) {
+        //       await state.update( { seccionActual: origen } );
+        //       console.log( 'update seccion ->:', origen );
+        //     }
+        //     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+        //     const isDerivarHumano = derivarHumano( tags, origen );
+
+        //     if ( isDerivarHumano ) {
+        //       console.log( 'Caso especial derivacion humana -> no intencion else' );
+        //       return gotoFlow( fallbackconfirmarderivacionUser );
+        //     }
+
+        //   }
+        // }
 
 
 
@@ -492,7 +553,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
     }
-
 
 
   } );
@@ -523,6 +583,7 @@ const main = async () => {
       flowComparacion,
       flowConfusion,
       flowRecursosGratuitos,
+      flowPresencial,
       fallbackConfusionUser,
       fallbackDatoNodisponibleUser,
       fallbackPromocionesUser,
@@ -531,7 +592,8 @@ const main = async () => {
       fallbackderiverJavierUser,
       fallbackconfirmarderivacionUser,
       fallbackJavierNoRespondeUser,
-      fallbackMensajeMultiplesUser
+      fallbackMensajeMultiplesUser,
+      idleFlow
     ] );
 
   const adapterProvider = createProvider( Provider );

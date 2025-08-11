@@ -24,15 +24,10 @@ const detectflowMenu = ( query: string, seccionActual: string ): boolean => {
 
   // Patrones para detectar frases comunes más flexibles del menú
   const patronesDisparadoresMenu = [
-    /muestra.*menu/,
-    /ver.*opciones/,
-    /que.*puedo.*hacer.*aqu[ií]/,
-    /env[ií]ame.*listado/,
-    /hola.*(informaci[oó]n|ayuda|opciones|más.*informaci[oó]n)/,
-    /buenas.*(informaci[oó]n|opciones)/,
-    /(quiero|quisiera|necesito|me.*gustar[ií]a).*informaci[oó]n/,
-    /puedes.*ayudarme/,
-    /m[aá]s.*informaci[oó]n/,
+    /\bmuestra.*menu\b/,
+    /\bver.*opciones\b/,
+    /\bque.*puedo.*hacer.*aqu[ií]\b/,
+    /\benv[ií]ame.*listado\b/,
   ];
 
   const esMenu = frasesDisparadorasMenu.some( f =>

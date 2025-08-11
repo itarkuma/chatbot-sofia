@@ -25,6 +25,7 @@ const detectflowCursoSantiago = ( query: string, seccionActual: string ): boolea
     "formacion en santiago",
     "curso en santiago",
     "curso santiago",
+    "masterclass santiago",
     "trading santiago"
   ];
 

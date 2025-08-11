@@ -12,7 +12,10 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
 
   if ( esComparacionGrabadoVsVivo( texto ) ) return false;
   const frasesClaves = [
+    "curso en vivo",
     "curso online en vivo",
+    "curso online en directo",
+    "curso en directo",
     "¿que es el curso online en vivo?",
     "¿que es el curso online en directo?",
     "¿como funciona el curso de trading en directo?",
@@ -25,7 +28,7 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
   ];
 
   const regexes = [
-    /\bcurso\s+online\s+(en\s+vivo|en\s+directo)\b/,
+    /\bcurso\s+(online\s+)?(en\s+vivo|en\s+directo)\b/,
     /\bclases?\s+en\s+(vivo|directo|zoom)\b/,
     /\btiempo\s+real\b/,
     /\bfran\s+fialli\s+(da|enseña|ensena)\s+(las\s+)?clases?\b/,

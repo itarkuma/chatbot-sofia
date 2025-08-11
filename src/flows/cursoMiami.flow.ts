@@ -24,6 +24,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     "formacion en miami",
     "curso en miami",
     "curso miami",
+    "masterclass miami",
     "trading miami",
   ];
 
@@ -33,6 +34,7 @@ const detectflowCursoMiami = ( query: string, seccionActual: string ): boolean =
     /\b(francisco|fran)\s+fialli\b.*\bmiami\b/,
     /\binfo(?:rmaci[oó]n)?\b.*\bcurso\b.*\bmiami\b/,
     /\bquiero\b.*(info|informaci[oó]n).*miami\b/,
+    /\bmasterclass\b.*(de|a).*miami\b/,
     /^3$/, // opción por número
   ];
 
