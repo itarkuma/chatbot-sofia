@@ -47,6 +47,9 @@ import { getIntention } from './ai/cath-intention';
 import type { IntencionDetectada } from "./ai/cath-intention"; // importa solo el tipo
 
 
+import { idleFlow, start, stop, reset } from './lib/idle-custom';
+
+
 function verificarConsulta( query: string ): boolean {
   // Definir las palabras aceptadas "sí" y "no"
   const respuestasAceptadas = [ 'sí', 'no', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
@@ -239,8 +242,11 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
 
 
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
+  //  .addAction( async ( ctx, { gotoFlow } ) => start( ctx, gotoFlow, 60000 ) )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
+    reset( ctx, gotoFlow, 3600000 );
+    //reset( ctx, gotoFlow, 60000 );
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
     const preguntaoriginal = ctx.body;
@@ -549,7 +555,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     }
 
 
-
   } );
 
 
@@ -587,7 +592,8 @@ const main = async () => {
       fallbackderiverJavierUser,
       fallbackconfirmarderivacionUser,
       fallbackJavierNoRespondeUser,
-      fallbackMensajeMultiplesUser
+      fallbackMensajeMultiplesUser,
+      idleFlow
     ] );
 
   const adapterProvider = createProvider( Provider );
