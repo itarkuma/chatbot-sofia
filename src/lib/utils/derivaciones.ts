@@ -13,6 +13,12 @@ export const derivarHumano = ( tags: string[], origen: string ): boolean => {
     return true;
   }
 
+  if ( tags.includes( 'precio_en_vivo' ) ) {
+    // Acción específica
+    console.log( 'Caso especial precio online en vivo derivar javier' );
+    return true;
+  }
+
   if ( tags.includes( 'solicitud_datos' ) && origen === 'curso_online_vivo' ) {
     // Acción específica
     console.log( 'Caso especial 1' );

@@ -1,6 +1,6 @@
 import { EVENTS, addKeyword } from '@builderbot/bot';
 import { BotContext, TFlow } from '@builderbot/bot/dist/types';
-
+import { askSofia } from '../scripts/query';
 // Object to store timers for each user
 const timers = {};
 
@@ -14,7 +14,25 @@ Del *1 al 5*, ¿cómo calificarías la atención que recibiste?
 
 Tu opinión nos ayuda a mejorar 💬 ¡Gracias por tu tiempo!` );
   }
-);
+).addAction( { capture: true }, async ( ctx, { flowDynamic, state } ) => {
+  //  await state.udpate( { name: ctx.body } );
+  const seccion = await state.get( 'seccionActual' );
+  const pregunta = ctx.body;
+  if ( pregunta === '1' || pregunta === '2' || pregunta === '3' || pregunta === '4' || pregunta === '5' ) {
+    await flowDynamic( "Gracias por tu valoración 🌟" );
+    console.log( 'chunk respuesta valoracion texto ingresado fijo' );
+  } else {
+    const seccion = await state.get( 'seccionActual' );
+    const { texto, origen, chunkId } = await askSofia( ctx.body, seccion );
+    await flowDynamic( texto );
+    console.log( { origen, chunkId } );
+    console.log( 'chunk respuesta valoracion ia' );
+
+  }
+
+} )
+  ;
+
 
 // Function to start the inactivity timer for a user
 const start = ( ctx: BotContext, gotoFlow: ( a: TFlow ) => Promise<void>, ms: number ) => {

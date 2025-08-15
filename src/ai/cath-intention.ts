@@ -9,17 +9,6 @@ const openAI = new ChatOpenAI( {
   openAIApiKey: process.env.OPENAI_API_KEY!,
 } );
 
-
-const SYSTEM_STRUCT = `just only history based: 
-{history}
-
-Answer the users question as best as possible.`;
-
-const PROMPT_STRUCT = ChatPromptTemplate.fromMessages( [
-  [ "system", SYSTEM_STRUCT ],
-  [ "human", "{question}" ]
-] );
-
 // Define un tipo literal explícito
 export const INTENCIONES = [
   "UNKNOWN",
@@ -75,7 +64,7 @@ export const INTENCIONES = [
   "INFO_MIEDOS_Y_RIESGOS",
   "INFO_PREGUNTAS_PRECIO",
   "INFO_COSTO_DEL_CURSO",
-  "INFO_PREGUNTA_COSTO_Y_DESCUENTOS",
+  "INFO_PREGUNTA_DESCUENTOS",
   "INFO_PRECIO_Y_PAGOS",
   "INFO_CUOTAS_Y_PROMOCIONES",
   "INFO_CANCELACIONES_Y_REEMBOLSOS",
@@ -88,14 +77,13 @@ export const INTENCIONES = [
   "INFO_CURSO_CON_PRACTICA",
   "INFO_INSEGURIDAD_POR_OTROS_CURSOS",
   "INFO_FALTA_DE_TIEMPO",
-  "INFO_PRECIO_Y_FORMAS_DE_PAGO",
+  "INFO_FORMAS_DE_PAGO",
   "INFO_COSTO_Y_FINANCIAMIENTO",
   "INFO_GARANTIAS_Y_REEMBOLSOS",
   "INFO_INDECISION_Y_POSTERGACION",
   "INFO_POSPONER_RESPUESTA",
   "INFO_GARANTIAS_DE_EXITO",
   "INFO_ESPERANZAS_Y_CONFIANZA",
-  "INFO_QUIEN_PUEDE_PARTICIPAR",
   "INFO_NIVEL_DE_INGRESO",
   "INFO_REQUISITOS_TECNICOS_Y_MATERIALES",
   "INFO_LEGALIDAD_Y_CONFIANZA",
@@ -131,6 +119,55 @@ export const INTENCIONES = [
   "INFO_CERTIFICACION_CURSO_EN_VIVO",
 ] as const;
 
+const SYSTEM_STRUCT = `
+Eres un clasificador de intenciones para un asistente sobre cursos de trading.
+Debes responder SOLO con una intención de la lista dada.
+
+Reglas:
+- Si el usuario pregunta por precio, costo o valor SIN mencionar descuentos, promociones o rebajas → usa "INFO_COSTO_DEL_CURSO".
+- Si el usuario menciona descuentos, rebajas o promociones → usa "INFO_PREGUNTA_DESCUENTOS".
+- Si el usuario pregunta por métodos de pago, financiación o cuotas → usa "INFO_FORMAS_DE_PAGO" o "INFO_COSTO_Y_FINANCIAMIENTO".
+- Si no se reconoce ninguna intención → usa "UNKNOWN".
+
+Ejemplos:
+Usuario: "cuánto cuesta?"
+Intención: "INFO_COSTO_DEL_CURSO"
+
+Usuario: "cuánto cuesta con descuento?"
+Intención: "INFO_PREGUNTA_DESCUENTOS"
+
+Usuario: "me puedes dar el precio del curso en vivo?"
+Intención: "INFO_COSTO_DEL_CURSO"
+
+Usuario: "tienen alguna promoción?"
+Intención: "INFO_PREGUNTA_DESCUENTOS"
+
+Usuario: "cómo puedo pagar?"
+Intención: "INFO_FORMAS_DE_PAGO"
+
+Usuario: "¿A quién va dirigido?"
+Intención: "PUBLICO_OBJETIVO_CURSO"
+
+Usuario: "¿Para quién es este curso?"
+Intención: "PUBLICO_OBJETIVO_CURSO"
+
+Usuario: "¿Quién puede participar?"
+Intención: "PUBLICO_OBJETIVO_CURSO"
+
+Usuario: "¿A quién va dirigido el curso online?"
+Intención: "PUBLICO_OBJETIVO_CURSO"
+
+Lista de intenciones posibles:
+${ INTENCIONES.join( "\n" ) }
+
+Just only history based:
+{history}
+`;
+
+const PROMPT_STRUCT = ChatPromptTemplate.fromMessages( [
+  [ "system", SYSTEM_STRUCT ],
+  [ "human", "{question}" ]
+] );
 
 export type IntencionDetectada = typeof INTENCIONES[ number ];
 
@@ -154,46 +191,9 @@ export const getIntention = async ( text: string ): Promise<IntencionDetectada> 
     } );
 
     return ( result as z.infer<typeof catchIntention> ).intention;
-    //    return ( result as IntencionDetectada );
-    //    const intention = ( result as { intention: IntencionDetectadacath; } ).intention;
-    //const intention = ( result as IntentionResponse ).intention.toLowerCase();
-    //    return (result as IntentionResponse).intention; 
-    //  return intention;
+
   } catch ( error ) {
-    return "UNKNOWN"; // 👈 también debe coincidir con el enum
+    return "UNKNOWN";
   }
 };
 
-// --- Ejemplo de uso ---
-// ( async () => {
-//   let intention = await getIntention( "¿Cuánto cuesta el curso grabado?" );
-//   console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Buenas noches" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Saludos" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Hey cómo están?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Cuánto cuesta el curso en Miami?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Qué vale el curso en Santiago de Compostela?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Precio del curso?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Hello" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Buenas, ¿qué hay?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "moneda local" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "pesos colombianos" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Cuáles son los métodos de pago?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Qué formas de pago hay?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "¿Cuáles son las modalidades de pago?" );
-// console.log( "Intention:", intention ); // -> sales
-// intention = await getIntention( "Buen día" );
-// console.log( "Intention:", intention ); // -> sales
-//} ) ();
