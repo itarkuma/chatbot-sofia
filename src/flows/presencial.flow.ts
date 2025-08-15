@@ -22,6 +22,29 @@ const flowPresencial = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { sta
     console.log( `[ERROR]: en el flujo curso presencial`, err );
     return;
   }
-} );
+} ).addAction( { capture: true }, async ( ctx, { flowDynamic, state } ) => {
+  //  await state.udpate( { name: ctx.body } );
+  const seccion = await state.get( 'seccionActual' );
+  const pregunta = preprocessPregunta( ctx.body );
+  if ( pregunta === 'miami' ) {
+    await state.update( { seccionActual: 'formacion_miami' } );
+    const { texto, origen, chunkId } = await askSofia( "curso miami resumen", seccion );
+    await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+    console.log( { origen, chunkId } );
+  } else {
+    if ( pregunta === "santiago de compostela" || pregunta === "santiago" || pregunta === "santiago compostela" ) {
+      await state.update( { seccionActual: 'formacion_santiago' } );
+      const { texto, origen, chunkId } = await askSofia( "curso santiago compostela resumen", seccion );
+      await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+      console.log( { origen, chunkId } );
+    } else {
+      const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion );
+      await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+      console.log( { origen, chunkId } );
+    }
+  }
+
+} )
+  ;
 
 export { flowPresencial };
