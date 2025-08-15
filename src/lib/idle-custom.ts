@@ -6,21 +6,23 @@ const timers = {};
 
 // Flow for handling inactivity
 const idleFlow = addKeyword( EVENTS.ACTION ).addAction(
-  async ( _, { endFlow } ) => {
-    return endFlow( `📊 *¡Queremos saber cómo te fue!*
+  async ( _, { flowDynamic, endFlow } ) => {
+    await flowDynamic( `📊 *¡Queremos saber cómo te fue!*
 Del *1 al 5*, ¿cómo calificarías la atención que recibiste?
 
 (*1* = Muy insatisfecho 😕 / *5* = Muy satisfecho 🤩)
 
-Tu opinión nos ayuda a mejorar 💬 ¡Gracias por tu tiempo!` );
+Tu opinión nos ayuda a mejorar 💬 ¡Gracias por tu tiempo!`);
+
   }
-).addAction( { capture: true }, async ( ctx, { flowDynamic, state } ) => {
+).addAction( { capture: true }, async ( ctx, { endFlow, flowDynamic, state } ) => {
   //  await state.udpate( { name: ctx.body } );
-  const seccion = await state.get( 'seccionActual' );
+
   const pregunta = ctx.body;
   if ( pregunta === '1' || pregunta === '2' || pregunta === '3' || pregunta === '4' || pregunta === '5' ) {
-    await flowDynamic( "Gracias por tu valoración 🌟" );
+
     console.log( 'chunk respuesta valoracion texto ingresado fijo' );
+    return endFlow( "Gracias por tu valoración 🌟" );
   } else {
     const seccion = await state.get( 'seccionActual' );
     const { texto, origen, chunkId } = await askSofia( ctx.body, seccion );

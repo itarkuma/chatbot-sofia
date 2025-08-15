@@ -246,9 +246,9 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
   //  .addAction( async ( ctx, { gotoFlow } ) => start( ctx, gotoFlow, 60000 ) )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
-    //reset( ctx, gotoFlow, 3600000 );
-    reset( ctx, gotoFlow, 600000 );
-    //reset( ctx, gotoFlow, 60000 );
+    reset( ctx, gotoFlow, 3600000 );
+    //reset( ctx, gotoFlow, 100000 );
+
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
     const preguntaoriginal = ctx.body;
