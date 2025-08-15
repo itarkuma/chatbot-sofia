@@ -29,6 +29,7 @@ import { flowComparacion } from './flows/comparacion.flow';
 import { esComparacionGrabadoVsVivo } from './lib/utils/esComparacionGrabadoVsVivo';
 import { detectflowConfusion, flowConfusion } from './flows/confusion.flow';
 import { detectflowRecursosGratuitos, flowRecursosGratuitos } from './flows/recursosGratuitos.flow';
+import { flowPublicoObjetivo } from './flows/publicoObjetivo.flow';
 import { flowPresencial } from './flows/presencial.flow';
 
 import { registerAlumno } from './flows/registerAlumno.flow';
@@ -299,9 +300,20 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         ( myintencion === "PRECIO_CURSO_SANTIAGO" ) ||
         ( myintencion === "PRECIO_CURSO_GRABADO" ) ||
         ( myintencion === "PRECIO_CURSO_VIVO" ) ||
+        ( myintencion === "INFO_PRECIO_Y_PAGOS" ) ||
+        ( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
+        ( myintencion === "INFO_PREGUNTAS_PRECIO" ) ||
+        ( myintencion === "INFO_APRENDIZAJE_PRINCIPIANTE" ) ||
+        ( myintencion === "PUBLICO_OBJETIVO_CURSO" ) ||
         ( myintencion === "METODO_PAGO" )
       )
       && isConfusion ) { return gotoFlow( flowConfusion ); }
+
+    if ( ( myintencion === "INFO_APRENDIZAJE_PRINCIPIANTE" ) ||
+      ( myintencion === "PUBLICO_OBJETIVO_CURSO" ) ) {
+      return gotoFlow( flowPublicoObjetivo );
+
+    }
 
     if ( isComparacion ) { return gotoFlow( flowComparacion ); }
 
@@ -584,6 +596,7 @@ const main = async () => {
       flowConfusion,
       flowRecursosGratuitos,
       flowPresencial,
+      flowPublicoObjetivo,
       fallbackConfusionUser,
       fallbackDatoNodisponibleUser,
       fallbackPromocionesUser,

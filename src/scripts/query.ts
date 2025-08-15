@@ -256,6 +256,24 @@ export const askSofia = async (
     }
   }
 
+  if ( ask_menu === 'publico_objetivo' ) {
+    const archivoActual = '2_curso_trading_online_grabado.txt';
+    const filters = {
+      archivo: '2_curso_trading_online_grabado.txt',
+      chunk: 'chunk_02'
+    };
+
+    const resultados = await vectorStore.similaritySearchWithScore(
+      query,
+      1, // solo queremos uno
+      filters
+    ) as [ SofiaDocument, number ][];
+
+    if ( resultados.length > 0 ) {
+      return await responderConResultadosFijo( resultados, query, archivoActual );
+    }
+  }
+
   if ( ask_menu === 'user_dato_nodisponible' ) {
     const archivoActual = 'fallbacks.txt';
     const filters = {
@@ -681,8 +699,12 @@ export const askSofia = async (
 
   if (
     (
-      ( intencion === "PRECIO_CURSO_GRABADO" ) ||
-      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+      ( seccion === 'curso_online_grabado' ) && (
+        ( intencion === "PRECIO_CURSO_GRABADO" ) ||
+        ( intencion === "INFO_PRECIO_Y_PAGOS" ) ||
+        ( intencion === "INFO_COSTO_DEL_CURSO" ) ||
+        ( intencion === "INFO_PREGUNTAS_PRECIO" )
+      )
     ) ) {
 
     const archivoActual = '2_curso_trading_online_grabado.txt';
@@ -784,8 +806,12 @@ export const askSofia = async (
 
   if (
     (
-      ( intencion === "PRECIO_CURSO_VIVO" ) ||
-      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+      ( seccion === 'curso_online_vivo' ) && (
+        ( intencion === "PRECIO_CURSO_VIVO" ) ||
+        ( intencion === "INFO_PRECIO_Y_PAGOS" ) ||
+        ( intencion === "INFO_COSTO_DEL_CURSO" ) ||
+        ( intencion === "INFO_PREGUNTAS_PRECIO" )
+      )
     )
   ) {
 
@@ -936,9 +962,12 @@ export const askSofia = async (
   }
 
   if (
-    (
+    ( ( seccion === 'formacion_miami' ) && (
       ( intencion === "PRECIO_CURSO_MIAMI" ) ||
-      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+      ( intencion === "INFO_PRECIO_Y_PAGOS" ) ||
+      ( intencion === "INFO_COSTO_DEL_CURSO" ) ||
+      ( intencion === "INFO_PREGUNTAS_PRECIO" )
+    )
     )
   ) {
 
@@ -1042,8 +1071,12 @@ export const askSofia = async (
 
   if (
     (
-      ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
-      ( intencion === "INFO_PRECIO_Y_PAGOS" )
+      ( seccion === 'formacion_santiago' ) && (
+        ( intencion === "PRECIO_CURSO_SANTIAGO" ) ||
+        ( intencion === "INFO_PRECIO_Y_PAGOS" ) ||
+        ( intencion === "INFO_COSTO_DEL_CURSO" ) ||
+        ( intencion === "INFO_PREGUNTAS_PRECIO" )
+      )
     )
   ) {
 

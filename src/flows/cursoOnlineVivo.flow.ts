@@ -47,6 +47,8 @@ const detectflowCursoOonlineVivo = ( query: string, seccionActual: string ): boo
     "aprendere",
     "aprender",
     "organizado",
+    "dirigido",
+    "diseñado",
     "costo",
     "dónde se realiza",
     "lugar del curso",
