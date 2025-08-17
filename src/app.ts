@@ -281,8 +281,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         ( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
         ( myintencion === "INFO_PREGUNTAS_PRECIO" ) ||
         ( myintencion === "INFO_APRENDIZAJE_PRINCIPIANTE" ) ||
-        ( myintencion === "PUBLICO_OBJETIVO_CURSO" ) ||
-        ( myintencion === "METODO_PAGO" )
+        ( myintencion === "PUBLICO_OBJETIVO_CURSO" )
+        //( myintencion === "METODO_PAGO" )
       )
       && isConfusion ) { return gotoFlow( flowConfusion ); }
 
