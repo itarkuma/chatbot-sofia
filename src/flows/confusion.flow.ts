@@ -15,9 +15,9 @@ const detectflowConfusion = ( query: string, seccionActual: string ): boolean =>
     return true;
   }
 
-  if ( !seccionActual && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( query ) ) {
-    return true;
-  }
+  // if ( !seccionActual && /(m[eé]todos?|forma[s]?) de pago[s]?/.test( query ) ) {
+  //   return true;
+  // }
 
 
   // Paso 1: Revisar si el texto menciona "curso online"

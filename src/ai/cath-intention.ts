@@ -145,6 +145,15 @@ Intención: "INFO_PREGUNTA_DESCUENTOS"
 Usuario: "cómo puedo pagar?"
 Intención: "INFO_FORMAS_DE_PAGO"
 
+Usuario: "Cuales son los métodos de pago?"
+Intención: "INFO_FORMAS_DE_PAGO"
+
+Usuario: "Que formas de pago hay?"
+Intención: "INFO_FORMAS_DE_PAGO"
+
+Usuario: "Cuales son las modalidades de pago?"
+Intención: "INFO_FORMAS_DE_PAGO"
+
 Usuario: "¿A quién va dirigido?"
 Intención: "PUBLICO_OBJETIVO_CURSO"
 

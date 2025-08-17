@@ -217,30 +217,6 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
   return null;
 }
 
-// export async function detectarIntencion( mensaje: string ): Promise<IntencionDetectadaaux | null> {
-//   const query = preprocessPregunta( mensaje );
-//   const resultados = await pineconeQuery( query );
-//   // Log para ver los resultados obtenidos de Pinecone
-
-//   if ( resultados.length > 0 ) {
-//     const [ doc, score ] = resultados[ 0 ]; // ✅ desestructura la tupla
-
-//     //    console.log( 'resultados:', doc.metadata );
-
-//     const archivo = doc.metadata.archivo || '';
-//     const seccion = mapArchivoToSeccion( archivo );
-
-//     return {
-//       seccion: seccion || '',
-//       texto: doc.metadata.text || doc.pageContent || '',
-//       is_fallback: doc.metadata.es_fallback || false,
-//     };
-//   }
-
-//   return null;
-// }
-
-
 
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
   //  .addAction( async ( ctx, { gotoFlow } ) => start( ctx, gotoFlow, 60000 ) )
@@ -302,11 +278,11 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         ( myintencion === "PRECIO_CURSO_GRABADO" ) ||
         ( myintencion === "PRECIO_CURSO_VIVO" ) ||
         ( myintencion === "INFO_PRECIO_Y_PAGOS" ) ||
-        ( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
+        //( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
         ( myintencion === "INFO_PREGUNTAS_PRECIO" ) ||
         ( myintencion === "INFO_APRENDIZAJE_PRINCIPIANTE" ) ||
-        ( myintencion === "PUBLICO_OBJETIVO_CURSO" ) ||
-        ( myintencion === "METODO_PAGO" )
+        ( myintencion === "PUBLICO_OBJETIVO_CURSO" )
+        //( myintencion === "METODO_PAGO" )
       )
       && isConfusion ) { return gotoFlow( flowConfusion ); }
 
@@ -339,9 +315,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( myintencion === "GREETING" || myintencion === "INFO_REQUEST" ) {
       return gotoFlow( flowSaludo );
     }
-
-    //    if ( isMenuOption5 ) { return gotoFlow( flowCursoGratis ); }
-    //    if ( isMenuOption7 ) { return gotoFlow( flowComunidadAlumno ); }
 
     const esperandoDerivacion = await state.get( 'esperandoDerivacion' );
     const esperandoSeguimiento = await state.get( 'esperandoSeguimiento' );
@@ -476,91 +449,6 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
           console.log( 'Caso especial derivacion humana -> no intencion else' );
           return gotoFlow( fallbackconfirmarderivacionUser );
         }
-
-        //        const intencion = await detectarIntencion( consulta );
-
-        // if ( intencion.is_fallback ) {
-        //   console.log( 'Detecto Fallback intencion else' );
-        //   const { texto, tags, chunkId, origen } = await askSofiaFallback( consulta );
-        //   console.log( 'retorno un fallback' );
-        //   console.log( { origen, chunkId } );
-
-        //   await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-
-        //   const isDerivarHumano = derivarHumano( tags, origen );
-
-        //   if ( isDerivarHumano ) {
-        //     console.log( 'Caso especial derivacion humana -> fallback else' );
-        //     return gotoFlow( fallbackconfirmarderivacionUser );
-        //   }
-
-
-
-        // } else {
-
-        //   if ( intencion.seccion ) {
-        //     switch ( intencion.seccion ) {
-
-        //       case 'soporte_general': {
-
-        //         console.log( 'Intención detectada:', intencion.seccion );
-        //         return gotoFlow( flowConsultasGenerales );
-        //       }
-
-
-        //       default: {
-        //         console.log( 'No detecto la intencion' );
-        //         const { texto, tags, origen, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
-        //         console.log( { origen, chunkId } );
-
-        //         if ( origen == 'curso_online_vivo' ||
-        //           origen == 'curso_online_grabado' ||
-        //           origen == 'formacion_miami' ||
-        //           origen == 'formacion_santiago'
-        //         ) {
-        //           await state.update( { seccionActual: origen } );
-        //           console.log( 'update seccion ->:', origen );
-        //         }
-
-        //         const isDerivarHumano = derivarHumano( tags, origen );
-
-        //         if ( isDerivarHumano ) {
-        //           console.log( 'Caso especial derivacion humana -> no intencion' );
-
-        //           return gotoFlow( fallbackconfirmarderivacionUser );
-        //         }
-
-
-        //         await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-        //         break;
-        //       }
-        //     }
-        //   } else {
-        //     console.log( 'No detecto la intencion else' );
-        //     const { texto, origen, tags, chunkId } = await askSofia( consulta, seccion, '', false, myintencion );
-        //     console.log( { origen, chunkId } );
-        //     if ( origen == 'curso_online_vivo' ||
-        //       origen == 'curso_online_grabado' ||
-        //       origen == 'formacion_miami' ||
-        //       origen == 'formacion_santiago'
-        //     ) {
-        //       await state.update( { seccionActual: origen } );
-        //       console.log( 'update seccion ->:', origen );
-        //     }
-        //     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
-        //     const isDerivarHumano = derivarHumano( tags, origen );
-
-        //     if ( isDerivarHumano ) {
-        //       console.log( 'Caso especial derivacion humana -> no intencion else' );
-        //       return gotoFlow( fallbackconfirmarderivacionUser );
-        //     }
-
-        //   }
-        // }
-
-
-
-
 
       }
 
