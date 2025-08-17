@@ -278,7 +278,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
         ( myintencion === "PRECIO_CURSO_GRABADO" ) ||
         ( myintencion === "PRECIO_CURSO_VIVO" ) ||
         ( myintencion === "INFO_PRECIO_Y_PAGOS" ) ||
-        ( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
+        //( myintencion === "INFO_COSTO_DEL_CURSO" ) ||
         ( myintencion === "INFO_PREGUNTAS_PRECIO" ) ||
         ( myintencion === "INFO_APRENDIZAJE_PRINCIPIANTE" ) ||
         ( myintencion === "PUBLICO_OBJETIVO_CURSO" )
