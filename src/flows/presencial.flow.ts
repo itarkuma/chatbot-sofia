@@ -28,14 +28,17 @@ const flowPresencial = addKeyword( EVENTS.ACTION ).addAction( async ( ctx, { sta
   const pregunta = preprocessPregunta( ctx.body );
   if ( pregunta === 'miami' ) {
     await state.update( { seccionActual: 'formacion_miami' } );
-    const { texto, origen, chunkId } = await askSofia( "curso miami resumen", seccion );
+    //const { texto, origen, chunkId } = await askSofia( "informacion del curso miami", seccion );
+    const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_miami' );
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+    await flowDynamic( [ { body: "¿Le gustaría ver el *temario completo* o un *resumen* con los principales detalles?", delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
   } else {
     if ( pregunta === "santiago de compostela" || pregunta === "santiago" || pregunta === "santiago compostela" ) {
       await state.update( { seccionActual: 'formacion_santiago' } );
-      const { texto, origen, chunkId } = await askSofia( "curso santiago compostela resumen", seccion );
+      const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion, 'formacion_santiago' );
       await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
+      await flowDynamic( [ { body: "¿Le gustaría ver el *temario completo* o un *resumen* con los principales detalles?", delay: generateTimer( 150, 250 ) } ] );
       console.log( { origen, chunkId } );
     } else {
       const { texto, origen, chunkId } = await askSofia( preprocessPregunta( ctx.body ), seccion );
