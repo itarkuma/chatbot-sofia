@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 export const clasificarChunk14 = async ( input: string ): Promise<"CONFUSION" | "FECHAS_PRECIOS" | "FALTA_TIEMPO_MIEDO" | null> => {
   const model = new ChatOpenAI( {
-    modelName: "gpt-3.5-turbo",
+    modelName: process.env.MODELO_SOFIA,
     temperature: 0,
     openAIApiKey: process.env.OPENAI_API_KEY!,
   } );
