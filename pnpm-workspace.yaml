@@ -1,6 +1,0 @@
-onlyBuiltDependencies:
-  - '@ffmpeg-installer/linux-x64'
-  - baileys
-  - esbuild
-  - protobufjs
-  - sharp
