@@ -44,10 +44,10 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     { capture: true },
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
-      if ( ctx.body === 'no' ) {
+      if ( preprocessPregunta( ctx.body ) === 'no' ) {
         return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       } else {
-        if ( ctx.body !== 'si' ) {
+        if ( preprocessPregunta( ctx.body ) !== 'si' ) {
           return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
         } else {
 
@@ -63,7 +63,7 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     { capture: true },
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
-      if ( ctx.body === 'no' ) {
+      if ( preprocessPregunta( ctx.body ) === 'no' ) {
         return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       }
       await state.update( { derivar_nombre: ctx.body } );
@@ -75,7 +75,7 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     { capture: true },
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
-      if ( ctx.body === 'no' ) {
+      if ( preprocessPregunta( ctx.body ) === 'no' ) {
         return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       }
       await state.update( { derivar_correo: ctx.body } );
@@ -87,7 +87,7 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     { capture: true },
 
     async ( ctx, { flowDynamic, endFlow, state } ) => {
-      if ( ctx.body === 'no' ) {
+      if ( preprocessPregunta( ctx.body ) === 'no' ) {
         return endFlow( `ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.` );
       } else {
 
