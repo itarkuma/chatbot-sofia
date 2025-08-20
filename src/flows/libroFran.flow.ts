@@ -11,6 +11,8 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
     "Libro de Fran Fialli",
     "Libro de Fran",
     "5", // número
+    /\blibros?( de)? fran\b/,
+    /\blibros?( de)? fran fialli\b/,
     /\bfran.*libro\b/,
     //    /\bempezar.*aprender.*trading\b/,
     /\bmaterial.*escrito\b/,
