@@ -12,10 +12,11 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
     "Libro de Fran",
     "5", // número
     /\blibros?( de)? fran\b/,
+    /\blibros?( de)? fialli\b/,
     /\blibros?( de)? fran fialli\b/,
-    /\bfran.*libro\b/,
+    /\bfran libro\b/,
     //    /\bempezar.*aprender.*trading\b/,
-    /\bmaterial.*escrito\b/,
+    /\bmaterial escrito\b/,
     /\blibro.*recom\b/i,
     /\blibro.*principiante\b/,
     /\bcomprar.*libro.*fran\b/,
@@ -24,8 +25,6 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
     /\blibro.*empezar\b/,
     /\bconseguir.*libro\b/,
     /\bmaterial.*novatos?\b/,
-    //    /\bleer.*trading\b/,
-    /\bvenden.*libro.*fran\b/
   ];
 
   return libroFranTriggers.some( trigger => {
