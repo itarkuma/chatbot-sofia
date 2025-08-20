@@ -8,7 +8,8 @@ const detectflowLibroFran = ( query: string, seccionActual: string ): boolean =>
   const texto = preprocessPregunta( query );
   const textoNormalizado = removeAccents( texto.toLowerCase() );
   const libroFranTriggers = [
-    "Libro de Fran Fialli  ",
+    "Libro de Fran Fialli",
+    "Libro de Fran",
     "5", // número
     /\bfran.*libro\b/,
     //    /\bempezar.*aprender.*trading\b/,
