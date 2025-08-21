@@ -10,7 +10,7 @@
     "dev": "npm run lint && nodemon ./src/app.ts",
     "build": "npx rollup -c",
     "reset-pine": "tsx  ./src/scripts/clearIndex.ts",
-    "load-info": "tsx  ./src/scripts/chunk_metodopago_general.ts",
+    "load-info": "tsx  ./src/scripts/chunk_despedida_general.ts",
     "test": "tsx  ./src/ai/cath-intention.ts"
   },
   "keywords": [],
