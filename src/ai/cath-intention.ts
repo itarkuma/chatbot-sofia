@@ -183,6 +183,15 @@ Intención: "DESPEDIDA_USUARIO"
 Usuario: "Ya no tengo más preguntas"
 Intención: "DESPEDIDA_USUARIO"
 
+Usuario: "Que esté bien"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Gracias"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Genial, gracias"
+Intención: "DESPEDIDA_USUARIO"
+
 Lista de intenciones posibles:
 ${ INTENCIONES.join( "\n" ) }
 

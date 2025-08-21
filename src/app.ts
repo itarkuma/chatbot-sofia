@@ -20,6 +20,7 @@ import { detectflowClubFran, flowClubFran } from './flows/clubFran.flow';
 import { detectflowConsultasGenerales, flowConsultasGenerales } from './flows/consultasGenerales.flow';
 import { detectflowMenu, flowMenu } from './flows/menu.flow';
 import { detectflowSaludo, flowSaludo } from './flows/saludo.flow';
+import { flowDespedida } from './flows/despedida.flow';
 import { detectflowsoyAlumno, flowSoyAlumno } from './flows/soyAlumno.flow';
 import { detectflowCursoOonlineGrabado, flowCursoOnlineGrabado } from './flows/cursoOnlineGrabado.flow';
 import { detectflowCursoOonlineVivo, flowCursoOnlineVivo } from './flows/cursoOnlineVivo.flow';
@@ -271,6 +272,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
     if ( isDataNodisponibleUser ) { return gotoFlow( fallbackDatoNodisponibleUser ); }
     if ( isConfusoUser ) { return gotoFlow( fallbackConfusionUser ); }
 
+    if ( myintencion === "DESPEDIDA_USUARIO" ) {
+      return gotoFlow( flowDespedida );
+    }
+
     if (
       !(
         ( myintencion === "PRECIO_CURSO_MIAMI" ) ||
@@ -468,6 +473,7 @@ const main = async () => {
   const adapterFlow = createFlow(
     [ flowMenu,
       flowSaludo,
+      flowDespedida,
       welcomeFlow,
       //      flowCursoGratis,
       flowLibroFran,
