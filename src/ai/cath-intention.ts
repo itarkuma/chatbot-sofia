@@ -117,6 +117,7 @@ export const INTENCIONES = [
   "INFO_REQUISITOS_CURSO_EN_VIVO",
   "INFO_FECHAS_Y_EVENTOS_CURSO_EN_VIVO",
   "INFO_CERTIFICACION_CURSO_EN_VIVO",
+  "DESPEDIDA_USUARIO"
 ] as const;
 
 const SYSTEM_STRUCT = `
@@ -127,6 +128,7 @@ Reglas:
 - Si el usuario pregunta por precio, costo o valor SIN mencionar descuentos, promociones o rebajas → usa "INFO_COSTO_DEL_CURSO".
 - Si el usuario menciona descuentos, rebajas o promociones → usa "INFO_PREGUNTA_DESCUENTOS".
 - Si el usuario pregunta por métodos de pago, financiación o cuotas → usa "INFO_FORMAS_DE_PAGO" o "INFO_COSTO_Y_FINANCIAMIENTO".
+- Si el usuario se despide o indica que ya no necesita más ayuda → usa "DESPEDIDA_USUARIO".
 - Si no se reconoce ninguna intención → usa "UNKNOWN".
 
 Ejemplos:
@@ -165,6 +167,21 @@ Intención: "PUBLICO_OBJETIVO_CURSO"
 
 Usuario: "¿A quién va dirigido el curso online?"
 Intención: "PUBLICO_OBJETIVO_CURSO"
+
+Usuario: "Gracias, eso es todo"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Listo, hablamos luego"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Chao, buen día"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Me voy, muchas gracias"
+Intención: "DESPEDIDA_USUARIO"
+
+Usuario: "Ya no tengo más preguntas"
+Intención: "DESPEDIDA_USUARIO"
 
 Lista de intenciones posibles:
 ${ INTENCIONES.join( "\n" ) }
