@@ -1,5 +1,58 @@
 export const derivarHumano = ( tags: string[], origen: string ): boolean => {
 
+  //alumno
+  if ( tags.includes( 'identificación' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'problemas_técnicos' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'derivación_javier' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'credenciales_acceso' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'actualización_datos' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'renovación' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'dificultades_de_acceso' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'actualización_contacto' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+  if ( tags.includes( 'refuerzo_contenido' ) ) {
+    // Acción específica
+    console.log( 'Caso especial derivacion humana' );
+    return true;
+  }
+
+
+
+
+
+
+
 
   if ( tags.includes( 'moneda_local-Hotmart-LATAM-precio_en_pesos' ) && origen === 'curso_online_grabado' ) {
     // Acción específica
