@@ -132,6 +132,9 @@ Reglas:
 - Si no se reconoce ninguna intención → usa "UNKNOWN".
 
 Ejemplos:
+Usuario: "¡Hola! Me gustaría información sobre…"
+Intención: "GREETING"
+
 Usuario: "cuánto cuesta?"
 Intención: "INFO_COSTO_DEL_CURSO"
 
