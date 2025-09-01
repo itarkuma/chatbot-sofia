@@ -50,6 +50,15 @@ import type { IntencionDetectada } from "./ai/cath-intention"; // importa solo e
 
 
 import { idleFlow, start, stop, reset } from './lib/idle-custom';
+import { numberClean } from './lib/utils/util';
+
+import { readFileSync } from "fs";
+import { join } from "path";
+import { fileURLToPath } from "url";
+
+// Necesario para obtener __dirname en ESM
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = join( __filename, ".." );
 
 
 function verificarConsulta( query: string ): boolean {
@@ -220,7 +229,6 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
 
 
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
-  //  .addAction( async ( ctx, { gotoFlow } ) => start( ctx, gotoFlow, 60000 ) )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
     reset( ctx, gotoFlow, 3600000 );
@@ -468,6 +476,8 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
 
 
+
+
 const main = async () => {
 
   const adapterFlow = createFlow(
@@ -475,6 +485,7 @@ const main = async () => {
       flowSaludo,
       flowDespedida,
       welcomeFlow,
+
       //      flowCursoGratis,
       flowLibroFran,
       //      flowComunidadAlumno,
@@ -544,15 +555,30 @@ const main = async () => {
     '/v1/blacklist',
     handleCtx( async ( bot, req, res ) => {
       const { number, intent } = req.body;
-      if ( intent === 'remove' ) bot.blacklist.remove( number );
-      if ( intent === 'add' ) bot.blacklist.add( number );
+      const numberCleans = numberClean( number );
+      if ( intent === 'remove' ) bot.blacklist.remove( numberCleans );
+      if ( intent === 'add' ) bot.blacklist.add( numberCleans );
+      console.log( 'intento de bloqueo', intent );
+      console.log( 'intento de bloqueo', numberCleans );
 
       res.writeHead( 200, { 'Content-Type': 'application/json' } );
       return res.end( JSON.stringify( { status: 'ok', number, intent } ) );
     } )
   );
 
+  adapterProvider.server.get(
+    '/bloquear',
+    ( req, res ) => {
+      const html = readFileSync( join( __dirname, "bloquear.html" ), "utf-8" );
+      res.setHeader( "Content-Type", "text/html" );
+      res.end( html );
+    } );
+
+
   httpServer( +PORT );
+
+
+
 };
 
 main();

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Bloquear Numero</title>
+</head>
+
+<body>
+  <h2>Gestión de Bloquear Numero</h2>
+  <form id="blacklistForm">
+    <label>
+      Número:
+      <input type="text" name="number" required />
+    </label>
+    <br /><br />
+
+    <label>
+      Acción:
+      <select name="intent" required>
+        <option value="add">Agregar</option>
+        <option value="remove">Eliminar</option>
+      </select>
+    </label>
+    <br /><br />
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <pre id="response"></pre>
+
+  <script>
+    document.getElementById( "blacklistForm" ).addEventListener( "submit", async ( e ) => {
+      e.preventDefault();
+
+      const formData = new FormData( e.target );
+      const data = Object.fromEntries( formData );
+
+      try {
+        const res = await fetch( "/v1/blacklist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify( data ),
+        } );
+
+        const json = await res.json();
+        document.getElementById( "response" ).innerText = JSON.stringify( json, null, 2 );
+      } catch ( err ) {
+        document.getElementById( "response" ).innerText = "Error: " + err.message;
+      }
+    } );
+  </script>
+</body>
+
+</html>
