@@ -8,7 +8,7 @@
     "start": "node ./dist/app.js",
     "lint": "eslint . --no-ignore",
     "dev": "npm run lint && nodemon ./src/app.ts",
-    "build": "npx rollup -c",
+    "build": "npx rollup -c && cp src/bloquear.html dist/",
     "reset-pine": "tsx  ./src/scripts/clearIndex.ts",
     "load-info": "tsx  ./src/scripts/chunk_despedida_general.ts",
     "test": "tsx  ./src/ai/cath-intention.ts"
