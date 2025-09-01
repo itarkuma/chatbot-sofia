@@ -4,30 +4,93 @@
 <head>
   <meta charset="UTF-8">
   <title>Gestión de Bloquear Numero</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #555;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      background: #007BFF;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    pre {
+      background: #f1f1f1;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>Gestión de Bloquear Numero</h2>
-  <form id="blacklistForm">
-    <label>
-      Número:
-      <input type="text" name="number" required />
-    </label>
-    <br /><br />
+  <div class="container">
+    <h2>Gestión de Bloqueo</h2>
+    <form id="blacklistForm">
+      <label for="number">Número</label>
+      <input type="text" id="number" name="number" placeholder="Ej: 59170000000" required />
 
-    <label>
-      Acción:
-      <select name="intent" required>
+      <label for="intent">Acción</label>
+      <select id="intent" name="intent" required>
         <option value="add">Agregar</option>
         <option value="remove">Eliminar</option>
       </select>
-    </label>
-    <br /><br />
 
-    <button type="submit">Enviar</button>
-  </form>
+      <button type="submit">Enviar</button>
+    </form>
 
-  <pre id="response"></pre>
+    <pre id="response"></pre>
+  </div>
 
   <script>
     document.getElementById( "blacklistForm" ).addEventListener( "submit", async ( e ) => {
@@ -45,6 +108,10 @@
 
         const json = await res.json();
         document.getElementById( "response" ).innerText = JSON.stringify( json, null, 2 );
+
+        // 👇 Limpia los inputs después del submit
+        e.target.reset();
+
       } catch ( err ) {
         document.getElementById( "response" ).innerText = "Error: " + err.message;
       }

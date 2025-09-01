@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@builderbot/bot';
+import { createBot, createProvider, createFlow, addKeyword, EVENTS, utils } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys';
 
@@ -472,8 +472,23 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
   } );
 
 
+const flowMute = addKeyword( [ 'Sofia-Off', 'sofia-off', utils.setEvent( 'SOFIA-OFF' ) ] )
+  .addAction( async ( ctx, { flowDynamic, blacklist } ) => {
+    // const dataFromDb = db.findOne({from:ctx.from}) simualte db query
+    await flowDynamic( `💬 Espero haberte ayudado. A partir de aquí continúa Javier Gómez para atenderte personalmente.
 
+— Sofía, tu asistente de IA especializada en mercados financieros 🤖📊` );
 
+  } );
+
+const flowOffMute = addKeyword( [ 'Sofia-On', 'sofia-on', utils.setEvent( 'SOFIA-ON' ) ] )
+  .addAction( async ( ctx, { flowDynamic, blacklist } ) => {
+    // const dataFromDb = db.findOne({from:ctx.from}) simualte db query
+    await flowDynamic( `✨ Estoy de vuelta para seguir ayudándote. Si deseas, escribe la palabra “menu” para mostrarte todas las opciones disponibles.
+
+— Sofía, tu asistente de IA especializada en mercados financieros 🤖📈` );
+
+  } );
 
 
 
@@ -485,7 +500,8 @@ const main = async () => {
       flowSaludo,
       flowDespedida,
       welcomeFlow,
-
+      flowMute,
+      flowOffMute,
       //      flowCursoGratis,
       flowLibroFran,
       //      flowComunidadAlumno,
@@ -556,10 +572,15 @@ const main = async () => {
     handleCtx( async ( bot, req, res ) => {
       const { number, intent } = req.body;
       const numberCleans = numberClean( number );
-      if ( intent === 'remove' ) bot.blacklist.remove( numberCleans );
-      if ( intent === 'add' ) bot.blacklist.add( numberCleans );
-      console.log( 'intento de bloqueo', intent );
-      console.log( 'intento de bloqueo', numberCleans );
+
+      if ( intent === 'remove' ) {
+        bot.blacklist.remove( numberCleans );
+        await bot.dispatch( 'SOFIA-ON', { from: numberCleans, name: "Javier" } );
+      }
+      if ( intent === 'add' ) {
+        await bot.dispatch( 'SOFIA-OFF', { from: numberCleans, name: "Javier" } );
+        bot.blacklist.add( numberCleans );
+      }
 
       res.writeHead( 200, { 'Content-Type': 'application/json' } );
       return res.end( JSON.stringify( { status: 'ok', number, intent } ) );
