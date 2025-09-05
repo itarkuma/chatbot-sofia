@@ -231,10 +231,7 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
-    //reset( ctx, gotoFlow, 3600000 );
-    //reset(ctx, gotoFlow, 15 * 60 * 1000, 60 * 60 * 1000);
-    reset( ctx, gotoFlow, 2 * 60 * 1000, 5 * 60 * 1000 );
-    //reset( ctx, gotoFlow, 100000 );
+    reset( ctx, gotoFlow, 15 * 60 * 1000, 60 * 60 * 1000 );
 
     const seccion = await state.get( 'seccionActual' );
     const consulta = preprocessPregunta( ctx.body );
