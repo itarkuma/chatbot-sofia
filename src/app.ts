@@ -49,7 +49,7 @@ import { getIntention } from './ai/cath-intention';
 import type { IntencionDetectada } from "./ai/cath-intention"; // importa solo el tipo
 
 
-import { idleFlow, start, stop, reset } from './lib/idle-custom';
+import { idleFlow, midFlow, start, stop, reset } from './lib/idle-custom';
 import { numberClean } from './lib/utils/util';
 
 import { readFileSync } from "fs";
@@ -231,7 +231,9 @@ function detectarTipoCurso( texto: string ): 'grabado' | 'vivo' | null {
 const welcomeFlow = addKeyword( EVENTS.WELCOME )
   .addAction( async ( ctx, { gotoFlow, flowDynamic, state } ) => {
     console.log( 'Estado EVENTS WELCOME:', await state.get( 'seccionActual' ) );
-    reset( ctx, gotoFlow, 3600000 );
+    //reset( ctx, gotoFlow, 3600000 );
+    //reset(ctx, gotoFlow, 15 * 60 * 1000, 60 * 60 * 1000);
+    reset( ctx, gotoFlow, 2 * 60 * 1000, 5 * 60 * 1000 );
     //reset( ctx, gotoFlow, 100000 );
 
     const seccion = await state.get( 'seccionActual' );
@@ -528,7 +530,8 @@ const main = async () => {
       fallbackconfirmarderivacionUser,
       fallbackJavierNoRespondeUser,
       fallbackMensajeMultiplesUser,
-      idleFlow
+      idleFlow,
+      midFlow
     ] );
 
   const adapterProvider = createProvider( Provider );
