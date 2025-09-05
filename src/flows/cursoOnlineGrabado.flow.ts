@@ -95,6 +95,7 @@ const flowCursoOnlineGrabado = addKeyword( EVENTS.ACTION ).addAction( async ( ct
     }
     await flowDynamic( [ { body: texto, delay: generateTimer( 150, 250 ) } ] );
     await flowDynamic( [ { body: "¿Le gustaría ver el *temario completo* o un *resumen* con los principales detalles?", delay: generateTimer( 150, 250 ) } ] );
+    await flowDynamic( [ { body: "👉 Indíquenos su preferencia: “temario completo” o “resumen”", delay: generateTimer( 150, 250 ) } ] );
     console.log( { origen, chunkId } );
 
 
