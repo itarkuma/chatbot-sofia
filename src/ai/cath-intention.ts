@@ -129,6 +129,9 @@ Reglas:
 - Si el usuario menciona descuentos, rebajas o promociones → usa "INFO_PREGUNTA_DESCUENTOS".
 - Si el usuario pregunta por métodos de pago, financiación o cuotas → usa "INFO_FORMAS_DE_PAGO" o "INFO_COSTO_Y_FINANCIAMIENTO".
 - Si el usuario se despide o indica que ya no necesita más ayuda → usa "DESPEDIDA_USUARIO".
+- Si el usuario pregunta usd o dolar → usa "PRECIO_DOLAR".
+- Si el usuario pregunta euro o € → usa "PRECIO_EURO".
+- Si el usuario pregunta por pesos mexicanos,pesos argentinos,pesos colombianos, (MXN,COP,CLP,ARS) → usa "PRECIO_MONEDA_LOCAL".
 - Si no se reconoce ninguna intención → usa "UNKNOWN".
 
 Ejemplos:
