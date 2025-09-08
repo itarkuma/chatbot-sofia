@@ -138,6 +138,12 @@ Ejemplos:
 Usuario: "¡Hola! Me gustaría información sobre…"
 Intención: "GREETING"
 
+Usuario: "¡Hola! Me gustaría recibir información sobre
+Intención: "GREETING"
+
+Usuario: "Hola me gustaría informacion"
+Intención: "GREETING"
+
 Usuario: "cuánto cuesta?"
 Intención: "INFO_COSTO_DEL_CURSO"
 

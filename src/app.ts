@@ -241,7 +241,7 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
       return;
     }
 
-    const myintencion: IntencionDetectada = await getIntention( consulta );
+    const myintencion: IntencionDetectada = await getIntention( preguntaoriginal );
     console.log( { myintencion } );
 
     //    const isSaludo = detectflowSaludo( consulta, seccion );
