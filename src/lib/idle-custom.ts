@@ -7,7 +7,7 @@ const timers = {};
 // Flow para mensaje intermedio de 15 minutos
 const midFlow = addKeyword( EVENTS.ACTION ).addAction(
   async ( _, { flowDynamic } ) => {
-    await flowDynamic( `📩 Si le surge alguna otra consulta, estoy a su disposición. Recuerde que puede escribir “menú” para volver al inicio y revisar el contenido completo.` );
+    await flowDynamic( `📩 Si le surge alguna otra consulta, estoy a su disposición. Recuerde que puede escribir *MENÚ* para volver al inicio y revisar el contenido completo.` );
   }
 );
 

@@ -108,8 +108,9 @@ const fallbackconfirmarderivacionUser = addKeyword( EVENTS.ACTION )
     `;
         await enviarDerivacionWhatsApp( mensaje );
         const texto_success = `✅ Gracias *${ nombre }* . Hemos recibido correctamente sus datos.`;
+        const frase_success = `“En breve, Javier Gómez se incorporará a este chat para atender su consulta de manera personalizada.”`;
         await flowDynamic( [ { body: texto_success, delay: generateTimer( 150, 250 ) } ] );
-
+        await flowDynamic( [ { body: frase_success, delay: generateTimer( 150, 250 ) } ] );
         await state.update( { derivar_nombre: "" } );
         await state.update( { derivar_correo: "" } );
         await state.update( { derivar_motivo: "" } );
