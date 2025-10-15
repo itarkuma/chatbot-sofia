@@ -534,7 +534,7 @@ const main = async () => {
   const adapterProvider =
     createProvider( Provider, {
       writeMyself: 'both',
-      version: [ 2, 3000, 1025190524 ],
+      version: [ 2, 3000, 1025190524 ] as any,
     } );
   const adapterDB = new Database();
 
