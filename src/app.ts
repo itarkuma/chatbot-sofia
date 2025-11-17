@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { createBot, createProvider, createFlow, addKeyword, EVENTS, utils } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
-import { BaileysProvider as Provider } from '@builderbot/provider-baileys';
+import { BaileysProvider as Provider } from "builderbot-provider-sherpa";
 
 import { askSofia } from './scripts/query';
 import { askSofiaFallback } from './scripts/queryFallback';
@@ -530,12 +530,14 @@ const main = async () => {
       idleFlow,
       midFlow
     ] );
-  //createProvider( Provider );
+
   const adapterProvider =
     createProvider( Provider, {
-      writeMyself: 'both',
       version: [ 2, 3000, 1025190524 ] as any,
     } );
+
+  console.info( 'Provider creado' );
+
   const adapterDB = new Database();
 
   const { handleCtx, httpServer } = await createBot( {
