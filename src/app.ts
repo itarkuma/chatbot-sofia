@@ -470,10 +470,10 @@ const welcomeFlow = addKeyword( EVENTS.WELCOME )
 
   } );
 
-
 const flowMute = addKeyword( [ 'Sofia-Off', 'sofia-off', utils.setEvent( 'SOFIA-OFF' ) ] )
   .addAction( async ( ctx, { flowDynamic, blacklist } ) => {
     // const dataFromDb = db.findOne({from:ctx.from}) simualte db query
+    stop( ctx );
     await flowDynamic( `💬 Espero haberte ayudado. A partir de aquí continúa Javier Gómez para atenderte personalmente.
 
 — Sofía, tu asistente de IA especializada en mercados financieros 🤖📊` );
@@ -584,6 +584,7 @@ const main = async () => {
         await bot.dispatch( 'SOFIA-ON', { from: numberCleans, name: "Javier" } );
       }
       if ( intent === 'add' ) {
+        stop( { from: numberCleans } as any );
         await bot.dispatch( 'SOFIA-OFF', { from: numberCleans, name: "Javier" } );
         bot.blacklist.add( numberCleans );
       }
