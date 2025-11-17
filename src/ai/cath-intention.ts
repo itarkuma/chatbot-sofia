@@ -133,6 +133,14 @@ Reglas:
 - Si el usuario pregunta euro o € → usa "PRECIO_EURO".
 - Si el usuario pregunta por pesos mexicanos,pesos argentinos,pesos colombianos, (MXN,COP,CLP,ARS) → usa "PRECIO_MONEDA_LOCAL".
 - Si no se reconoce ninguna intención → usa "UNKNOWN".
+- Si el usuario incluye más de una intención en el mismo mensaje, elige SOLO la más importante según este orden de prioridad:
+
+1. Saludos → "GREETING"
+2. Preguntas sobre precio, costo o valor → "INFO_COSTO_DEL_CURSO"
+3. Preguntas sobre descuentos → "INFO_PREGUNTA_DESCUENTOS"
+4. Preguntas sobre métodos de pago → "INFO_FORMAS_DE_PAGO"
+5. Preguntas de información general → "INFO_REQUEST"
+
 
 Ejemplos:
 Usuario: "¡Hola! Me gustaría información sobre…"
