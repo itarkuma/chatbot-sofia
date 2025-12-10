@@ -533,7 +533,7 @@ const main = async () => {
 
   const adapterProvider =
     createProvider( Provider, {
-      version: [ 2, 3000, 1025190524 ] as any,
+      version: [ 2, 3000, 1030817285 ] as any,
     } );
 
   console.info( 'Provider creado' );
