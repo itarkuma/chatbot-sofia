@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { createBot, createProvider, createFlow, addKeyword, EVENTS, utils } from '@builderbot/bot';
 import { MemoryDB as Database } from '@builderbot/bot';
-import { BaileysProvider as Provider } from "builderbot-provider-sherpa";
+import { BaileysProvider as Provider } from 'aurik3-builderbot-baileys-custom';
 
 import { askSofia } from './scripts/query';
 import { askSofiaFallback } from './scripts/queryFallback';
