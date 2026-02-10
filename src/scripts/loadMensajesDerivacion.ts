@@ -22,7 +22,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'Le pondré en contacto con *Javier Gómez*, nuestro asesor académico del equipo de Fran Fialli. ¿Desea que lo haga? 📩',
-    tags: ['confirmacion', 'inicial', 'javier', 'contacto'],
+    tags: [ 'confirmacion', 'inicial', 'javier', 'contacto' ],
     orden: 1
   },
   {
@@ -30,7 +30,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: '✅ *si*.\n❌ *no*.',
-    tags: ['confirmacion', 'opciones', 'si', 'no'],
+    tags: [ 'confirmacion', 'opciones', 'si', 'no' ],
     orden: 2
   },
   {
@@ -38,15 +38,15 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'ℹ️ Para ayudarle mejor, puedo mostrarle el menú principal. Solo debe escribir *MENÚ* o decirme qué tipo de información busca.',
-    tags: ['cancelacion', 'menu', 'no'],
+    tags: [ 'cancelacion', 'menu', 'no' ],
     orden: 3
   },
   {
     id: 'derivacion_empezar_datos',
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
-    texto: '✅ Para empezar solo necesito:',
-    tags: ['datos', 'empezar', 'formulario'],
+    texto: '✅ Para empezar solo necesito estos datos:',
+    tags: [ 'datos', 'empezar', 'formulario' ],
     orden: 4
   },
   {
@@ -54,7 +54,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'Que me facilite su *nombre completo*',
-    tags: ['nombre', 'solicitud', 'datos'],
+    tags: [ 'nombre', 'solicitud', 'datos' ],
     orden: 5
   },
   {
@@ -62,7 +62,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'Que me facilite su *correo electrónico*',
-    tags: ['correo', 'email', 'solicitud', 'datos'],
+    tags: [ 'correo', 'email', 'solicitud', 'datos' ],
     orden: 6
   },
   {
@@ -70,7 +70,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'Que me facilite su *motivo de su consulta*',
-    tags: ['motivo', 'consulta', 'solicitud', 'datos'],
+    tags: [ 'motivo', 'consulta', 'solicitud', 'datos' ],
     orden: 7
   },
   {
@@ -78,7 +78,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: '✅ Gracias *{nombre}*. Hemos recibido correctamente sus datos.',
-    tags: ['exito', 'confirmacion', 'datos', 'plantilla'],
+    tags: [ 'exito', 'confirmacion', 'datos', 'plantilla' ],
     orden: 8
   },
   {
@@ -86,26 +86,26 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
     texto: 'En breve, Javier Gómez se incorporará a este chat para atender su consulta de manera personalizada.',
-    tags: ['exito', 'javier', 'final'],
+    tags: [ 'exito', 'javier', 'final' ],
     orden: 9
   }
 ];
 
 export const cargarMensajesDerivacion = async () => {
   try {
-    const index = pinecone.Index(process.env.PINECONE_INDEX_NAME!);
-    const embeddings = new OpenAIEmbeddings({ 
-      openAIApiKey: process.env.OPENAI_API_KEY! 
-    });
+    const index = pinecone.Index( process.env.PINECONE_INDEX_NAME! );
+    const embeddings = new OpenAIEmbeddings( {
+      openAIApiKey: process.env.OPENAI_API_KEY!
+    } );
 
-    console.log('🚀 Cargando mensajes de derivación a Pinecone...');
+    console.log( '🚀 Cargando mensajes de derivación a Pinecone...' );
 
-    for (const mensaje of mensajesDerivacion) {
+    for ( const mensaje of mensajesDerivacion ) {
       // Generar embedding del texto
-      const vector = await embeddings.embedQuery(mensaje.texto);
+      const vector = await embeddings.embedQuery( mensaje.texto );
 
       // Insertar en Pinecone
-      await index.upsert([
+      await index.upsert( [
         {
           id: mensaje.id,
           values: vector,
@@ -120,19 +120,19 @@ export const cargarMensajesDerivacion = async () => {
             es_mensaje_sistema: true
           }
         }
-      ]);
+      ] );
 
-      console.log(`✅ Cargado: ${mensaje.id}`);
+      console.log( `✅ Cargado: ${ mensaje.id }` );
     }
 
-    console.log(`\n🎉 ${mensajesDerivacion.length} mensajes cargados exitosamente`);
-  } catch (error) {
-    console.error('❌ Error cargando mensajes:', error);
+    console.log( `\n🎉 ${ mensajesDerivacion.length } mensajes cargados exitosamente` );
+  } catch ( error ) {
+    console.error( '❌ Error cargando mensajes:', error );
     throw error;
   }
 };
 
 // Ejecutar si se llama directamente
-if (import.meta.url === `file://${process.argv[1]}`) {
+if ( import.meta.url === `file://${ process.argv[ 1 ] }` ) {
   cargarMensajesDerivacion();
 }
