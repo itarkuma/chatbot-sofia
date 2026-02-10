@@ -1,13 +1,4 @@
-```
-v 1.2.9
-```
+chatbot en WhatsApp Business
 
-## Getting Started
-
-```
-npm create builderbot@latest
-```
-libreria para cambiar de proveedor
-```
-builderbot-switch
-```
+🎯 Objetivo:
+Reducir la carga operativa, automatizar la atención informativa, y escalar sin perder control sobre el contenido ni el tono de las respuestas.
