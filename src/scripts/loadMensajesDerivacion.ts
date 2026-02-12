@@ -29,7 +29,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     id: 'derivacion_confirmacion_inicial_opciones',
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
-    texto: '✅ *si*.\n❌ *no*.',
+    texto: '✅ *Si*.\n❌ *No*.',
     tags: [ 'confirmacion', 'opciones', 'si', 'no' ],
     orden: 2
   },
@@ -85,7 +85,7 @@ const mensajesDerivacion: MensajeDerivacion[] = [
     id: 'derivacion_exito_javier',
     tipo: 'mensaje_sistema',
     flow: 'confirmarDerivacionUser',
-    texto: 'En breve, Javier Gómez se incorporará a este chat para atender su consulta de manera personalizada.\n\n⛔ Por favor, no responda a este mensaje. El chat quedará en espera hasta que Javier se incorpore a la conversación.\n\nℹ️ Es posible que reciba algún mensaje automático. No debe responder; solo debe esperar a que Javier se una al chat.',
+    texto: 'En breve, Javier Gómez se incorporará a este chat para atender su consulta de manera personalizada.\n\n⛔ *Por favor, no responda a este mensaje.* El chat quedará en espera hasta que Javier se incorpore a la conversación.\n\nℹ️ Es posible que reciba algún mensaje automático. No debe responder; solo debe esperar a que Javier se una al chat.',
     tags: [ 'exito', 'javier', 'final' ],
     orden: 9
   }
